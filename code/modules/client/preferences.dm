@@ -924,12 +924,11 @@ datum/preferences
 							b_type = new_b_type
 
 					if("hair")
-						if(species == "Human" || species == "Unathi")
-							var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference") as color|null
-							if(new_hair)
-								r_hair = hex2num(copytext(new_hair, 2, 4))
-								g_hair = hex2num(copytext(new_hair, 4, 6))
-								b_hair = hex2num(copytext(new_hair, 6, 8))
+						var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference") as color|null // Translate it 1940
+						if(new_hair)
+							r_hair = hex2num(copytext(new_hair, 2, 4))
+							g_hair = hex2num(copytext(new_hair, 4, 6))
+							b_hair = hex2num(copytext(new_hair, 6, 8))
 
 					if("h_style")
 						var/list/valid_hairstyles = list()
@@ -940,12 +939,12 @@ datum/preferences
 
 							valid_hairstyles[hairstyle] = hair_styles_list[hairstyle]
 
-						var/new_h_style = input(user, "Choose your character's hair style:", "Character Preference")  as null|anything in valid_hairstyles
+						var/new_h_style = input(user, "Choose your character's hair style:", "Character Preference")  as null|anything in valid_hairstyles // Translate it 1941
 						if(new_h_style)
 							h_style = new_h_style
 
 					if("facial")
-						var/new_facial = input(user, "Choose your character's facial-hair colour:", "Character Preference") as color|null
+						var/new_facial = input(user, "Choose your character's facial-hair colour:", "Character Preference") as color|null // Translate it 1942
 						if(new_facial)
 							r_facial = hex2num(copytext(new_facial, 2, 4))
 							g_facial = hex2num(copytext(new_facial, 4, 6))
@@ -988,11 +987,9 @@ datum/preferences
 							b_eyes = hex2num(copytext(new_eyes, 6, 8))
 
 					if("s_tone")
-						if(species != "Human")
-							return
-						var/new_s_tone = input(user, "Choose your character's skin-tone:\n(Light 1 - 220 Dark)", "Character Preference")  as num|null
+						var/new_s_tone = input(user, "Choose your character's skin-tone:", "Character Preference")  as num|null // Translate it 1946
 						if(new_s_tone)
-							s_tone = 35 - max(min( round(new_s_tone), 220),1)
+							s_tone = 100 - max(min( round(new_s_tone), 550),1)
 
 					if("ooccolor")
 						var/new_ooccolor = input(user, "Choose your OOC colour:", "Game Preference") as color|null

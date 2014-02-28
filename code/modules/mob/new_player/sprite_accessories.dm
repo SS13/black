@@ -73,9 +73,9 @@
 		name = "Shoulder-length Hair Alt"
 		icon_state = "hair_longfringe"
 
-	/*longish
+	longish
 		name = "Longer Hair"
-		icon_state = "hair_b2"*/
+		icon_state = "hair_b2"
 
 	longer
 		name = "Long Hair"
@@ -92,6 +92,16 @@
 	longfringe
 		name = "Long Fringe"
 		icon_state = "hair_longfringe"
+
+	ladylike
+		name = "Ladylike"
+		icon_state = "hair_test"
+		species_allowed = list("Human","Unathi")
+
+	ladylike2
+		name = "Ladylike Alt"
+		icon_state = "hair_levb"
+		species_allowed = list("Human","Unathi")
 
 	longestalt
 		name = "Longer Fringe"
@@ -263,6 +273,14 @@
 		name = "Kusanagi Hair"
 		icon_state = "hair_kusanagi"
 
+	kusanagialt
+		name = "Kusanagi Alternative Hair"
+		icon_state = "hair_kusanagialt"
+
+	hamasaki
+		name = "Hamasaki Hair"
+		icon_state = "hair_hamasaki"
+
 	kagami
 		name = "Pigtails"
 		icon_state = "hair_kagami"
@@ -291,6 +309,11 @@
 	ombre
 		name = "Ombre"
 		icon_state = "hair_ombre"
+		gender = FEMALE
+
+	unitfringe
+		name = "Test Fringe"
+		icon_state = "test4"
 		gender = FEMALE
 
 	updo
@@ -439,42 +462,42 @@
 		icon_state = "skrell_hair_m"
 		species_allowed = list("Skrell")
 		gender = MALE
-		do_colouration = 0
+		do_colouration = 1
 
 	skr_tentacle_f
 		name = "Skrell Female Tentacles"
 		icon_state = "skrell_hair_f"
 		species_allowed = list("Skrell")
 		gender = FEMALE
-		do_colouration = 0
+		do_colouration = 1
 
 	skr_gold_m
 		name = "Gold plated Skrell Male Tentacles"
 		icon_state = "skrell_goldhair_m"
 		species_allowed = list("Skrell")
 		gender = MALE
-		do_colouration = 0
+		do_colouration = 1
 
 	skr_gold_f
 		name = "Gold chained Skrell Female Tentacles"
 		icon_state = "skrell_goldhair_f"
 		species_allowed = list("Skrell")
 		gender = FEMALE
-		do_colouration = 0
+		do_colouration = 1
 
 	skr_clothtentacle_m
 		name = "Cloth draped Skrell Male Tentacles"
 		icon_state = "skrell_clothhair_m"
 		species_allowed = list("Skrell")
 		gender = MALE
-		do_colouration = 0
+		do_colouration = 1
 
 	skr_clothtentacle_f
 		name = "Cloth draped Skrell Female Tentacles"
 		icon_state = "skrell_clothhair_f"
 		species_allowed = list("Skrell")
 		gender = FEMALE
-		do_colouration = 0
+		do_colouration = 1
 
 	taj_ears
 		name = "Tajaran Ears"
