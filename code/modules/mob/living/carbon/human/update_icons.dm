@@ -697,7 +697,60 @@ proc/get_damage_icon_part(damage_state, body_part)
 			overlays_standing[BELT_LAYER]	= null
 		if(update_icons)   update_icons()
 
+/mob/living/carbon/human/update_inv_wear_suit(var/update_icons=1)
+	if(gender == MALE)
+		if( wear_suit && istype(wear_suit, /obj/item/clothing/suit) )	//TODO check this
+			wear_suit.screen_loc = ui_oclothing	//TODO
+			var/image/standing	= image("icon" = ((wear_suit.icon_override) ? wear_suit.icon_override : 'icons/mob/suit.dmi'), "icon_state" = "[wear_suit.icon_state]")
 
+			if( istype(wear_suit, /obj/item/clothing/suit/straight_jacket) )
+				drop_from_inventory(handcuffed)
+				drop_l_hand()
+				drop_r_hand()
+
+			if(wear_suit.blood_DNA)
+				var/obj/item/clothing/suit/S = wear_suit
+				var/image/bloodsies = image("icon" = 'icons/effects/blood.dmi', "icon_state" = "[S.blood_overlay_type]blood")
+				bloodsies.color = wear_suit.blood_color
+				standing.overlays	+= bloodsies
+
+			overlays_standing[SUIT_LAYER]	= standing
+
+			update_tail_showing(0)
+
+		else
+			overlays_standing[SUIT_LAYER]	= null
+
+			update_tail_showing(0)
+
+		if(update_icons)   update_icons()
+
+	if(gender == FEMALE)
+		if( wear_suit && istype(wear_suit, /obj/item/clothing/suit) )	//TODO check this
+			wear_suit.screen_loc = ui_oclothing	//TODO
+			var/image/standing	= image("icon" = ((wear_suit.icon_override) ? wear_suit.icon_override : 'icons/mob/suit_f.dmi'), "icon_state" = "[wear_suit.icon_state]")
+
+			if( istype(wear_suit, /obj/item/clothing/suit/straight_jacket) )
+				drop_from_inventory(handcuffed)
+				drop_l_hand()
+				drop_r_hand()
+
+			if(wear_suit.blood_DNA)
+				var/obj/item/clothing/suit/S = wear_suit
+				var/image/bloodsies = image("icon" = 'icons/effects/blood.dmi', "icon_state" = "[S.blood_overlay_type]blood")
+				bloodsies.color = wear_suit.blood_color
+				standing.overlays	+= bloodsies
+
+			overlays_standing[SUIT_LAYER]	= standing
+
+			update_tail_showing(0)
+
+		else
+			overlays_standing[SUIT_LAYER]	= null
+
+			update_tail_showing(0)
+
+		if(update_icons)   update_icons()
 
 /mob/living/carbon/human/update_inv_pockets(var/update_icons=1)
 	if(l_store)			l_store.screen_loc = ui_storage1	//TODO
