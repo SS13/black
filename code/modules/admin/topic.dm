@@ -771,13 +771,10 @@
 
 		switch(href_list["notes"])
 			if("show")
-				notes_show(ckey)
-			if("add")
-				notes_add(ckey,href_list["text"])
-				notes_show(ckey)
-			if("remove")
-				notes_remove(ckey,text2num(href_list["from"]),text2num(href_list["to"]))
-				notes_show(ckey)
+				show_player_info(ckey)
+			if("list")
+				PlayerNotesPage(href_list["index"])
+		return
 	else if(href_list["removejobban"])
 		if(!check_rights(R_BAN))	return
 
