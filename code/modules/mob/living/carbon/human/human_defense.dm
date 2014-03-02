@@ -17,14 +17,14 @@ emp_act
 							visible_message("\red <B>The [P.name] gets deflected by [src]'s [C.name]!</B>") //DEFLECT!
 							visible_message("\red <B> Taser hit for [P.damage] damage!</B>")
 							del P
-*/
-/* Commenting out old Taser nerf
+
+ Commenting out old Taser nerf
 	if(wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor))
 		if(istype(P, /obj/item/projectile/energy/electrode))
 			visible_message("\red <B>The [P.name] gets deflected by [src]'s [wear_suit.name]!</B>")
 			del P
 		return -1
-*/
+
 // END TASER NERF
 
 	if(wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/laserproof))
@@ -104,7 +104,57 @@ emp_act
 		SP.add_blood(src)
 
 	return (..(P , def_zone))
+*/
+	if(wear_suit && istype(wear_suit, /obj/item/clothing/suit/armor/laserproof))
+		if(istype(P, /obj/item/projectile/energy) || istype(P, /obj/item/projectile/beam))
+			var/reflectchance = 40 - round(P.damage/3)
+			if(!(def_zone in list("chest", "groin")))
+				reflectchance /= 2
+			if(prob(reflectchance))
+				visible_message("\red <B>The [P.name] gets reflected by [src]'s [wear_suit.name]!</B>")
 
+				// Find a turf near or on the original location to bounce to
+				if(P.starting)
+					var/new_x = P.starting.x + pick(0, 0, 0, 0, 0, -1, 1, -2, 2)
+					var/new_y = P.starting.y + pick(0, 0, 0, 0, 0, -1, 1, -2, 2)
+					var/turf/curloc = get_turf(src)
+
+					// redirect the projectile
+					P.original = locate(new_x, new_y, P.z)
+					P.starting = curloc
+					P.current = curloc
+					P.firer = src
+					P.yo = new_y - curloc.y
+					P.xo = new_x - curloc.x
+
+				return -1 // complete projectile permutation
+
+	if(check_shields(P.damage, "the [P.name]"))
+		P.on_hit(src, 2)
+		return 2
+
+	if(istype(equipped(),/obj/item/device/assembly/signaler))
+		var/obj/item/device/assembly/signaler/signaler = equipped()
+		if(signaler.deadman && prob(90))
+			src.visible_message("\red [src] triggers their deadman's switch!")
+			signaler.signal()
+
+	var/datum/organ/external/organ = get_organ(check_zone(def_zone))
+
+	var/armor = checkarmor(organ, "bullet")
+
+	if((P.embed && prob(20 + max(P.damage - armor, -10))) && P.damage_type == BRUTE)
+		var/obj/item/weapon/shard/shrapnel/SP = new()
+		(SP.name) = "[P.name] shrapnel"
+		(SP.desc) = "[SP.desc] It looks like it was fired from [P.shot_from]."
+		(SP.loc) = organ
+		organ.implants += SP
+		visible_message("<span class='danger'>The projectile sticks in the wound!</span>")
+		embedded_flag = 1
+		src.verbs += /mob/proc/yank_out_object
+		SP.add_blood(src)
+
+	return (..(P , def_zone))
 
 /mob/living/carbon/human/getarmor(var/def_zone, var/type)
 	var/armorval = 0
