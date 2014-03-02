@@ -1330,7 +1330,6 @@
 #include "code\WorkInProgress\buildmode.dm"
 #include "code\WorkInProgress\explosion_particles.dm"
 #include "code\WorkInProgress\periodic_news.dm"
-#include "code\WorkInProgress\animusstation\donations_panel.dm"
 #include "code\WorkInProgress\animusstation\emotions.dm"
 #include "code\WorkInProgress\animusstation\turntable.dm"
 #include "code\WorkInProgress\Apples\artifacts.dm"
