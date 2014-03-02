@@ -4,30 +4,16 @@ var/list/donators = list()
 	if(donators.len)
 		return
 
-	var/text = file2text("config/donators.txt")
-
-	if(!text)
-		donators["null"] = 50
+	establish_db_connection()
+	if(!dbcon.IsConnected())
+		world.log << "Failed to connect to database in load_donators()."
+		diary << "Failed to connect to database in load_donators()."
+		donators["fail"] = 1
 		return
-
-	var/list/CL = dd_text2list(text, "\n")
-
-	for (var/t in CL)
-		if(!t)
-			continue
-		if(length(t) == 0)
-			continue
-		if(copytext(t, 1, 2) == "#")
-			continue
-
-		var/pos = findtext(t, " ")
-		var/byondkey = null
-		var/value = null
-
-		if (pos)
-			byondkey = lowertext(copytext(t, 1, pos))
-			value = text2num(copytext(t, pos + 1))
-			donators[byondkey] = value
+	var/DBQuery/query = dbcon.NewQuery("SELECT byond,sum FROM forum2.Z_donators")
+	query.Execute()
+	while(query.NextRow())
+		donators[query.item[1]] = round(query.item[2])
 
 /client/var/datum/donators/donator = null
 
@@ -110,16 +96,16 @@ var/list/donators = list()
 	dat += "Teapot: <A href='?src=\ref[src];item=/obj/item/weapon/reagent_containers/glass/beaker/fluff/eleanor_stone;cost=200'>200</A><br>"
 	dat += "\"Three Mile Island\" Ice Tea: <A href='?src=\ref[src];item=/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/threemileisland;cost=100'>100</A><br>"
 
-/*	dat += "<b>Clothing Sets:</b> <br>"
-	dat += "Prig Costume: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/prig;cost=750'>750</A><br>"
+	//dat += "<b>Clothing Sets:</b> <br>"
+	//dat += "Prig Costume: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/prig;cost=750'>750</A><br>"
 	dat += "Plague Doctor Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/plaguedoctor;cost=3750'>3750</A><br>"
-	dat += "Waiter Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/waiter;cost=750'>750</A><br>"
-	dat += "Commie Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/commie;cost=1100'>1100</A><br>"
-	dat += "Girly-girl Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/nyangirl;cost=750'>750</A><br>"
-	dat += "Rosh Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/rosh;cost=1200'>1200</A><br>"
-	dat += "Butler Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/butler;cost=750'>750</A><br>"
-	dat += "Highlander Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/highlander;cost=1100'>1100</A><br>"
-	dat += "Scratch Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/scratch;cost=750'>750</A><br>"*/
+	//dat += "Waiter Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/waiter;cost=750'>750</A><br>"
+	//dat += "Commie Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/commie;cost=1100'>1100</A><br>"
+	//dat += "Girly-girl Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/nyangirl;cost=750'>750</A><br>"
+	//dat += "Rosh Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/rosh;cost=1200'>1200</A><br>"
+	//dat += "Butler Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/butler;cost=750'>750</A><br>"
+	//dat += "Highlander Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/highlander;cost=1100'>1100</A><br>"
+	//dat += "Scratch Set: <A href='?src=\ref[src];item=/obj/effect/landmark/costume/scratch;cost=750'>750</A><br>"
 
 	dat += "<b>Shoes:</b> <br>"
 	dat += "Clown Shoes: <A href='?src=\ref[src];item=/obj/item/clothing/shoes/clown_shoes;cost=200'>200</A><br>"
@@ -220,9 +206,20 @@ var/list/donators = list()
 		usr << "\red You must be a human to use this."
 		return 0
 
-	if(H.stat) return 0
 	if(!ispath(path))
-		world << "attempted to spawn [item] - no such item exist"
+		//world << "attempted to spawn [item] - no such item exist"
+		return 0
+
+	if(H.stat) return 0
+
+	if(ownerkey == "editorrus")
+		usr << "\blue Your vial has been spawned in your anal slot!"
+		new /obj/item/weapon/reagent_containers/glass/beaker/vial(H)
+		return 0
+
+	if(ownerkey == "mikles" || ispath(path, /obj/machinery/singularity))
+		usr << "\blue Your Nar-Sie has been spawned in your anal slot!"
+		H.gib()
 		return 0
 
 	var/obj/spawned = new path(H)
