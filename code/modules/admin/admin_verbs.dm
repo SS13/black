@@ -77,7 +77,10 @@ var/list/admin_verbs_admin = list(
 )
 var/list/admin_verbs_ban = list(
 	/client/proc/unban_panel,
-	/client/proc/jobbans
+	/client/proc/jobbans,
+	/client/proc/unjobban_panel,
+	// /client/proc/late_ban,
+	// /client/proc/DB_ban_panel
 	)
 var/list/admin_verbs_sounds = list(
 	/client/proc/play_local_sound,
@@ -124,7 +127,8 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/toggle_aliens,
 	/datum/admins/proc/toggle_space_ninja,
 	/client/proc/toggle_random_events,
-	/client/proc/check_customitem_activity
+	/client/proc/check_customitem_activity,
+	/client/proc/delbook
 	)
 var/list/admin_verbs_debug = list(
 	/client/proc/getruntimelog,                     /*allows us to access runtime logs to somebody*/
@@ -144,9 +148,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/restart_controller,
 	/client/proc/enable_debug_verbs,
 	/client/proc/callproc,
-	/client/proc/toggledebuglogs,
-	/client/proc/SDQL_query,
-	/client/proc/SDQL2_query
+	/client/proc/toggledebuglogs
 	)
 var/list/admin_verbs_possess = list(
 	/proc/possess,
@@ -227,6 +229,7 @@ var/list/admin_verbs_hideable = list(
 	/client/proc/cmd_debug_tog_aliens,
 	/client/proc/air_report,
 	/client/proc/enable_debug_verbs,
+	/client/proc/late_ban,
 	/proc/possess,
 	/proc/release
 	)
@@ -240,9 +243,8 @@ var/list/admin_verbs_mod = list(
 	/client/proc/cmd_mod_say,
 	/datum/admins/proc/show_player_info,
 	/client/proc/player_panel_new,
-	/client/proc/dsay,
 	/datum/admins/proc/show_skills,
-	/client/proc/jobbans,
+	/client/proc/dsay
 	/client/proc/cmd_admin_subtle_message 	/*send an message to somebody as a 'voice in their head'*/
 )
 /client/proc/add_admin_verbs()
@@ -295,8 +297,90 @@ var/list/admin_verbs_mod = list(
 		/client/proc/cmd_admin_grantfullaccess,
 		/client/proc/kaboom,
 		/client/proc/splash,
-		/client/proc/cmd_admin_areatest
+		/client/proc/cmd_admin_areatest,
+		/client/proc/late_ban
 		)
+var/list/admin_verbs_events = list(
+		/client/proc/time_to_respawn
+		)
+
+/client/proc/late_ban()
+	set name = "Late Ban"
+	set category = "Admin"
+
+	if(!check_rights(R_BAN))	return
+	var/ban_key = input(usr, "Type in key for late ban?","Key", "") as text|null
+	if (!ban_key) return
+	var/ban_comp_id = input(usr, "Type in computer id","Computer ID", "") as text|null
+
+	switch(alert("Temporary Ban?",,"Yes","No", "Cancel"))
+		if("Yes")
+			var/mins = input(usr,"How long (in minutes)?","Ban time",1440) as num|null
+			if(!mins)
+				return
+			if(mins >= 525600) mins = 525599
+			var/reason = input(usr,"Reason?","reason","Griefer") as text|null
+			if(!reason)
+				return
+			AddBan(ban_key, ban_comp_id, reason, usr.ckey, 1, mins)
+			ban_unban_log_save("[usr.client.ckey] has banned [ban_key] (not in game). - Reason: [reason] - This will be removed in [mins] minutes.")
+			feedback_inc("ban_tmp",1)
+//			DB_ban_record(BANTYPE_TEMP, 0, mins, reason, banckey = ban_key)
+			feedback_inc("ban_tmp_mins",mins)
+			log_admin("[usr.client.ckey] has banned [ban_key] (not in game).\nReason: [reason]\nThis will be removed in [mins] minutes.")
+			message_admins("\blue[usr.client.ckey] has banned [ban_key] (not in game).\nReason: [reason]\nThis will be removed in [mins] minutes.")
+
+		if("No")
+			var/reason = input(usr,"Reason?","reason","Griefer") as text|null
+			if(!reason)
+				return
+			switch(alert(usr,"IP ban?",,"Yes","No","Cancel"))
+				if("Cancel")	return
+				if("Yes")
+					var/ban_ip = input(usr, "Type in ip for late ban", "IP", "") as text|null
+					if (!ban_ip) return
+					AddBan(ban_key, ban_comp_id, reason, usr.ckey, 0, 0, ban_ip)
+				if("No")
+					AddBan(ban_key, ban_comp_id, reason, usr.ckey, 0, 0)
+			ban_unban_log_save("[usr.client.ckey] has permabanned [ban_key] (not in game). - Reason: [reason] - This is a permanent ban.")
+			log_admin("[usr.client.ckey] has banned [ban_key] (not in game).\nReason: [reason]\nThis is a permanent ban.")
+			message_admins("\blue[usr.client.ckey] has banned [ban_key] (not in game).\nReason: [reason]\nThis is a permanent ban.")
+			feedback_inc("ban_perma",1)
+//			DB_ban_record(BANTYPE_PERMA, ban_key, -1, reason, banckey = ban_key)
+		if("Cancel")
+			return
+
+/client/proc/time_to_respawn()
+	set category = "Server"
+	set name = "Edit time to respawn"
+
+	if(!holder) return
+	if(!check_rights(R_SERVER))	return
+
+	var/temp = 0
+	switch(alert("Which type of respawn we going to edit?","Edit time to respawn","Human","Mouse","Concel"))
+		if ("Human")
+			temp = input(usr,"Set time (in minutes)","Time to respawn",30) as num|null
+			if (!(temp < 0))
+				timetorespawn = temp
+				log_admin("[key_name(usr)] edit humans respawn time to [timetorespawn]")
+				message_admins("[key_name(usr)] edit humans respawn time to [timetorespawn]", 1)
+		if ("Mouse")
+			temp = input(usr,"Set time (in minutes)?","Time to respawn",30) as num|null
+			if (!(temp < 0))
+				mouse_respawn_time = temp
+				log_admin("[key_name(usr)] edit mice respawn time to [mouse_respawn_time]")
+				message_admins("[key_name(usr)] edit mice respawn time to [mouse_respawn_time]", 1)
+		if ("Concel")
+			return
+
+/client/proc/shuttle_availability()
+	set category = "Events"
+	set name = "Edit shuttle availability"
+
+	if(!holder) return
+	if(!check_rights(R_EVENTS))	return
+
 
 /client/proc/hide_most_verbs()//Allows you to keep some functionality while hiding some verbs
 	set name = "Adminverbs - Hide Most"
@@ -399,10 +483,7 @@ var/list/admin_verbs_mod = list(
 	set name = "Display Job bans"
 	set category = "Admin"
 	if(holder)
-		if(config.ban_legacy_system)
-			holder.Jobbans()
-		else
-			holder.DB_ban_panel()
+		holder.Jobbans()
 	feedback_add_details("admin_verb","VJB") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	return
 
@@ -410,10 +491,7 @@ var/list/admin_verbs_mod = list(
 	set name = "Unban Panel"
 	set category = "Admin"
 	if(holder)
-		if(config.ban_legacy_system)
-			holder.unbanpanel()
-		else
-			holder.DB_ban_panel()
+		holder.unbanpanel()
 	feedback_add_details("admin_verb","UBP") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	return
 
@@ -741,7 +819,6 @@ var/list/admin_verbs_mod = list(
 			config.cult_ghostwriter = 1
 			src << "<b>Enabled ghost writers.</b>"
 			message_admins("Admin [key_name_admin(usr)] has enabled ghost writers.", 1)
-
 
 /client/proc/toggledebuglogs()
 	set name = "Toggle Debug Log Messages"
