@@ -232,10 +232,10 @@
 
 				if ("log_hrefs")
 					config.log_hrefs = 1
-
+/*
 				if ("log_runtime")
 					config.log_runtime = 1
-
+*/
 				if("allow_admin_ooccolor")
 					config.allow_admin_ooccolor = 1
 
@@ -286,10 +286,10 @@
 
 				if ("serversuffix")
 					config.server_suffix = 1
-
+/*
 				if ("nudge_script_path")
 					config.nudge_script_path = value
-
+*/
 				if ("hostedby")
 					config.hostedby = value
 
@@ -387,10 +387,10 @@
 					config.antag_hud_allowed = 1
 				if("antag_hud_restricted")
 					config.antag_hud_restricted = 1
-
+/*
 				if("socket_talk")
 					socket_talk = text2num(value)
-
+*/
 				if("tickcomp")
 					Tickcomp = 1
 
