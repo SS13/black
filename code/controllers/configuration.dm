@@ -2,8 +2,6 @@
 	var/server_name = null				// server name (for world name / status)
 	var/server_suffix = 0				// generate numeric suffix based on server port
 
-	var/nudge_script_path = "nudge.py"  // where the nudge.py script is located
-
 	var/log_ooc = 1						// log OOC channel
 	var/log_access = 0					// log login/logout
 	var/log_say = 1						// log client say
@@ -18,9 +16,7 @@
 	var/log_adminwarn = 0				// log warnings admins get about bomb construction and such
 	var/log_pda = 0						// log pda messages
 	var/log_hrefs = 0					// logs all links clicked in-game. Could be used for debugging and tracking down exploits
-	var/log_runtime = 0					// logs world.log to a file
-	var/sql_enabled = 1					// for sql switching
-	var/allow_admin_ooccolor = 0		// Allows admins with relevant permissions to have their own ooc colour
+	var/allow_admin_ooccolor = 1		// Allows admins with relevant permissions to have their own ooc colour
 	var/allow_vote_restart = 0 			// allow votes to restart
 	var/allow_vote_mode = 0				// allow votes to change mode
 	var/allow_admin_jump = 1			// allows admin jumping
@@ -28,7 +24,7 @@
 	var/allow_admin_rev = 1				// allows admin revives
 	var/vote_delay = 22000				// minimum time between voting sessions (deciseconds, 10 minute default)
 	var/vote_period = 2200				// length of voting period (deciseconds, default 1 minute)
-	var/vote_autotransfer_initial = 208000 // Length of time before the first autotransfer vote is called
+	var/vote_autotransfer_initial = 308000 // Length of time before the first autotransfer vote is called
 	var/vote_autotransfer_interval = 66000 // length of time before next sequential autotransfer vote
 	var/vote_no_default = 0				// vote does not default to nochange/norestart (tbi)
 	var/vote_no_dead = 0				// dead people can't vote (tbi)
@@ -40,9 +36,9 @@
 	var/continous_rounds = 1			// Gamemodes which end instantly will instead keep on going until the round ends by escape shuttle or nuke.
 	var/allow_Metadata = 0				// Metadata is supported.
 	var/popup_admin_pm = 0				//adminPMs to non-admins show in a pop-up 'reply' window when set to 1.
-	var/Ticklag = 0.9
+	var/Ticklag = 0.4
 	var/Tickcomp = 0
-	var/socket_talk	= 0					// use socket_talk to communicate with other processes
+
 	var/list/resource_urls = null
 	var/antag_hud_allowed = 0			// Ghosts can turn on Antagovision to see a HUD of who is the bad guys this round.
 	var/antag_hud_restricted = 0                    // Ghosts that turn on Antagovision cannot rejoin the round.
@@ -68,7 +64,6 @@
 
 	var/disable_player_mice = 0
 	var/uneducated_mice = 0 //Set to 1 to prevent newly-spawned mice from understanding human speech
-
 	var/usealienwhitelist = 0
 	var/limitalienplayers = 0
 	var/alien_to_human_ratio = 0.5
@@ -107,7 +102,7 @@
 	//Used for modifying movement speed for mobs.
 	//Unversal modifiers
 	var/run_speed = 3.5
-	var/walk_speed = 4.5
+	var/walk_speed = 5
 
 	//Mob specific modifiers. NOTE: These will affect different mob types in different ways
 	var/human_delay = 0
@@ -118,7 +113,6 @@
 	var/animal_delay = 0
 
 	var/admin_legacy_system = 0	//Defines whether the server uses the legacy admin system with admins.txt or the SQL system. Config option in config.txt
-	var/ban_legacy_system = 0	//Defines whether the server uses the legacy banning system with the files in /data or the SQL system. Config option in config.txt
 	var/use_age_restriction_for_jobs = 0 //Do jobs use account age restrictions? --requires database
 
 	var/simultaneous_pm_warning_timeout = 100
@@ -188,9 +182,6 @@
 				if ("admin_legacy_system")
 					config.admin_legacy_system = 1
 
-				if ("ban_legacy_system")
-					config.ban_legacy_system = 1
-
 				if ("use_age_restriction_for_jobs")
 					config.use_age_restriction_for_jobs = 1
 
@@ -205,9 +196,6 @@
 
 				if ("log_access")
 					config.log_access = 1
-
-				if ("sql_enabled")
-					config.sql_enabled = text2num(value)
 
 				if ("log_say")
 					config.log_say = 1
