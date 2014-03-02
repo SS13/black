@@ -380,7 +380,7 @@
 				G.affecting.loc = src.loc
 				G.affecting.Weaken(5)
 				visible_message("\red [G.assailant] puts [G.affecting] on \the [src].")
-			del(W)
+				del(W)
 			return
 
 	if (istype(W, /obj/item/weapon/wrench))
