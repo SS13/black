@@ -128,7 +128,6 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/toggle_space_ninja,
 	/client/proc/toggle_random_events,
 	/client/proc/check_customitem_activity,
-	/client/proc/delbook
 	)
 var/list/admin_verbs_debug = list(
 	/client/proc/getruntimelog,                     /*allows us to access runtime logs to somebody*/
@@ -244,7 +243,7 @@ var/list/admin_verbs_mod = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/player_panel_new,
 	/datum/admins/proc/show_skills,
-	/client/proc/dsay
+	/client/proc/dsay,
 	/client/proc/cmd_admin_subtle_message 	/*send an message to somebody as a 'voice in their head'*/
 )
 /client/proc/add_admin_verbs()
@@ -300,9 +299,6 @@ var/list/admin_verbs_mod = list(
 		/client/proc/cmd_admin_areatest,
 		/client/proc/late_ban
 		)
-var/list/admin_verbs_events = list(
-		/client/proc/time_to_respawn
-		)
 
 /client/proc/late_ban()
 	set name = "Late Ban"
@@ -350,36 +346,12 @@ var/list/admin_verbs_events = list(
 		if("Cancel")
 			return
 
-/client/proc/time_to_respawn()
-	set category = "Server"
-	set name = "Edit time to respawn"
-
-	if(!holder) return
-	if(!check_rights(R_SERVER))	return
-
-	var/temp = 0
-	switch(alert("Which type of respawn we going to edit?","Edit time to respawn","Human","Mouse","Concel"))
-		if ("Human")
-			temp = input(usr,"Set time (in minutes)","Time to respawn",30) as num|null
-			if (!(temp < 0))
-				timetorespawn = temp
-				log_admin("[key_name(usr)] edit humans respawn time to [timetorespawn]")
-				message_admins("[key_name(usr)] edit humans respawn time to [timetorespawn]", 1)
-		if ("Mouse")
-			temp = input(usr,"Set time (in minutes)?","Time to respawn",30) as num|null
-			if (!(temp < 0))
-				mouse_respawn_time = temp
-				log_admin("[key_name(usr)] edit mice respawn time to [mouse_respawn_time]")
-				message_admins("[key_name(usr)] edit mice respawn time to [mouse_respawn_time]", 1)
-		if ("Concel")
-			return
-
 /client/proc/shuttle_availability()
 	set category = "Events"
 	set name = "Edit shuttle availability"
 
 	if(!holder) return
-	if(!check_rights(R_EVENTS))	return
+	if(!check_rights(R_SERVER))	return
 
 
 /client/proc/hide_most_verbs()//Allows you to keep some functionality while hiding some verbs
