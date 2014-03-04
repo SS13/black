@@ -148,7 +148,7 @@ datum/preferences
 		preview_icon.Blend(new /icon(icobase, "groin_[g]"), ICON_OVERLAY)
 		preview_icon.Blend(new /icon(icobase, "head_[g]"), ICON_OVERLAY)
 
-		for(var/name in g=="m"?list("l_arm_m","r_arm_m","l_leg_m","r_leg_m","l_foot_m","r_foot_m","l_hand_m","r_hand_m"):list("l_arm_f","r_arm_f","l_leg_f","r_leg_f","l_foot_f","r_foot_f","l_hand_f","r_hand_f"))
+		for(var/name in list("l_arm_[g]","r_arm_[g]","l_leg_[g]","r_leg_[g]","l_foot_[g]","r_foot_[g]","l_hand_[g]","r_hand_[g]"))
 			// make sure the organ is added to the list so it's drawn
 			if(organ_data[name] == null)
 				organ_data[name] = null
