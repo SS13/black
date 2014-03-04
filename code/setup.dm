@@ -747,3 +747,6 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 //Flags for zone sleeping
 #define ZONE_ACTIVE 1
 #define ZONE_SLEEPING 0
+
+
+#define LOST_LETTER sanitize_uni(copytext("ÿ", 1, MAX_MESSAGE_LEN))
