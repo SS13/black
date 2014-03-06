@@ -70,7 +70,7 @@
 
 	t += "</tr></table></div></body>"
 	user << browse(t, "window=turntable;size=500x636;can_resize=0")
-	onclose(user, "urntable")
+	onclose(user, "turntable")
 	return
 
 /obj/machinery/party/turntable/Topic(href, href_list)
