@@ -147,6 +147,30 @@
 		coin = W
 		user << "\blue You insert the [W] into the [src]"
 		return
+	else if (istype(W, /obj/item/weapon/wrench))
+		if (anchored)
+			playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
+			user << "\blue You begin to unfasten \the [src] from the floor. Be patient..."
+			if (do_after(user, 300))
+				user.visible_message( \
+					"[user] unfastens \the [src].", \
+					"\blue You have unfastened \the [src]. Now it can be pulled somewhere else.", \
+					"You hear ratchet.")
+				src.anchored = 0
+				src.stat |= MAINT
+				if (usr.machine==src)
+					usr << browse(null, "window=vending")
+		else /*if (anchored)*/
+			playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
+			user << "\blue You begin to fasten \the [src] to the floor..."
+			if (do_after(user, 100))
+				user.visible_message( \
+					"[user] fastens \the [src].", \
+					"\blue You have fastened \the [src].", \
+					"You hear ratchet.")
+				src.anchored = 1
+				src.stat &= ~MAINT
+				power_change()
 	else if(istype(W, /obj/item/weapon/card) && currently_vending)
 		var/obj/item/weapon/card/I = W
 		scan_card(I)

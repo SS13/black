@@ -131,7 +131,7 @@ datum/preferences
 	proc/update_preview_icon()		//seriously. This is horrendous.
 		del(preview_icon_front)
 		del(preview_icon_side)
-		var/icon/preview_icon = null
+		del(preview_icon)
 
 		var/g = "m"
 		if(gender == FEMALE)	g = "f"
@@ -148,7 +148,7 @@ datum/preferences
 		preview_icon.Blend(new /icon(icobase, "groin_[g]"), ICON_OVERLAY)
 		preview_icon.Blend(new /icon(icobase, "head_[g]"), ICON_OVERLAY)
 
-		for(var/name in list("l_arm_[g]","r_arm_[g]","l_leg_[g]","r_leg_[g]","l_foot_[g]","r_foot_[g]","l_hand_[g]","r_hand_[g]"))
+		for(var/name in list("l_arm","r_arm","l_leg","r_leg","l_foot","r_foot","l_hand","r_hand"))
 			// make sure the organ is added to the list so it's drawn
 			if(organ_data[name] == null)
 				organ_data[name] = null
@@ -183,6 +183,10 @@ datum/preferences
 			var/icon/facial_s = new/icon("icon" = facial_hair_style.icon, "icon_state" = "[facial_hair_style.icon_state]_s")
 			facial_s.Blend(rgb(r_facial, g_facial, b_facial), ICON_ADD)
 			eyes_s.Blend(facial_s, ICON_OVERLAY)
+
+		var/icon/underwear_s = null
+		if(underwear > 0 && underwear < 7 && current_species.flags & HAS_UNDERWEAR)
+			underwear_s = new/icon("icon" = 'icons/mob/human.dmi', "icon_state" = "underwear[underwear]_[g]_s")
 
 		var/icon/clothes_s = null
 		if(job_civilian_low & ASSISTANT)//This gives the preview icon clothes depending on which job(if any) is set to 'high'
@@ -560,10 +564,13 @@ datum/preferences
 			preview_icon.Blend(new /icon(g=="m"?'icons/mob/eyes.dmi':'icons/mob/eyes_f.dmi', "glasses"), ICON_OVERLAY)
 
 		preview_icon.Blend(eyes_s, ICON_OVERLAY)
+		if(underwear_s)
+			preview_icon.Blend(underwear_s, ICON_OVERLAY)
 		if(clothes_s)
 			preview_icon.Blend(clothes_s, ICON_OVERLAY)
 		preview_icon_front = new(preview_icon, dir = SOUTH)
 		preview_icon_side = new(preview_icon, dir = WEST)
 
 		del(eyes_s)
+		del(underwear_s)
 		del(clothes_s)

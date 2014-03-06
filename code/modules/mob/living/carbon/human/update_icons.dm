@@ -113,13 +113,14 @@ Please contact me on #coderbus IRC. ~Carn x
 #define HAIR_LAYER				14		//TODO: make part of head layer?
 #define FACEMASK_LAYER			15
 #define HEAD_LAYER				16
-#define HANDCUFF_LAYER			17
-#define LEGCUFF_LAYER			18
-#define L_HAND_LAYER			19
-#define R_HAND_LAYER			20
-#define TAIL_LAYER				21		//bs12 specific. this hack is probably gonna come back to haunt me
-#define TARGETED_LAYER			22		//BS12: Layer for the target overlay from weapon targeting system
-#define TOTAL_LAYERS			22
+#define COLLAR_LAYER			17
+#define HANDCUFF_LAYER			18
+#define LEGCUFF_LAYER			19
+#define TAIL_LAYER				20		//bs12 specific. this hack is probably gonna come back to haunt me
+#define L_HAND_LAYER			21
+#define R_HAND_LAYER			22
+#define TARGETED_LAYER			23		//BS12: Layer for the target overlay from weapon targeting system
+#define TOTAL_LAYERS			23
 //////////////////////////////////
 
 /mob/living/carbon/human
@@ -206,7 +207,6 @@ proc/get_damage_icon_part(damage_state, body_part)
 			standing_image.overlays += DI
 
 
-
 	overlays_standing[DAMAGE_LAYER]	= standing_image
 
 	if(update_icons)   update_icons()
@@ -244,9 +244,6 @@ proc/get_damage_icon_part(damage_state, body_part)
 	for(var/datum/organ/external/part in organs)
 		if(!istype(part, /datum/organ/external/chest) && !(part.status & ORGAN_DESTROYED))
 			var/icon/temp = part.get_icon(g)
-
-			if(part.status & ORGAN_ROBOT)
-				temp.GrayScale()
 
 			if(part.status & ORGAN_DEAD)
 				temp.ColorTone(necrosis_color_mod)
@@ -309,7 +306,6 @@ proc/get_damage_icon_part(damage_state, body_part)
 		if(!fat && !skeleton)
 			stand_icon.Blend(new /icon('icons/mob/human.dmi', "underwear[underwear]_[g]_s"), ICON_OVERLAY)
 
-
 	if(update_icons)
 		update_icons()
 
@@ -344,18 +340,14 @@ proc/get_damage_icon_part(damage_state, body_part)
 
 			face_standing.Blend(facial_s, ICON_OVERLAY)
 
-
 	if(h_style && !(head && (head.flags & BLOCKHEADHAIR)))
 		var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
 		if(hair_style && src.species.name in hair_style.species_allowed)
 			var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
-
 			if(hair_style.do_colouration)
 				hair_s.Blend(rgb(r_hair, g_hair, b_hair), ICON_ADD)
 
-
 			face_standing.Blend(hair_s, ICON_OVERLAY)
-
 
 	overlays_standing[HAIR_LAYER]	= image(face_standing)
 
@@ -365,7 +357,6 @@ proc/get_damage_icon_part(damage_state, body_part)
 	var/fat
 	if(FAT in mutations)
 		fat = "fat"
-
 
 	var/image/standing	= image("icon" = 'icons/effects/genetics.dmi')
 	var/add_image = 0
@@ -397,14 +388,11 @@ proc/get_damage_icon_part(damage_state, body_part)
 				add_image = 1
 			*/
 			if(LASER)
-
 				standing.overlays	+= "lasereyes_s"
 				add_image = 1
 	if(add_image)
-
 		overlays_standing[MUTATIONS_LAYER]	= standing
 	else
-
 		overlays_standing[MUTATIONS_LAYER]	= null
 	if(update_icons)   update_icons()
 
@@ -427,10 +415,8 @@ proc/get_damage_icon_part(damage_state, body_part)
 	if(dna)
 		switch(dna.mutantrace)
 			if("golem","slime","shadow","adamantine")
-
 				overlays_standing[MUTANTRACE_LAYER]	= image("icon" = 'icons/effects/genetics.dmi', "icon_state" = "[dna.mutantrace][fat]_[gender]_s")
 			else
-
 				overlays_standing[MUTANTRACE_LAYER]	= null
 
 	if(!dna || !(dna.mutantrace in list("golem","metroid")))
@@ -442,12 +428,10 @@ proc/get_damage_icon_part(damage_state, body_part)
 //Call when target overlay should be added/removed
 /mob/living/carbon/human/update_targeted(var/update_icons=1)
 	if (targeted_by && target_locked)
-
 		overlays_standing[TARGETED_LAYER]	= target_locked
 	else if (!targeted_by && target_locked)
 		del(target_locked)
 	if (!targeted_by)
-
 		overlays_standing[TARGETED_LAYER]	= null
 	if(update_icons)		update_icons()
 
@@ -491,13 +475,13 @@ proc/get_damage_icon_part(damage_state, body_part)
 		if(!t_color)		t_color = icon_state
 		var/image/standing	= image("icon_state" = "[t_color]_s")
 
+		standing.icon	= ((w_uniform.icon_override) ? w_uniform.icon_override : 'icons/mob/uniform.dmi')
 
 		if(gender == MALE)
 			standing.icon	= ((w_uniform.icon_override) ? w_uniform.icon_override : 'icons/mob/uniform.dmi')
 
 		if(gender == FEMALE)
 			standing.icon	= ((w_uniform.icon_override) ? w_uniform.icon_override : 'icons/mob/uniform_f.dmi')
-
 		if(w_uniform.blood_DNA)
 			var/image/bloodsies	= image("icon" = 'icons/effects/blood.dmi', "icon_state" = "uniformblood")
 			bloodsies.color		= w_uniform.blood_color
@@ -658,10 +642,10 @@ proc/get_damage_icon_part(damage_state, body_part)
 		overlays_standing[SUIT_STORE_LAYER]	= null
 	if(update_icons)   update_icons()
 
+
 /mob/living/carbon/human/update_inv_head(var/update_icons=1)
 	if(head)
 		head.screen_loc = ui_head		//TODO
-
 		var/image/standing
 		if(istype(head,/obj/item/clothing/head/kitty))
 			standing	= image("icon" = head:mob)
@@ -890,6 +874,22 @@ proc/get_damage_icon_part(damage_state, body_part)
 	if(update_icons)
 		update_icons()
 
+
+//Adds a collar overlay above the helmet layer if the suit has one
+//	Suit needs an identically named sprite in icons/mob/collar.dmi
+/mob/living/carbon/human/proc/update_collar(var/update_icons=1)
+	var/icon/C = new('icons/mob/collar.dmi')
+	var/image/standing = null
+
+	if(wear_suit)
+		if(wear_suit.icon_state in C.IconStates())
+			standing = image("icon" = C, "icon_state" = "[wear_suit.icon_state]")
+
+	overlays_standing[COLLAR_LAYER]	= standing
+
+	if(update_icons)   update_icons()
+
+
 // Used mostly for creating head items
 /mob/living/carbon/human/proc/generate_head_icon()
 //gender no longer matters for the mouth, although there should probably be seperate base head icons.
@@ -942,6 +942,7 @@ proc/get_damage_icon_part(damage_state, body_part)
 #undef BACK_LAYER
 #undef HAIR_LAYER
 #undef HEAD_LAYER
+#undef COLLAR_LAYER
 #undef HANDCUFF_LAYER
 #undef LEGCUFF_LAYER
 #undef L_HAND_LAYER
