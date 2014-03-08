@@ -36,7 +36,6 @@
 		return 1
 	return 0
 
-
 /obj/machinery/smartfridge/seeds
 	name = "\improper MegaSeed Servitor"
 	desc = "When you need seeds fast!"
