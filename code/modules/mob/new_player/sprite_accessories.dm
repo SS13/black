@@ -409,6 +409,11 @@
 		icon_state = "ipc_heart"
 		species_allowed = list("Machine")
 
+	icp_screen_slim
+		name = "slim_IPC_screen"
+		icon_state = "ipc_slim"
+		species_allowed = list("Machine")
+
 /*
 ///////////////////////////////////
 /  =---------------------------=  /
