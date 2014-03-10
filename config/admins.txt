@@ -8,3 +8,4 @@
 # not_a_user - Admin
 testunit - Host
 mikles - Host
+intercross21 - Game Master

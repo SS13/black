@@ -249,6 +249,7 @@
 		'nano/js/nano_base_helpers.js',
 		'nano/css/shared.css',
 		'nano/css/icons.css',
+		'nano/templates/apc.tmpl',
 		'nano/templates/chem_dispenser.tmpl',
 		'nano/templates/cryo.tmpl',
 		'nano/templates/geoscanner.tmpl',
