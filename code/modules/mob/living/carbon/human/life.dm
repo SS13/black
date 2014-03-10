@@ -54,6 +54,7 @@
 	//to find it.
 	blinded = null
 	fire_alert = 0 //Reset this here, because both breathe() and handle_environment() have a chance to set it.
+	emote_cooldown = max(emote_cooldown - 1, 0)
 
 	//TODO: seperate this out
 	// update the current life tick, can be used to e.g. only do something every 4 ticks

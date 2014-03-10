@@ -55,5 +55,7 @@
 
 	var/xylophone = 0 //For the spoooooooky xylophone cooldown
 
+	var/emote_cooldown = 0
+
 	var/mob/remoteview_target = null
 	var/hand_blood_color
