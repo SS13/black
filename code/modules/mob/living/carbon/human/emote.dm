@@ -1,4 +1,4 @@
-/mob/living/carbon/human/emote(var/act,var/m_type=1,var/message = null)
+/mob/living/carbon/human/emote(var/act,var/m_type=1,var/message = null, var/cooldown = 2)
 	var/param = null
 
 	if (findtext(act, "-", 1, null))
@@ -17,6 +17,8 @@
 			I.trigger(act, src)
 
 	if(src.stat == 2.0 && (act != "deathgasp"))
+		return
+	if(emote_cooldown > 0)
 		return
 	switch(act)
 		if ("airguitar")
@@ -545,6 +547,7 @@
 
 		else
 			message = "<B>[src]</B> [act]."
+			cooldown = 0
 
 
 
@@ -570,6 +573,7 @@
 			for (var/mob/O in (hearers(src.loc, null) | get_mobs_in_view(world.view,src)))
 				O.show_message(message, m_type)
 
+	emote_cooldown += cooldown
 
 /mob/living/carbon/human/verb/pose()
 	set name = "Set Pose"
