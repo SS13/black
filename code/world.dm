@@ -160,7 +160,7 @@
 	world.load_motd()
 	return 1
 /world/proc/load_motd()
-	join_motd = file2text("config/motd.txt")
+	join_motd = sanitize_russian(file2text("config/motd.txt"))
 
 /world/proc/load_configuration()
 	config = new /datum/configuration()
