@@ -6,7 +6,7 @@
 
 	if (istype(loc, /turf/space)) return -1 // It's hard to be slowed down in space by... anything
 
-	if(embedded_flag) 
+	if(embedded_flag)
 		handle_embedded_objects() //Moving with objects stuck in you can cause bad times.
 
 	if(reagents.has_reagent("hyperzine")) return -1
@@ -45,6 +45,16 @@
 		tally = 0
 
 	return (tally+config.human_delay)
+
+/mob/living/carbon/human/Move()
+	. = ..()
+	if(. && istype(loc, /turf))
+		if(loc:lighting_lumcount < 2)
+			if(prob(3 - loc:lighting_lumcount))
+				weakened = 3
+				src << "You have stumbled in the dark."
+	return .
+
 
 /mob/living/carbon/human/Process_Spacemove(var/check_drift = 0)
 	//Can we act

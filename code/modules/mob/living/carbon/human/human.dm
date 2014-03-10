@@ -1278,3 +1278,10 @@
 		W.update_icon()
 		W.message = message
 		W.add_fingerprint(src)
+
+/mob/living/carbon/human/verb/ToggleMobAlert()
+	set name = "Toggle Mob Alert"
+	set category = "IC"
+
+	mob_alert = !mob_alert
+	src << "You turn [(mob_alert) ? "on" : "off"] mob alert."
