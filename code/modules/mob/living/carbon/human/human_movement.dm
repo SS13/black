@@ -48,11 +48,13 @@
 
 /mob/living/carbon/human/Move()
 	. = ..()
-	if(. && istype(loc, /turf))
-		if(loc:lighting_lumcount < 2)
-			if(locate(/obj/structure) in src.loc && prob(3 - loc:lighting_lumcount))
-				weakened = 3
-				src << "You have stumbled in the dark."
+	if(. && istype(loc, /turf) && loc:lighting_lumcount < 2)
+		for(var/obj/structure/str in src.loc)
+			if(!istype(/obj/structure/window, str))
+				if(prob(3 - loc:lighting_lumcount))
+					weakened = 3
+					src << "You have stumbled in the dark."
+				break
 	return .
 
 
