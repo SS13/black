@@ -439,6 +439,7 @@
 
 
 	if(print_flavor_text()) msg += "[print_flavor_text()]\n"
+	if(mob_alert) msg += "[t_He] looking for something.\n"
 
 	msg += "*---------*</span>"
 	if (pose)
