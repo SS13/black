@@ -50,7 +50,7 @@
 	. = ..()
 	if(. && istype(loc, /turf))
 		if(loc:lighting_lumcount < 2)
-			if(prob(3 - loc:lighting_lumcount))
+			if(locate(/obj/structure) in src.loc && prob(3 - loc:lighting_lumcount))
 				weakened = 3
 				src << "You have stumbled in the dark."
 	return .
