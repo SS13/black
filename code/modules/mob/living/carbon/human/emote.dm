@@ -6,7 +6,7 @@
 		param = copytext(act, t1 + 1, length(act) + 1)
 		act = copytext(act, 1, t1)
 
-	if(findtext(act,"s",-1) && !findtext(act,"_",-2))//Removes ending s's unless they are prefixed with a '_'
+	if(findtext(act,"s",-1) && !findtext(act,"_",-2))//Removes ending s's  unless they are prefixed with a '_'
 		act = copytext(act,1,length(act))
 
 	var/muzzled = istype(src.wear_mask, /obj/item/clothing/mask/muzzle)
@@ -23,7 +23,7 @@
 	switch(act)
 		if ("airguitar")
 			if (!src.restrained())
-				message = "<B>[src]</B> бренчит по воздуху и дергает головой, как дика€ обезь[LOST_LETTER]на."
+				message = "<B>[src]</B> бренчит по воздуху и дергает головой, как дика€ обезь€на."
 				m_type = 1
 
 		if ("blink")
@@ -46,16 +46,16 @@
 					param = null
 
 				if (param)
-					message = "<B>[src]</B> клан[LOST_LETTER]етс[LOST_LETTER] [param]."
+					message = "<B>[src]</B> клан€етс€ [param]."
 				else
-					message = "<B>[src]</B> клан[LOST_LETTER]етс[LOST_LETTER]."
+					message = "<B>[src]</B> клан€етс€."
 			m_type = 1
 
 		if ("custom")
 			var/input = copytext(sanitize(input("Choose an emote to display.") as text|null),1,MAX_MESSAGE_LEN)
 			if (!input)
 				return
-			var/input2 = input("Ёто видима[LOST_LETTER] или звукова[LOST_LETTER] эмоци[LOST_LETTER]?") in list("Visible","Hearable")
+			var/input2 = input("Ёто видима€ или звукова€ эмоци€?") in list("Visible","Hearable")
 			if (input2 == "Visible")
 				m_type = 1
 			else if (input2 == "Hearable")
@@ -63,7 +63,7 @@
 					return
 				m_type = 2
 			else
-				alert("Ќевозможно использовать эту эмоцию, она должна быть видима[LOST_LETTER] или слышима[LOST_LETTER].")
+				alert("Ќевозможно использовать эту эмоцию, она должна быть видима€ или слышима€.")
 				return
 			return custom_emote(m_type, message)
 
@@ -101,11 +101,11 @@
 
 		if ("choke")
 			if(miming)
-				message = "<B>[src]</B> отча[LOST_LETTER]нно хватаетс[LOST_LETTER] за горло!"
+				message = "<B>[src]</B> отча€нно хватаетс€ за горло!"
 				m_type = 1
 			else
 				if (!muzzled)
-					message = "<B>[src]</B> задыхаетс[LOST_LETTER]!"
+					message = "<B>[src]</B> задыхаетс€!"
 					m_type = 2
 				else
 					message = "<B>[src]</B> издает сильный шум."
@@ -152,11 +152,11 @@
 					m_type = 2
 
 		if ("twitch")
-			message = "<B>[src]</B> [LOST_LETTER]ростно дергаетс[LOST_LETTER]."
+			message = "<B>[src]</B> €ростно дергаетс€."
 			m_type = 1
 
 		if ("twitch_s")
-			message = "<B>[src]</B> дергаетс[LOST_LETTER]."
+			message = "<B>[src]</B> дергаетс€."
 			m_type = 1
 
 		if ("faint")
@@ -168,18 +168,18 @@
 
 		if ("cough")
 			if(miming)
-				message = "<B>[src]</B> начинает кашл[LOST_LETTER]ть!"
+				message = "<B>[src]</B> начинает кашл€ть!"
 				m_type = 1
 			else
 				if (!muzzled)
-					message = "<B>[src]</B> кашл[LOST_LETTER]ет!"
+					message = "<B>[src]</B> кашл€ет!"
 					m_type = 2
 				else
 					message = "<B>[src]</B> издает сильный шум."
 					m_type = 2
 
 		if ("frown")
-			message = "<B>[src]</B> хмуритс[LOST_LETTER]."
+			message = "<B>[src]</B> хмуритс€."
 			m_type = 1
 
 		if ("nod")
@@ -191,16 +191,16 @@
 			m_type = 1
 
 		if ("wave")
-			message = "<B>[src]</B> шатаетс[LOST_LETTER]."
+			message = "<B>[src]</B> шатаетс€."
 			m_type = 1
 
 		if ("gasp")
 			if(miming)
-				message = "<B>[src]</B>  по видимому, задыхаетс[LOST_LETTER]!"
+				message = "<B>[src]</B>  по видимому, задыхаетс€!"
 				m_type = 1
 			else
 				if (!muzzled)
-					message = "<B>[src]</B> задыхаетс[LOST_LETTER]!"
+					message = "<B>[src]</B> задыхаетс€!"
 					m_type = 2
 				else
 					message = "<B>[src]</B> издает слабый шум."
@@ -233,7 +233,7 @@
 				param = null
 
 			if (param)
-				message = "<B>[src]</B> п[LOST_LETTER]литс[LOST_LETTER] на [param]."
+				message = "<B>[src]</B> п€литс€ на [param]."
 			else
 				message = "<B>[src]</B> смотрит."
 
@@ -303,7 +303,7 @@
 				m_type = 1
 			else
 				if (!muzzled)
-					message = "<B>[src]</B> смеетс[LOST_LETTER]."
+					message = "<B>[src]</B> смеетс€."
 					m_type = 2
 				else
 					message = "<B>[src]</B> шумит."
@@ -343,7 +343,7 @@
 				message = "<B>[src]</B>  начинает стонать!"
 				m_type = 1
 			else
-				message = "<B>[src]</B> стонет от наслаждени[LOST_LETTER]!"
+				message = "<B>[src]</B> стонет от наслаждени€!"
 				m_type = 2
 
 		if ("johnny")
@@ -354,10 +354,10 @@
 				param = null
 			else
 				if(miming)
-					message = "<B>[src]</B>  зат€гиваетс[LOST_LETTER] сигаретой и выдыхает дым \"[M]\" в дыму."
+					message = "<B>[src]</B>  зат€гиваетс€ сигаретой и выдыхает дым \"[M]\" в дыму."
 					m_type = 1
 				else
-					message = "<B>[src]</B> says, \"[M], please. He had a family.\" [src.name] зат€гиваетс[LOST_LETTER] сигаретой и выдувает свое им[LOST_LETTER]."
+					message = "<B>[src]</B> says, \"[M], please. He had a family.\" [src.name] зат€гиваетс€ сигаретой и выдувает свое им€."
 					m_type = 2
 
 		if ("point")
@@ -385,7 +385,7 @@
 			m_type = 1
 
 		if("shake")
-			message = "<B>[src]</B> тр[LOST_LETTER]сет головой."
+			message = "<B>[src]</B> тр€сет головой."
 			m_type = 1
 
 		if ("shrug")
@@ -403,7 +403,7 @@
 			m_type = 1
 
 		if ("smile")
-			message = "<B>[src]</B> улыбаетс[LOST_LETTER]."
+			message = "<B>[src]</B> улыбаетс€."
 			m_type = 1
 
 		if ("shiver")
@@ -495,7 +495,7 @@
 				if (M)
 					message = "<B>[src]</B> обнимает [M]."
 				else
-					message = "<B>[src]</B> обнимает себ[LOST_LETTER]."
+					message = "<B>[src]</B> обнимает себ€."
 
 		if ("handshake")
 			m_type = 1
@@ -513,7 +513,7 @@
 					if (M.canmove && !M.r_hand && !M.restrained())
 						message = "<B>[src]</B> пожимает руку [M]."
 					else
-						message = "<B>[src]</B> прот[LOST_LETTER]гивает руку [M]."
+						message = "<B>[src]</B> прот€гивает руку [M]."
 
 		if("dap")
 			m_type = 1
@@ -554,6 +554,7 @@
 
 
 	if (message)
+		message = sanitize_russian(message)
 		log_emote("[name]/[key] : [message]")
 
  //Hearing gasp and such every five seconds is not good emotes were not global for a reason.
