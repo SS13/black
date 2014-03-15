@@ -159,6 +159,7 @@
 /hook/startup/proc/loadMOTD()
 	world.load_motd()
 	return 1
+
 /world/proc/load_motd()
 	join_motd = sanitize_russian(file2text("config/motd.txt"))
 

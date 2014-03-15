@@ -9,6 +9,7 @@
 	1.5	* src.getFireLoss() + 		\
 	1.2	* src.getBruteLoss() + 		\
 	1.7	* src.getCloneLoss() + 		\
+	1.8 * src.getPressureLoss() +   \
 	2	* src.halloss
 
 	if(reagents.has_reagent("alkysine"))
