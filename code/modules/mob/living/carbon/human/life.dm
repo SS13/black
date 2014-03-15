@@ -640,7 +640,7 @@
 		if(status_flags & GODMODE)	return 1	//godmode
 
 		if(adjusted_pressure >= species.hazard_high_pressure)
-			adjustBruteLoss( min( ( (adjusted_pressure / species.hazard_high_pressure) -1 )*PRESSURE_DAMAGE_COEFFICIENT , MAX_HIGH_PRESSURE_DAMAGE) )
+			adjustPressureLoss( min( ( (adjusted_pressure / species.hazard_high_pressure) -1 )*PRESSURE_DAMAGE_COEFFICIENT , MAX_HIGH_PRESSURE_DAMAGE) )
 			pressure_alert = 2
 		else if(adjusted_pressure >= species.warning_high_pressure)
 			pressure_alert = 1
@@ -658,7 +658,7 @@
 				bodytemperature += 1 * TEMPERATURE_DAMAGE_COEFFICIENT
 
 			if( !(COLD_RESISTANCE in mutations))
-				adjustBruteLoss( LOW_PRESSURE_DAMAGE )
+				adjustPressureLoss( LOW_PRESSURE_DAMAGE )
 				pressure_alert = -2
 			else
 				pressure_alert = -1
@@ -1192,7 +1192,7 @@
 				damageoverlay.overlays += I
 
 			//Fire and Brute damage overlay (BSSR)
-			var/hurtdamage = src.getBruteLoss() + src.getFireLoss() + damageoverlaytemp
+			var/hurtdamage = getBruteLoss() + getFireLoss() + getPressureLoss() + damageoverlaytemp
 			damageoverlaytemp = 0 // We do this so we can detect if someone hits us or not.
 			if(hurtdamage)
 				var/image/I

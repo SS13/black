@@ -68,10 +68,10 @@
 	if(stat & (NOPOWER|BROKEN))
 		return
 
-	if(!allowed(user) && (wires & 1))
-		user << "\red Access Denied"
-		flick("doorctrl-denied",src)
-		return
+	//if(!allowed(user) && (wires & 1))
+	//	user << "\red Access Denied"
+	//	flick("doorctrl-denied",src)
+	//	return
 
 	use_power(5)
 	icon_state = "doorctrl1"

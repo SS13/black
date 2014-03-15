@@ -24,6 +24,8 @@
 			adjustCloneLoss(damage/(blocked+1))
 		if(HALLOSS)
 			adjustHalLoss(damage/(blocked+1))
+		if(PRESSURE)
+			adjustPressureLoss(damage/(blocked+1))
 	updatehealth()
 	return 1
 
