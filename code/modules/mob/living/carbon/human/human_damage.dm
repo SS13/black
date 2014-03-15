@@ -9,7 +9,7 @@
 	for(var/datum/organ/external/O in organs)	//hardcoded to streamline things a bit
 		total_brute	+= O.brute_dam
 		total_burn	+= O.burn_dam
-	health = 100 - getOxyLoss() - getToxLoss() - getCloneLoss() - total_burn - total_brute
+	health = 100 - getOxyLoss() - getToxLoss() - getCloneLoss() - getPressureLoss() - total_burn - total_brute
 	//TODO: fix husking
 	if( ((100 - total_burn) < config.health_threshold_dead) && stat == DEAD) //100 only being used as the magic human max health number, feel free to change it if you add a var for it -- Urist
 		ChangeToHusk()
@@ -32,13 +32,6 @@
 		amount += O.brute_dam
 	return amount
 
-/mob/living/carbon/human/getFireLoss()
-	var/amount = 0
-	for(var/datum/organ/external/O in organs)
-		amount += O.burn_dam
-	return amount
-
-
 /mob/living/carbon/human/adjustBruteLoss(var/amount)
 	if(species && species.brute_mod)
 		amount = amount*species.brute_mod
@@ -47,6 +40,12 @@
 		take_overall_damage(amount, 0)
 	else
 		heal_overall_damage(-amount, 0)
+
+/mob/living/carbon/human/getFireLoss()
+	var/amount = 0
+	for(var/datum/organ/external/O in organs)
+		amount += O.burn_dam
+	return amount
 
 /mob/living/carbon/human/adjustFireLoss(var/amount)
 	if(species && species.burn_mod)

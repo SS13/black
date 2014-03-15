@@ -84,6 +84,12 @@ datum
 			required_reagents = list("oxygen" = 1, "carbon" = 1, "sugar" = 1)
 			result_amount = 3
 
+		cocksitizite
+			name = "Cocksitizite"
+			id = "cocksitizite"
+			result = "cocksitizite"
+			required_reagents = list("dexalin" = 1, "bicaridine" = 1 )
+
 		anti_toxin
 			name = "Anti-Toxin (Dylovene)"
 			id = "anti_toxin"

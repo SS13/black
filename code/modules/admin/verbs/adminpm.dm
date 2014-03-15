@@ -55,7 +55,7 @@
 
 	//get message text, limit it's length.and clean/escape html
 	if(!msg)
-		msg = sanitize(input(src,"Message:", "Private message to [C.key]") as text|null)
+		msg = sanitize(input(src,"Message:", "Private message to [key_name(C, 0, 0, holder?1:0 )]") as text|null)
 
 		if(!msg)	return
 		if(!C)
@@ -73,7 +73,7 @@
 
 	var/recieve_color = "purple"
 	var/send_pm_type = " "
-	var/recieve_pm_type = "Player"
+	var/recieve_pm_type = "Player "
 
 
 	if(holder)
@@ -101,7 +101,7 @@
 			spawn(0)	//so we don't hold the caller proc up
 				var/sender = src
 				var/sendername = key
-				var/reply = input(C, msg,"[recieve_pm_type] PM from-[sendername]", "") as text|null		//show message and await a reply
+				var/reply = input(C, msg,"[recieve_pm_type]PM from-[sendername]", "") as text|null		//show message and await a reply
 				if(C && reply)
 					if(sender)
 						C.cmd_admin_pm(sender,reply)										//sender is still about, let's reply to them
@@ -109,9 +109,9 @@
 						adminhelp(reply)													//sender has left, adminhelp instead
 				return
 
-	recieve_message = "<font color='[recieve_color]'>[recieve_pm_type] PM from-<b>[key_name(src, C, C.holder ? 1 : 0)]</b>: [msg]</font>"
+	recieve_message = "<font color='[recieve_color]'>[recieve_pm_type]PM from-<b>[key_name(src, C, C.holder ? 1 : 0, C.holder ? 1 : 0)]</b>: [msg]</font>"
 	C << recieve_message
-	src << "<font color='blue'>[send_pm_type]PM to-<b>[key_name(C, src, holder ? 1 : 0)]</b>: [msg]</font>"
+	src << "<font color='blue'>[send_pm_type]PM to-<b>[key_name(C, src, holder ? 1 : 0, holder ? 1 : 0)]</b>: [msg]</font>"
 
 	/*if(holder && !C.holder)
 		C.last_pm_recieved = world.time
@@ -174,11 +174,10 @@
 	*/
 
 	log_admin("PM: [key_name(src)]->[key_name(C)]: [msg]")
-
 	//we don't use message_admins here because the sender/receiver might get it too
 	for(var/client/X in admins)
 		//check client/X is an admin and isn't the sender or recipient
 		if(X == C || X == src)
 			continue
 		if(X.key!=key && X.key!=C.key && (X.holder.rights & R_ADMIN) || (X.holder.rights & R_MOD) )
-			X << "<B><font color='blue'>PM: [key_name(src, X, 0)]-&gt;[key_name(C, X, 0)]:</B> \blue [msg]</font>" //inform X
+			X << "<B><font color='blue'>PM: [key_name(src, X, 0, 1)]-&gt;[key_name(C, X, 0, 1)]:</B> \blue [msg]</font>" //inform X
