@@ -1192,7 +1192,7 @@
 				damageoverlay.overlays += I
 
 			//Fire and Brute damage overlay (BSSR)
-			var/hurtdamage = getBruteLoss() + getFireLoss() + damageoverlaytemp
+			var/hurtdamage = src.getBruteLoss() + src.getFireLoss() + damageoverlaytemp
 			damageoverlaytemp = 0 // We do this so we can detect if someone hits us or not.
 			if(hurtdamage)
 				var/image/I
