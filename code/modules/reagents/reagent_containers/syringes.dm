@@ -410,15 +410,6 @@
 		mode = SYRINGE_INJECT
 		update_icon()
 
-/obj/item/weapon/reagent_containers/syringe/cocksitizite
-	name = "Syringe (cocksitizite)"
-	desc = "Contains strong cell regenerator"
-	New()
-		..()
-		reagents.add_reagent("cocksitizite", 15)
-		mode = SYRINGE_INJECT
-		update_icon()
-
 /obj/item/weapon/reagent_containers/ld50_syringe/choral
 	New()
 		..()

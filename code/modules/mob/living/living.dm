@@ -12,7 +12,7 @@
 		health = 100
 		stat = CONSCIOUS
 	else
-		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - getHalLoss() - getPressureLoss()
+		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - getHalLoss()
 
 
 //This proc is used for mobs which are affected by pressure to calculate the amount of pressure that actually
@@ -142,17 +142,6 @@
 	if(status_flags & GODMODE)	return 0	//godmode
 	halloss = amount
 
-/mob/living/proc/getPressureLoss()
-	return pressureloss
-
-/mob/living/proc/adjustPressureLoss(var/amount)
-	if(status_flags & GODMODE) return 0
-	pressureloss = min(max(pressureloss + amount, 0), (maxHealth * 2))
-
-/mob/living/proc/setPressureLoss(var/amount)
-	if(status_flags & GODMODE) return 0
-	pressureloss = amount
-
 /mob/living/proc/getMaxHealth()
 	return maxHealth
 
@@ -276,7 +265,6 @@
 	setOxyLoss(0)
 	setCloneLoss(0)
 	setBrainLoss(0)
-	setPressureLoss(0)
 	SetParalysis(0)
 	SetStunned(0)
 	SetWeakened(0)

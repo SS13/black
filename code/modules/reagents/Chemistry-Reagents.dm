@@ -1098,23 +1098,6 @@ datum
 				..()
 				return
 
-		cocksitizite
-			name = "Cocksitizite"
-			id = "cocksitizite"
-			description = "..."
-			reagent_state = LIQUID
-			color = "#000000"
-
-			on_mob_life(var/mob/living/M as mob, var/alien)
-				if(M.stat == 2.0)
-					return
-				if(!M) M = holder.my_atom
-				if(!alien)
-					if(M.getPressureLoss()) M.adjustPressureLoss(-1)
-
-				..()
-				return
-
 		anti_toxin
 			name = "Anti-Toxin (Dylovene)"
 			id = "anti_toxin"
