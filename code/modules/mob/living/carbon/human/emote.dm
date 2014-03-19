@@ -574,7 +574,7 @@
 			for (var/mob/O in (hearers(src.loc, null) | get_mobs_in_view(world.view,src)))
 				O.show_message(message, m_type)
 
-	emote_cooldown += cooldown
+		emote_cooldown += cooldown
 
 /mob/living/carbon/human/verb/pose()
 	set name = "Set Pose"
