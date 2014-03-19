@@ -404,7 +404,7 @@ var/list/mechtoys = list(
 		if(!istype(P))	return
 
 		var/timeout = world.time + 600
-		var/reason = copytext(sanitize_russian(input(usr,"Reason:","Why do you require this item?","") as null|text),1,MAX_MESSAGE_LEN)
+		var/reason = copytext(sanitize_multi(input(usr,"Reason:","Why do you require this item?","") as null|text),1,MAX_MESSAGE_LEN)
 		if(world.time > timeout)	return
 		if(!reason)	return
 

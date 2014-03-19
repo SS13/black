@@ -705,7 +705,7 @@ var/global/floorIsLava = 0
 	set desc="Announce your desires to the world"
 	if(!check_rights(0))	return
 
-	var/message = sanitize_russian(input("Global message to send:", "Admin Announce", null, null) as message)
+	var/message = sanitize_multi(input("Global message to send:", "Admin Announce", null, null) as message)
 	if(message)
 		if(!check_rights(R_SERVER,0))
 			message = adminscrub(message,500)
