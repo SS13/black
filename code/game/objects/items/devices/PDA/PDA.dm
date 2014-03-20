@@ -588,7 +588,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 			if (in_range(src, U) && loc == U)
 				n = copytext(adminscrub(n), 1, MAX_MESSAGE_LEN)
 				if (mode == 1)
-					note = sanitize_uni(html_decode(n))
+					note = sanitize_multi(html_decode(n)) //Decode before sanitize cauze ßR
 					notehtml = note
 					note = replacetext(note, "\n", "<br>")
 			else
@@ -621,7 +621,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 						U << "The PDA softly beeps."
 						ui.close()
 					else
-						t = copytext(sanitize(t), 1, 20)
+						t = copytext(sanitize_multi(t), 1, 20)
 						ttone = t
 			else
 				ui.close()
@@ -786,7 +786,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 /obj/item/device/pda/proc/create_message(var/mob/living/U = usr, var/obj/item/device/pda/P)
 
 	var/t = input(U, "Please enter message", name, null) as text
-	t = copytext(sanitize_uni(t), 1, MAX_MESSAGE_LEN)
+	t = copytext(sanitize_multi(t), 1, MAX_MESSAGE_LEN)
 	if (!t || !istype(P))
 		return
 	if (!in_range(src, U) && loc != U)
