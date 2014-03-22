@@ -9,6 +9,9 @@
 		..()
 		name = "floor"
 
+/turf/simulated/floor/airless/ceiling
+	icon_state = "rockvault"
+
 /turf/simulated/floor/light
 	name = "Light floor"
 	luminosity = 5
@@ -85,6 +88,13 @@
 
 /turf/simulated/floor/engine/vacuum
 	name = "vacuum floor"
+	icon_state = "engine"
+	oxygen = 0
+	nitrogen = 0.001
+	temperature = TCMB
+
+/turf/simulated/floor/engine/vacuum/hull
+	name = "Hull Plating"
 	icon_state = "engine"
 	oxygen = 0
 	nitrogen = 0.001

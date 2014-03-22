@@ -72,7 +72,7 @@
 	if (!(NOCLONE in M.mutations)) // prevents drained people from having their DNA changed
 		if (buf.types & DNA2_BUF_UI)
 			if (!block) //isolated block?
-				M.UpdateAppearance(buf.dna.UI.Copy())
+				M.UpdateAppearance(buf.dna)
 				if (buf.types & DNA2_BUF_UE) //unique enzymes? yes
 					M.real_name = buf.dna.real_name
 					M.name = buf.dna.real_name
@@ -83,7 +83,7 @@
 				uses--
 		if (buf.types & DNA2_BUF_SE)
 			if (!block) //isolated block?
-				M.dna.SE = buf.dna.SE.Copy()
+				M.dna.SE = buf.dna.SE
 				M.dna.UpdateSE()
 			else
 				M.dna.SetSEValue(block,src.GetValue())
@@ -125,7 +125,7 @@
 				M.requests += O
 				if (buf.types & DNA2_BUF_SE)
 					if(block)// Isolated injector
-						//testing("Isolated block [block] injector with contents: [GetValue()]")
+						testing("Isolated block [block] injector with contents: [GetValue()]")
 						if (GetState() && block == MONKEYBLOCK && istype(M, /mob/living/carbon/human)  )
 							message_admins("[key_name_admin(user)] injected [key_name_admin(M)] with the Isolated [name] \red(MONKEY)")
 							log_attack("[key_name(user)] injected [key_name(M)] with the Isolated [name] (MONKEY)")
@@ -133,7 +133,7 @@
 						else
 							log_attack("[key_name(user)] injected [key_name(M)] with the Isolated [name]")
 					else
-						//testing("DNA injector with contents: [english_list(buf.dna.SE)]")
+						testing("DNA injector with contents: [english_list(buf.dna.SE)]")
 						if (GetState(MONKEYBLOCK) && istype(M, /mob/living/carbon/human) )
 							message_admins("[key_name_admin(user)] injected [key_name_admin(M)] with the [name] \red(MONKEY)")
 							log_attack("[key_name(user)] injected [key_name(M)] with the [name] (MONKEY)")
@@ -160,7 +160,7 @@
 
 				if (buf.types & DNA2_BUF_SE)
 					if(block)// Isolated injector
-						//testing("Isolated block [block] injector with contents: [GetValue()]")
+						testing("Isolated block [block] injector with contents: [GetValue()]")
 						if (GetState() && block == MONKEYBLOCK && istype(M, /mob/living/carbon/human)  )
 							message_admins("[key_name_admin(user)] injected [key_name_admin(M)] with the Isolated [name] \red(MONKEY)")
 							log_attack("[key_name(user)] injected [key_name(M)] with the Isolated [name] (MONKEY)")
@@ -168,7 +168,7 @@
 						else
 							log_attack("[key_name(user)] injected [key_name(M)] with the Isolated [name]")
 					else
-						//testing("DNA injector with contents: [english_list(buf.dna.SE)]")
+						testing("DNA injector with contents: [english_list(buf.dna.SE)]")
 						if (GetState(MONKEYBLOCK) && istype(M, /mob/living/carbon/human))
 							message_admins("[key_name_admin(user)] injected [key_name_admin(M)] with the [name] \red(MONKEY)")
 							log_game("[key_name(user)] injected [key_name(M)] with the [name] (MONKEY)")

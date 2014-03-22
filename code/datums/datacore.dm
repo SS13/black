@@ -11,8 +11,6 @@
 		return
 
 /obj/effect/datacore/proc/manifest_modify(var/name, var/assignment)
-	if(PDA_Manifest.len)
-		PDA_Manifest.Cut()
 	var/datum/data/record/foundrecord
 	var/real_title = assignment
 
@@ -36,9 +34,6 @@
 		foundrecord.fields["real_rank"] = real_title
 
 /obj/effect/datacore/proc/manifest_inject(var/mob/living/carbon/human/H)
-	if(PDA_Manifest.len)
-		PDA_Manifest.Cut()
-
 	if(H.mind && (H.mind.assigned_role != "MODE"))
 		var/assignment
 		if(H.mind.role_alt_title)

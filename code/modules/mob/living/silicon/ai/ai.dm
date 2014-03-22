@@ -95,7 +95,6 @@ var/list/ai_list = list()
 		/mob/living/silicon/ai/proc/ai_statuschange, /mob/living/silicon/ai/proc/ai_hologram_change, \
 		/mob/living/silicon/ai/proc/toggle_camera_light)
 
-
 	if(!safety)//Only used by AIize() to successfully spawn an AI.
 		if (!B)//If there is no player/brain inside.
 			new/obj/structure/AIcore/deactivated(loc)//New empty terminal.
@@ -339,12 +338,9 @@ var/list/ai_list = list()
 //		src << text ("Switching Law [L]'s report status to []", lawcheck[L+1])
 		checklaws()
 
-	//Uncomment this line of code if you are enabling the AI Vocal (VOX) announcements.
-/*
 	if(href_list["say_word"])
 		play_vox_word(href_list["say_word"], null, src)
 		return
-*/
 
 	if (href_list["lawi"]) // Toggling whether or not a law gets stated by the State Laws verb --NeoFite
 		var/L = text2num(href_list["lawi"])
@@ -666,11 +662,10 @@ var/list/ai_list = list()
 	camera_light_on = !camera_light_on
 	src << "Camera lights [camera_light_on ? "activated" : "deactivated"]."
 	if(!camera_light_on)
-		if(current)
-			current.SetLuminosity(0)
-			current = null
+		if(src.current)
+			src.current.SetLuminosity(0)
 	else
-		lightNearbyCamera()
+		src.lightNearbyCamera()
 
 
 

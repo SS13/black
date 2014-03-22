@@ -1262,6 +1262,7 @@ FIRE ALARM
 	var/timing = 0.0
 	var/lockdownbyai = 0
 	anchored = 1.0
+	layer = 3.3
 	use_power = 1
 	idle_power_usage = 2
 	active_power_usage = 6

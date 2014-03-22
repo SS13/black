@@ -6,7 +6,7 @@
 		usr << "\red Speech is currently admin-disabled."
 		return
 
-	msg = copytext(sanitize(msg), 1, MAX_MESSAGE_LEN)
+	msg = copytext(sanitize_multi(msg), 1, MAX_MESSAGE_LEN)
 	if(!msg)	return
 
 	if(usr.client)

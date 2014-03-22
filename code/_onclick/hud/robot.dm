@@ -6,6 +6,27 @@
 	var/obj/screen/using
 
 
+	using = new /obj/screen() //Right hud bar
+	using.dir = SOUTH
+	using.icon = 'icons/mob/screen1_robot.dmi'
+	using.screen_loc = "EAST+1,SOUTH to EAST+1,NORTH"
+	using.layer = 19
+	adding += using
+
+	using = new /obj/screen() //Lower hud bar
+	using.dir = EAST
+	using.icon = 'icons/mob/screen1_robot.dmi'
+	using.screen_loc = "WEST,SOUTH-1 to EAST,SOUTH-1"
+	using.layer = 19
+	adding += using
+
+	using = new /obj/screen() //Corner Button
+	using.dir = NORTHWEST
+	using.icon = 'icons/mob/screen1_robot.dmi'
+	using.screen_loc = "EAST+1,SOUTH-1"
+	using.layer = 19
+	adding += using
+
 //Radio
 	using = new /obj/screen()
 	using.name = "radio"
@@ -23,7 +44,7 @@
 	using.dir = SOUTHWEST
 	using.icon = 'icons/mob/screen1_robot.dmi'
 	using.icon_state = "inv1"
-	using.screen_loc = ui_inv1
+	using.screen_loc = ui_id
 	using.layer = 20
 	src.adding += using
 	mymob:inv1 = using
@@ -33,7 +54,7 @@
 	using.dir = SOUTHWEST
 	using.icon = 'icons/mob/screen1_robot.dmi'
 	using.icon_state = "inv2"
-	using.screen_loc = ui_inv2
+	using.screen_loc = ui_iclothing
 	using.layer = 20
 	src.adding += using
 	mymob:inv2 = using
@@ -43,7 +64,7 @@
 	using.dir = SOUTHWEST
 	using.icon = 'icons/mob/screen1_robot.dmi'
 	using.icon_state = "inv3"
-	using.screen_loc = ui_inv3
+	using.screen_loc = ui_belt
 	using.layer = 20
 	src.adding += using
 	mymob:inv3 = using
@@ -66,28 +87,28 @@
 	mymob:cells.icon = 'icons/mob/screen1_robot.dmi'
 	mymob:cells.icon_state = "charge-empty"
 	mymob:cells.name = "cell"
-	mymob:cells.screen_loc = ui_toxin
+	mymob:cells.screen_loc = ui_internal
 
 //Health
 	mymob.healths = new /obj/screen()
 	mymob.healths.icon = 'icons/mob/screen1_robot.dmi'
 	mymob.healths.icon_state = "health0"
 	mymob.healths.name = "health"
-	mymob.healths.screen_loc = ui_borg_health
+	mymob.healths.screen_loc = ui_health
 
 //Installed Module
 	mymob.hands = new /obj/screen()
 	mymob.hands.icon = 'icons/mob/screen1_robot.dmi'
 	mymob.hands.icon_state = "nomod"
 	mymob.hands.name = "module"
-	mymob.hands.screen_loc = ui_borg_module
+	mymob.hands.screen_loc = ui_dropbutton
 
 //Module Panel
 	using = new /obj/screen()
 	using.name = "panel"
 	using.icon = 'icons/mob/screen1_robot.dmi'
 	using.icon_state = "panel"
-	using.screen_loc = ui_borg_panel
+	using.screen_loc = ui_drop_throw
 	using.layer = 19
 	src.adding += using
 
@@ -96,12 +117,13 @@
 	mymob.throw_icon.icon = 'icons/mob/screen1_robot.dmi'
 	mymob.throw_icon.icon_state = "store"
 	mymob.throw_icon.name = "store"
-	mymob.throw_icon.screen_loc = ui_borg_store
+	mymob.throw_icon.screen_loc = ui_swaphand
 
 //Temp
 	mymob.bodytemp = new /obj/screen()
+	mymob.bodytemp.icon = 'icons/mob/screen1_robot.dmi'
 	mymob.bodytemp.icon_state = "temp0"
-	mymob.bodytemp.name = "body temperature"
+	mymob.bodytemp.name = "external temperature"
 	mymob.bodytemp.screen_loc = ui_temp
 
 
@@ -121,7 +143,7 @@
 	mymob.pullin.icon = 'icons/mob/screen1_robot.dmi'
 	mymob.pullin.icon_state = "pull0"
 	mymob.pullin.name = "pull"
-	mymob.pullin.screen_loc = ui_borg_pull
+	mymob.pullin.screen_loc = ui_pull
 
 	mymob.blind = new /obj/screen()
 	mymob.blind.icon = 'icons/mob/screen1_full.dmi'
@@ -143,7 +165,7 @@
 	mymob.zone_sel.overlays += image('icons/mob/zone_sel.dmi', "[mymob.zone_sel.selecting]")
 
 	//Handle the gun settings buttons
-	mymob.gun_setting_icon = new /obj/screen/gun/mode(null)
+/*	mymob.gun_setting_icon = new /obj/screen/gun/mode(null)
 	if (mymob.client)
 		if (mymob.client.gun_mode) // If in aim mode, correct the sprite
 			mymob.gun_setting_icon.dir = 2
@@ -161,10 +183,10 @@
 					mymob.gun_run_icon.dir = 1
 				src.adding += mymob.gun_run_icon
 			src.adding += mymob.gun_move_icon
-
+*/
 	mymob.client.screen = null
 
-	mymob.client.screen += list( mymob.throw_icon, mymob.zone_sel, mymob.oxygen, mymob.fire, mymob.hands, mymob.healths, mymob:cells, mymob.pullin, mymob.blind, mymob.flash, mymob.gun_setting_icon) //, mymob.rest, mymob.sleep, mymob.mach )
+	mymob.client.screen += list( mymob.throw_icon, mymob.zone_sel, mymob.oxygen, mymob.fire, mymob.hands, mymob.healths, mymob:cells, mymob.pullin, mymob.blind, mymob.flash) //, mymob.rest, mymob.gun_setting_icon, mymob.sleep, mymob.mach )
 	mymob.client.screen += src.adding + src.other
 
 	return

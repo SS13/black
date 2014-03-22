@@ -112,6 +112,7 @@
 /obj/item/weapon/storage/proc/orient_objs(tx, ty, mx, my)
 	var/cx = tx
 	var/cy = ty
+
 	src.boxes.screen_loc = "[tx]:,[ty] to [mx],[my]"
 	for(var/obj/O in src.contents)
 		O.screen_loc = "[cx],[cy]"
@@ -125,29 +126,29 @@
 
 //This proc draws out the inventory and places the items on it. It uses the standard position.
 /obj/item/weapon/storage/proc/standard_orient_objs(var/rows, var/cols, var/list/obj/item/display_contents)
-	var/cx = 4
+	var/cx = 5
 	var/cy = 2+rows
-	src.boxes.screen_loc = "4:16,2:16 to [4+cols]:16,[2+rows]:16"
+	src.boxes.screen_loc = "5,2 to [5+cols],[2+rows]"
 
 	if(display_contents_with_number)
 		for(var/datum/numbered_display/ND in display_contents)
-			ND.sample_object.screen_loc = "[cx]:16,[cy]:16"
+			ND.sample_object.screen_loc = "[cx],[cy]"
 			ND.sample_object.maptext = "<font color='white'>[(ND.number > 1)? "[ND.number]" : ""]</font>"
 			ND.sample_object.layer = 20
 			cx++
-			if (cx > (4+cols))
-				cx = 4
+			if (cx > (5+cols))
+				cx = 5
 				cy--
 	else
 		for(var/obj/O in contents)
-			O.screen_loc = "[cx]:16,[cy]:16"
+			O.screen_loc = "[cx],[cy]"
 			O.maptext = ""
 			O.layer = 20
 			cx++
-			if (cx > (4+cols))
-				cx = 4
+			if (cx > (5+cols))
+				cx = 5
 				cy--
-	src.closer.screen_loc = "[4+cols+1]:16,2:16"
+	src.closer.screen_loc = "[5+cols+1],2"
 	return
 
 /datum/numbered_display

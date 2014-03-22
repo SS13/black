@@ -51,8 +51,6 @@
 	//This list tracks characters spawned in the world and cannot be modified in-game. Currently referenced by respawn_character().
 	var/locked[] = list()
 
-
-
 /obj/effect/datacore/proc/get_manifest(monochrome, OOC)
 	var/list/heads = new()
 	var/list/sec = new()
@@ -167,16 +165,9 @@
 
 /*
 We can't just insert in HTML into the nanoUI so we need the raw data to play with.
-Instead of creating this list over and over when someone leaves their PDA open to the page
-we'll only update it when it changes.  The PDA_Manifest global list is zeroed out upon any change
-using /obj/effect/datacore/proc/manifest_inject( ), or manifest_insert( )
 */
 
-var/global/list/PDA_Manifest = list()
-
 /obj/effect/datacore/proc/get_manifest_json()
-	if(PDA_Manifest.len)
-		return PDA_Manifest
 	var/heads[0]
 	var/sec[0]
 	var/eng[0]
@@ -236,8 +227,7 @@ var/global/list/PDA_Manifest = list()
 		if(!department && !(name in heads))
 			misc[++misc.len] = list("name" = name, "rank" = rank, "active" = isactive)
 
-
-	PDA_Manifest = list(\
+	return list(\
 		"heads" = heads,\
 		"sec" = sec,\
 		"eng" = eng,\
@@ -247,7 +237,6 @@ var/global/list/PDA_Manifest = list()
 		"bot" = bot,\
 		"misc" = misc\
 		)
-	return PDA_Manifest
 
 
 

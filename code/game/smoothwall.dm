@@ -36,8 +36,11 @@
 				junction |= get_dir(src,W)*/
 
 	if(istype(src,/turf/simulated/wall))
-		var/turf/simulated/wall/wall = src
-		wall.icon_state = "[wall.walltype][junction]"
+		if(istype(src,/turf/simulated/wall/heatshield))
+			return
+		else
+			var/turf/simulated/wall/wall = src
+			wall.icon_state = "[wall.walltype][junction]"
 	else if (istype(src,/obj/structure/falserwall))
 		src.icon_state = "rwall[junction]"
 	else if (istype(src,/obj/structure/falsewall))

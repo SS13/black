@@ -7,7 +7,22 @@
 			user << "<span class='notice'>You open the drink with an audible pop!</span>"
 			canopened = 1
 		else
-			return
+			if(assemblystate == 2 && !active)
+				user << "<span class='warning'>You turn on the [name]!</span>"
+				active = 1
+
+				det_time = rand(30,80)
+				if(prob(1))
+					det_time = 5 //Poor guy!
+				else if(prob(4))
+					det_time = 140 //This crap just fail- BOOM!
+
+				if(iscarbon(user))
+					var/mob/living/carbon/C = user
+					C.throw_mode_on()
+				spawn(det_time)
+					try_to_explode()
+			else ..()
 
 	attack(mob/M as mob, mob/user as mob, def_zone)
 		if (canopened == 0)
@@ -39,7 +54,7 @@
 
 			M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been fed [src.name] by [user.name] ([user.ckey]) Reagents: [reagentlist(src)]</font>")
 			user.attack_log += text("\[[time_stamp()]\] <font color='red'>Fed [M.name] by [M.name] ([M.ckey]) Reagents: [reagentlist(src)]</font>")
-			msg_admin_attack("[key_name(user)] fed [key_name(M)] with [src.name] Reagents: [reagentlist(src)] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
+			log_attack("[user.name] ([user.ckey]) fed [M.name] ([M.ckey]) with [src.name] Reagents: [reagentlist(src)] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 
 			if(reagents.total_volume)
 				reagents.reaction(M, INGEST)
@@ -135,38 +150,6 @@
 		reagents.add_reagent("cola", 30)
 		src.pixel_x = rand(-10.0, 10)
 		src.pixel_y = rand(-10.0, 10)
-
-/obj/item/weapon/reagent_containers/food/drinks/cans/waterbottle
-	name = "Bottled Water"
-	desc = "Introduced to the vending machines by Skrellian request, this water comes straight from the Martian poles."
-	icon_state = "waterbottle"
-	New()
-		..()
-		reagents.add_reagent("water", 30)
-		src.pixel_x = rand(-10.0, 10)
-		src.pixel_y = rand(-10.0, 10)
-
-/obj/item/weapon/reagent_containers/food/drinks/cans/beer
-	name = "Space Beer"
-	desc = "Contains only water, malt and hops."
-	icon_state = "beer"
-	New()
-		..()
-		reagents.add_reagent("beer", 30)
-		src.pixel_x = rand(-10.0, 10)
-		src.pixel_y = rand(-10.0, 10)
-
-/obj/item/weapon/reagent_containers/food/drinks/cans/ale
-	name = "Magm-Ale"
-	desc = "A true dorf's drink of choice."
-	icon_state = "alebottle"
-	item_state = "beer"
-	New()
-		..()
-		reagents.add_reagent("ale", 30)
-		src.pixel_x = rand(-10.0, 10)
-		src.pixel_y = rand(-10.0, 10)
-
 
 /obj/item/weapon/reagent_containers/food/drinks/cans/space_mountain_wind
 	name = "Space Mountain Wind"

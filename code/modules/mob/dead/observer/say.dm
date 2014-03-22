@@ -1,5 +1,5 @@
 /mob/dead/observer/say(var/message)
-	message = sanitize(copytext(message, 1, MAX_MESSAGE_LEN))
+	message = sanitize_multi(copytext(message, 1, MAX_MESSAGE_LEN))
 
 	if (!message)
 		return
@@ -18,7 +18,7 @@
 
 
 /mob/dead/observer/emote(var/act, var/type, var/message)
-	message = sanitize(copytext(message, 1, MAX_MESSAGE_LEN))
+	message = trim(copytext(message, 1, MAX_MESSAGE_LEN))
 
 	if(!message)
 		return
@@ -41,7 +41,7 @@
 /*
 	for (var/mob/M in hearers(null, null))
 		if (!M.stat)
-			if(M.job == "Chaplain")
+			if(M.assigned_role == "Chaplain")
 				if (prob (49))
 					M.show_message("<span class='game'><i>You hear muffled speech... but nothing is there...</i></span>", 2)
 					if(prob(20))
@@ -62,4 +62,5 @@
 					M.show_message("<span class='game'><i>You hear muffled speech... you can almost make out some words...</i></span>", 2)
 //				M.show_message("<span class='game'><i>[stutter(message)]</i></span>", 2)
 					playsound(src.loc, pick('sound/effects/ghost.ogg','sound/effects/ghost2.ogg'), 10, 1)
+
 */

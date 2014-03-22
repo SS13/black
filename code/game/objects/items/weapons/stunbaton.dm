@@ -5,7 +5,7 @@
 	item_state = "baton"
 	flags = FPRINT | TABLEPASS
 	slot_flags = SLOT_BELT
-	force = 10
+	force = 15
 	throwforce = 7
 	w_class = 3
 	var/charges = 10

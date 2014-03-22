@@ -38,19 +38,6 @@
 
 	faction = "carp"
 
-/mob/living/simple_animal/hostile/carp/lizzy
-	name = "Lizzy"
-	desc = "A cute fish."
-	attacktext = "licked"
-	attack_sound = 'sound/weapons/lick.ogg'
-	maxHealth = 100
-	health = 100
-	speed = 2
-
-	harm_intent_damage = 0
-	melee_damage_lower = 0
-	melee_damage_upper = 0
-
 /mob/living/simple_animal/hostile/carp/Process_Spacemove(var/check_drift = 0)
 	return 1	//No drifting in space for space carp!	//original comments do not steal
 

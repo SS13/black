@@ -1,2 +1,1 @@
-testunit: Faith Leech: /obj/item/clothing/suit/storage/labcoat/fluff/pink
-nyancommissar: Iriko Sagamura: /obj/item/clothing/under/ks13suit
+ckey: name: /path/to/obj

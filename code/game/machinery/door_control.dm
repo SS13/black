@@ -68,10 +68,10 @@
 	if(stat & (NOPOWER|BROKEN))
 		return
 
-	//if(!allowed(user) && (wires & 1))
-	//	user << "\red Access Denied"
-	//	flick("doorctrl-denied",src)
-	//	return
+	if(!allowed(user) && (wires & 1))
+		user << "\red Access Denied"
+		flick("doorctrl-denied",src)
+		return
 
 	use_power(5)
 	icon_state = "doorctrl1"
@@ -185,3 +185,69 @@
 	active = 0
 
 	return
+
+
+/obj/machinery/door_control/vent_control
+	name = "Remote Vent Control"
+	icon_state = "leverbig00"
+	desc = "A heavy hydraulic control switch for the core vents. Pushing it towards the reactor opens the vents, pulling it away from the reactor closes the vents."
+	var/icon_toggled = "leverbig01"
+	var/icon_normal = "leverbig0"
+	var/toggled = "0"
+	use_power = 0
+
+	proc/update_state()
+		if(toggled == "1")
+			icon_state = icon_toggled
+		else
+			icon_state = icon_normal
+		return
+
+/obj/machinery/door_control/vent_control/power_change()
+	return
+
+
+/obj/machinery/door_control/vent_control/attack_ai(mob/user as mob)
+	if (in_range(src, user) && get_dist(src, user) <= 1 && istype(user, /mob/living/silicon/robot))
+		src.attack_hand(user)
+		return
+	else
+		user << "This switch is operated by hydraulics, you cannot use it remotely."
+		return	//lolno
+	return	//just in case
+
+/obj/machinery/door_control/attack_paw(mob/user as mob)
+	return src.attack_hand(user)
+
+/obj/machinery/door_control/vent_control/attack_hand(mob/user as mob)
+	if(stat & (NOPOWER|BROKEN))
+		return
+
+	playsound(src.loc, 'sound/machines/warning-buzzer.ogg', 75)
+
+	var/obj/item/device/radio/a = new /obj/item/device/radio/(null)
+	a.autosay("CORE VENTS CYCLING", "Core control computer")
+
+	if(toggled == "1")
+		toggled = "0"
+	else
+		toggled = "1"
+
+	update_state()
+
+	for(var/obj/machinery/door/poddoor/M in world)
+		if (M.id == src.id)
+			if (M.density)
+				spawn( 0 )
+					M.open()
+					return
+			else
+				spawn( 0 )
+					M.close()
+					return
+
+	src.add_fingerprint(usr)
+	icon_state = icon_normal + toggled
+	spawn(1 * tick_multiplier)
+	return
+

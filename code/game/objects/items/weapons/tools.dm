@@ -21,7 +21,7 @@
 	icon_state = "wrench"
 	flags = FPRINT | TABLEPASS| CONDUCT
 	slot_flags = SLOT_BELT
-	force = 5.0
+	force = 7.0
 	throwforce = 7.0
 	w_class = 2.0
 	m_amt = 150
@@ -39,11 +39,12 @@
 	icon_state = "screwdriver"
 	flags = FPRINT | TABLEPASS| CONDUCT
 	slot_flags = SLOT_BELT
-	force = 5.0
+	force = 7.0
 	w_class = 1.0
 	throwforce = 5.0
 	throw_speed = 3
 	throw_range = 5
+	sharp = 1
 	g_amt = 0
 	m_amt = 75
 	attack_verb = list("stabbed")
@@ -83,11 +84,12 @@
 
 /obj/item/weapon/screwdriver/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
 	if(!istype(M))	return ..()
-	if(user.zone_sel.selecting != "eyes" && user.zone_sel.selecting != "head")
-		return ..()
-	if((CLUMSY in user.mutations) && prob(50))
-		M = user
-	return eyestab(M,user)
+	if(user.zone_sel.selecting == "eyes" || user.zone_sel.selecting == "head")
+		if((CLUMSY in user.mutations) && prob(50))
+			M = user
+		return eyestab(M,user)
+	else
+		return
 
 /*
  * Wirecutters
@@ -99,7 +101,7 @@
 	icon_state = "cutters"
 	flags = FPRINT | TABLEPASS| CONDUCT
 	slot_flags = SLOT_BELT
-	force = 6.0
+	force = 8.0
 	throw_speed = 2
 	throw_range = 9
 	w_class = 2.0
@@ -134,7 +136,7 @@
 	slot_flags = SLOT_BELT
 
 	//Amount of OUCH when it's thrown
-	force = 3.0
+	force = 5.0
 	throwforce = 5.0
 	throw_speed = 1
 	throw_range = 5

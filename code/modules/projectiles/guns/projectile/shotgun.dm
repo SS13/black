@@ -18,7 +18,7 @@
 	isHandgun()
 		return 0
 
-	load_into_chamber()
+	process_chambered()
 		if(in_chamber)
 			return 1
 		return 0
@@ -79,7 +79,7 @@
 		update_icon()
 		return
 
-	load_into_chamber()
+	process_chambered()
 //		if(in_chamber)
 //			return 1 {R}
 		if(!loaded.len)

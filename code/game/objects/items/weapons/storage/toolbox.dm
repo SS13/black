@@ -5,7 +5,7 @@
 	icon_state = "red"
 	item_state = "toolbox_red"
 	flags = FPRINT | TABLEPASS| CONDUCT
-	force = 5.0
+	force = 10.0
 	throwforce = 10.0
 	throw_speed = 1
 	throw_range = 7
@@ -48,6 +48,7 @@
 		new /obj/item/device/analyzer(src)
 		new /obj/item/weapon/wirecutters(src)
 
+
 /obj/item/weapon/storage/toolbox/electrical
 	name = "electrical toolbox"
 	icon_state = "yellow"
@@ -84,3 +85,42 @@
 		new /obj/item/weapon/cable_coil(src,30,color)
 		new /obj/item/weapon/wirecutters(src)
 		new /obj/item/device/multitool(src)
+
+/*
+/obj/item/weapon/storage/toolbox/attackby(var/obj/T, mob/user as mob)
+	if(src.type == /obj/item/weapon/storage/toolbox/mechanical/)
+		if(istype(T, /obj/item/stack/tile/plasteel))
+			if(src.contents.len >= 1)
+				user << "<span class='notice'>They wont fit in as there is already stuff inside.</span>"
+				return
+			if(user.s_active)
+				user.s_active.close(user)
+			del(T)
+			var/obj/item/weapon/toolbox_tiles/B = new /obj/item/weapon/toolbox_tiles
+			user.put_in_hands(B)
+			user << "<span class='notice'>You add the tiles into the empty toolbox. They protrude from the top.</span>"
+			user.drop_from_inventory(src)
+			del(src)
+	if(istype(T,/obj/item/weapon/surgicaldrill))
+		if(src.contents.len >= 1)
+			user << "<span class='notice'>The [src] can not be drilled as there are some objects inside.</span>"
+			return
+		if(src.type == /obj/item/weapon/storage/toolbox/mechanical/)
+			var/obj/item/weapon/toolbox_hole/blue/B = new /obj/item/weapon/toolbox_hole/blue
+			user.put_in_hands(B)
+			user << "<span class='notice'>You drill two holes in [src], in it's top and it's bottom.</span>"
+			user.drop_from_inventory(src)
+			del(src)
+		if(src.type == /obj/item/weapon/storage/toolbox/electrical/)
+			var/obj/item/weapon/toolbox_hole/blue/B = new /obj/item/weapon/toolbox_hole/yellow
+			user.put_in_hands(B)
+			user << "<span class='notice'>You drill two holes in [src], in it's top and it's bottom.</span>"
+			user.drop_from_inventory(src)
+			del(src)
+		if(src.type == /obj/item/weapon/storage/toolbox/emergency/)
+			var/obj/item/weapon/toolbox_hole/blue/B = new /obj/item/weapon/toolbox_hole/red
+			user.put_in_hands(B)
+			user << "<span class='notice'>You drill two holes in [src], in it's top and it's bottom.</span>"
+			user.drop_from_inventory(src)
+			del(src)
+*/

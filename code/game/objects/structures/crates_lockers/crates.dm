@@ -232,6 +232,18 @@
 	icon_opened = "o2crateopen"
 	icon_closed = "o2crate"
 
+/obj/structure/closet/crate/internals/New()
+		..()
+		sleep(2)
+		new /obj/item/clothing/mask/gas(src)
+		new /obj/item/weapon/tank/air(src)
+		new /obj/item/clothing/mask/gas(src)
+		new /obj/item/weapon/tank/air(src)
+		new /obj/item/clothing/mask/gas(src)
+		new /obj/item/weapon/tank/air(src)
+		new /obj/item/clothing/mask/gas(src)
+		new /obj/item/weapon/tank/air(src)
+
 /obj/structure/closet/crate/trashcart
 	desc = "A heavy, metal trashcart with wheels."
 	name = "Trash Cart"

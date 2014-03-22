@@ -895,13 +895,6 @@ note dizziness decrements automatically in the mob's Life() proc.
 /mob/proc/flash_weak_pain()
 	flick("weak_pain",pain)
 
-/mob/proc/get_visible_implants(var/class = 0)
-	var/list/visible_implants = list()
-	for(var/obj/item/O in embedded)
-		if(O.w_class > class)
-			visible_implants += O
-	return visible_implants
-
 mob/proc/yank_out_object()
 	set category = "Object"
 	set name = "Yank out object"
@@ -928,12 +921,20 @@ mob/proc/yank_out_object()
 	if(S == U)
 		self = 1 // Removing object from yourself.
 
-	valid_objects = get_visible_implants(1)
+	if(istype(src,/mob/living/carbon/human))
+		var/mob/living/carbon/human/H = src
+		valid_objects = H.get_visible_implants(1)
+	else
+		for(var/obj/item/weapon/W in embedded)
+			if(W.w_class >= 2)
+				valid_objects += W
+
 	if(!valid_objects.len)
 		if(self)
 			src << "You have nothing stuck in your body that is large enough to remove."
 		else
 			U << "[src] has nothing stuck in their wounds that is large enough to remove."
+		src.verbs -= /mob/proc/yank_out_object
 		return
 
 	var/obj/item/weapon/selection = input("What do you want to yank out?", "Embedded objects") in valid_objects
@@ -952,9 +953,6 @@ mob/proc/yank_out_object()
 		visible_message("<span class='warning'><b>[src] rips [selection] out of their body.</b></span>","<span class='warning'><b>You rip [selection] out of your body.</b></span>")
 	else
 		visible_message("<span class='warning'><b>[usr] rips [selection] out of [src]'s body.</b></span>","<span class='warning'><b>[usr] rips [selection] out of your body.</b></span>")
-	valid_objects = get_visible_implants(0)
-	if(valid_objects.len == 1) //Yanking out last object - removing verb.
-		src.verbs -= /mob/proc/yank_out_object
 
 	if(istype(src,/mob/living/carbon/human))
 
@@ -967,6 +965,7 @@ mob/proc/yank_out_object()
 					affected = organ
 
 		affected.implants -= selection
+		U.put_in_hands(selection)
 		H.shock_stage+=10
 		H.bloody_hands(S)
 
@@ -974,8 +973,9 @@ mob/proc/yank_out_object()
 			var/datum/wound/internal_bleeding/I = new (15)
 			affected.wounds += I
 			H.custom_pain("Something tears wetly in your [affected] as [selection] is pulled free!", 1)
-
-	selection.loc = get_turf(src)
+		return 1
+//	U.put_in_hands(selection)
+//	selection.loc = get_turf(src)
 
 	for(var/obj/item/weapon/O in pinned)
 		if(O == selection)

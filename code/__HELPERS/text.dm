@@ -34,22 +34,12 @@
 			index = findtext(t, char)
 	return t
 
-//Sanitize for ß letter
 proc/sanitize_russian(var/msg)
 	var/index = findtext(msg, "ÿ")
 	while(index)
 		msg = copytext(msg, 1, index) + "&#255;" + copytext(msg, index+1)
 		index = findtext(msg, "ÿ")
 	return msg
-
-/proc/sanitize_multi(var/t,var/list/repl_chars = list("\n"="#","\t"="#","ï¿½"="ï¿½"))
-	t = sanitize_russian(t)
-	for(var/char in repl_chars)
-		var/index = findtext(t, char)
-		while(index)
-			t = copytext(t, 1, index) + repl_chars[char] + copytext(t, index+1)
-			index = findtext(t, char)
-	return t
 
 //Removes a few problematic characters
 /proc/sanitize_simple(var/t,var/list/repl_chars = list("\n"="#","\t"="#","ï¿½"="ï¿½"))
@@ -68,7 +58,14 @@ proc/sanitize_russian(var/msg)
 			index = findtext(t, char)
 	return html_encode(t)
 
-
+/proc/sanitize_multi(var/t,var/list/repl_chars = list("\n"="#","\t"="#","ï¿½"="ï¿½"))
+	t = sanitize_russian(t)
+	for(var/char in repl_chars)
+		var/index = findtext(t, char)
+		while(index)
+			t = copytext(t, 1, index) + repl_chars[char] + copytext(t, index+1)
+			index = findtext(t, char)
+	return t
 
 //Runs byond's sanitization proc along-side sanitize_simple
 /proc/sanitize(var/t,var/list/repl_chars = null)

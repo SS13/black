@@ -47,16 +47,16 @@
 					isadmin = 1
 				var/DBQuery/query = dbcon.NewQuery("SELECT id FROM erro_poll_question WHERE [(isadmin ? "" : "adminonly = false AND")] Now() BETWEEN starttime AND endtime AND id NOT IN (SELECT pollid FROM erro_poll_vote WHERE ckey = \"[ckey]\") AND id NOT IN (SELECT pollid FROM erro_poll_textreply WHERE ckey = \"[ckey]\")")
 				query.Execute()
-//				var/newpoll = 0
-//				while(query.NextRow())
-//					newpoll = 1
-//					break
-/*
+				var/newpoll = 0
+				while(query.NextRow())
+					newpoll = 1
+					break
+
 				if(newpoll)
 					output += "<p><b><a href='byond://?src=\ref[src];showpoll=1'>Show Player Polls</A> (NEW!)</b></p>"
 				else
 					output += "<p><a href='byond://?src=\ref[src];showpoll=1'>Show Player Polls</A></p>"
-*/
+
 		output += "</div>"
 
 		src << browse(output,"window=playersetup;size=210x240;can_close=0")
@@ -77,8 +77,12 @@
 				if(ticker.hide_mode == 0)
 					stat("Game Mode:", "[master_mode]") // Old setting for showing the game mode
 
+			if((ticker.current_state == GAME_STATE_PREGAME) && going)
+				stat("Time To Start:", ticker.pregame_timeleft)
+			if((ticker.current_state == GAME_STATE_PREGAME) && !going)
+				stat("Time To Start:", "DELAYED")
+
 			if(ticker.current_state == GAME_STATE_PREGAME)
-				stat("Time To Start:", "[ticker.pregame_timeleft][going ? "" : " (DELAYED)"]")
 				stat("Players: [totalPlayers]", "Players Ready: [totalPlayersReady]")
 				totalPlayers = 0
 				totalPlayersReady = 0
@@ -161,7 +165,7 @@
 
 			AttemptLateSpawn(href_list["SelectedJob"])
 			return
-/*
+
 		if(href_list["privacy_poll"])
 			establish_db_connection()
 			if(!dbcon.IsConnected())
@@ -199,13 +203,13 @@
 				query_insert.Execute()
 				usr << "<b>Thank you for your vote!</b>"
 				usr << browse(null,"window=privacypoll")
-*/
+
 		if(!ready && href_list["preference"])
 			if(client)
 				client.prefs.process_link(src, href_list)
 		else if(!href_list["late_join"])
 			new_player_panel()
-/*
+
 		if(href_list["showpoll"])
 
 			handle_player_polling()
@@ -260,7 +264,7 @@
 					for(var/optionid = id_min; optionid <= id_max; optionid++)
 						if(!isnull(href_list["option_[optionid]"]))	//Test if this optionid was selected
 							vote_on_poll(pollid, optionid, 1)
-*/
+
 	proc/IsJobAvailable(rank)
 		var/datum/job/job = job_master.GetJob(rank)
 		if(!job)	return 0
@@ -312,7 +316,7 @@
 			var/obj/item/device/radio/intercom/a = new /obj/item/device/radio/intercom(null)// BS12 EDIT Arrivals Announcement Computer, rather than the AI.
 			if(character.mind.role_alt_title)
 				rank = character.mind.role_alt_title
-			a.autosay("[character.real_name],[rank ? " [rank]," : " visitor," ] has arrived on the station.", "Arrivals Announcement Computer")
+			a.autosay("[character.real_name],[rank ? " [rank]," : " visitor," ] has arrived on the ship.", "Arrivals Announcement Computer")
 			del(a)
 
 	proc/LateChoices()
@@ -322,15 +326,15 @@
 		var/hours = mills / 36000
 
 		var/dat = "<html><body><center>"
-		dat += "Round Duration: [round(hours)]h [round(mins)]m<br>"
+		dat += "Shift Duration: [round(hours)]h [round(mins)]m<br>"
 
 		if(emergency_shuttle) //In case Nanotrasen decides reposess CentComm's shuttles.
 			if(emergency_shuttle.direction == 2) //Shuttle is going to centcomm, not recalled
-				dat += "<font color='red'><b>The station has been evacuated.</b></font><br>"
+				dat += "<font color='red'><b>The ship has been evacuated.</b></font><br>"
 			if(emergency_shuttle.direction == 1 && emergency_shuttle.timeleft() < 300 && emergency_shuttle.alert == 0) // Emergency shuttle is past the point of no recall
-				dat += "<font color='red'>The station is currently undergoing evacuation procedures.</font><br>"
+				dat += "<font color='red'>The ship is currently undergoing evacuation procedures.</font><br>"
 			if(emergency_shuttle.direction == 1 && emergency_shuttle.alert == 1) // Crew transfer initiated
-				dat += "<font color='red'>The station is currently undergoing crew transfer procedures.</font><br>"
+				dat += "<font color='red'>The ship is currently undergoing crew transfer procedures.</font><br>"
 
 		dat += "Choose from the following open positions:<br>"
 		for(var/datum/job/job in job_master.occupations)

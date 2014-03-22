@@ -96,7 +96,7 @@ var/global/datum/controller/occupations/job_master
 			if(!job)
 				continue
 
-			if(istype(job, GetJob("Assistant"))) // We don't want to give him assistant, that's boring!
+			if(istype(job, GetJob("Unassigned"))) // We don't want to give him assistant, that's boring!
 				continue
 
 			if(job in command_positions) //If you want a command position, select it!
@@ -250,7 +250,7 @@ var/global/datum/controller/occupations/job_master
 		Debug("AC1, Candidates: [assistant_candidates.len]")
 		for(var/mob/new_player/player in assistant_candidates)
 			Debug("AC1 pass, Player: [player]")
-			AssignRole(player, "Assistant")
+			AssignRole(player, "Unassigned")
 			assistant_candidates -= player
 		Debug("DO, AC1 end")
 
@@ -334,8 +334,8 @@ var/global/datum/controller/occupations/job_master
 		// For those who wanted to be assistant if their preferences were filled, here you go.
 		for(var/mob/new_player/player in unassigned)
 			if(player.client.prefs.alternate_option == BE_ASSISTANT)
-				Debug("AC2 Assistant located, Player: [player]")
-				AssignRole(player, "Assistant")
+				Debug("AC2 Unassigned located, Player: [player]")
+				AssignRole(player, "Unassigned")
 
 		//For ones returning to lobby
 		for(var/mob/new_player/player in unassigned)

@@ -5,7 +5,7 @@
 	icon_state = "rods"
 	flags = FPRINT | TABLEPASS| CONDUCT
 	w_class = 3.0
-	force = 9.0
+	force = 13.0
 	throwforce = 15.0
 	throw_speed = 5
 	throw_range = 20

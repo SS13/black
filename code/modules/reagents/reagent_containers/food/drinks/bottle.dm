@@ -317,3 +317,39 @@
 	New()
 		..()
 		reagents.add_reagent("limejuice", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/waterbottle
+	name = "Bottled Water"
+	desc = "Introduced to the vending machines by Skrellian request, this water comes straight from the Martian poles."
+	icon_state = "waterbottle"
+	isGlass = 0
+	New()
+		..()
+		reagents.add_reagent("water", 100)
+		src.pixel_x = rand(-10.0, 10)
+		src.pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/ale
+	name = "Magm-Ale"
+	desc = "A true dorf's drink of choice."
+	icon_state = "alebottle"
+	item_state = "beer"
+	isGlass = 0
+	New()
+		..()
+		reagents.add_reagent("ale", 100)
+		src.pixel_x = rand(-10.0, 10)
+		src.pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/beer
+	name = "Space Beer"
+	desc = "Contains only water, malt and hops."
+	icon_state = "beer"
+	isGlass = 0
+	New()
+		..()
+		reagents.add_reagent("beer", 100)
+		src.pixel_x = rand(-10.0, 10)
+		src.pixel_y = rand(-10.0, 10)
+
+

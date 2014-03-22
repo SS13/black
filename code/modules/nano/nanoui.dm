@@ -11,7 +11,7 @@ nanoui is used to open and update nano browser uis
 #define STATUS_UPDATE 1 // ORANGE Visability
 #define STATUS_DISABLED 0 // RED Visability
 
-/datum/nanoui
+/datum/nanoui	
 	// the user who opened this ui
 	var/mob/user
 	// the object this ui "belongs" to
@@ -135,12 +135,12 @@ nanoui is used to open and update nano browser uis
 		if (dist > 4)
 			close()
 			return
-
+		
 		if ((allowed_user_stat > -1) && (user.stat > allowed_user_stat))
 			set_status(STATUS_DISABLED, push_update) // no updates, completely disabled (red visibility)
 		else if (user.restrained() || user.lying)
 			set_status(STATUS_UPDATE, push_update) // update only (orange visibility)
-		else if (istype(src_object, /obj/item/device/uplink/hidden)) // You know what if they have the uplink open let them use the UI
+		else if (istype(src_object, /obj/item/device/uplink/hidden)) // You know what if they have the uplink open let them use the UI 
 			set_status(STATUS_INTERACTIVE, push_update)	     // Will build in distance checks on the topics for sanity.
 		else if (!(src_object in view(4, user))) // If the src object is not in visable, set status to 0
 			set_status(STATUS_DISABLED, push_update) // interactive (green visibility)
@@ -182,7 +182,7 @@ nanoui is used to open and update nano browser uis
 	data["ui"] = list(
 			"status" = status,
 			"user" = list("name" = user.name)
-		)
+		)	
 	return data
 
  /**
@@ -258,10 +258,10 @@ nanoui is used to open and update nano browser uis
   */
 /datum/nanoui/proc/get_header()
 	var/head_content = ""
-
+	
 	for (var/filename in scripts)
 		head_content += "<script type='text/javascript' src='[filename]'></script> "
-
+	
 	for (var/filename in stylesheets)
 		head_content += "<link rel='stylesheet' type='text/css' href='[filename]'> "
 
@@ -286,7 +286,7 @@ nanoui is used to open and update nano browser uis
 		<script type='text/javascript'>
 			function receiveUpdateData(jsonString)
 			{
-				// We need both jQuery and NanoUpdate to be able to recieve data
+				// We need both jQuery and NanoUpdate to be able to recieve data				
 				// At the moment any data received before those libraries are loaded will be lost
 				if (typeof NanoUpdate != 'undefined' && typeof jQuery != 'undefined')
 				{
@@ -296,7 +296,7 @@ nanoui is used to open and update nano browser uis
 		</script>
 		[head_content]
 	</head>
-	<body scroll=auto data-url-parameters='[url_parameters_json]' data-template-data='[template_data_json]' data-initial-data='[initial_data_json]'>
+	<body scroll=auto data-url-parameters='[url_parameters_json]' data-template-data='[template_data_json]' data-initial-data='[initial_data_json]'>		
 		<div id='uiWrapper'>
 			[title ? "<div id='uiTitleWrapper'><div id='uiStatusIcon' class='icon24 uiStatusGood'></div><div id='uiTitle'>[title]</div><div id='uiTitleFluff'></div></div>" : ""]
 			<div id='uiContent'>
@@ -408,7 +408,7 @@ nanoui is used to open and update nano browser uis
 	if (!src_object || !user)
 		close()
 		return
-
+		
 	if (status && (update || is_auto_updating))
 		src_object.ui_interact(user, ui_key, src) // Update the UI (update_status() is called whenever a UI is updated)
 	else

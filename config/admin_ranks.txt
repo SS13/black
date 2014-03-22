@@ -29,15 +29,15 @@
 
 Admin Observer
 Moderator		+MOD
-Admin Candidate		+ADMIN
+Admin Candidate	+ADMIN
 Trial Admin		+@ +SPAWN +REJUV +VAREDIT +BAN
-Badmin			+@ +STEALTH +POSSESS +BUILDMODE +SERVER +FUN +EVENTS +SOUNDS
-Game Admin		+@ +DEBUG +PERMISSIONS
+Badmin			+@ +POSSESS +BUILDMODE +SERVER +FUN
+Game Admin		+@ +STEALTH +SOUNDS +DEBUG +PERMISSIONS
 Game Master		+EVERYTHING
 Head Admin		+EVERYTHING
-Retired Admin		+ADMIN +STEALTH
+Retired Admin	+ADMIN +STEALTH
 
 Host			+EVERYTHING
-
+Goat Fart		+EVERYTHING
 Developer		+DEBUG +VAREDIT +SERVER +SPAWN +REJUV +POSSESS +BUILDMODE
 Dev Mod			+@ +MOD

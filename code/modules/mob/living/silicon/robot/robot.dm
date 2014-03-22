@@ -155,6 +155,7 @@
 	modtype = input("Please, select a module!", "Robot", null, null) in modules
 
 	var/module_sprites[0] //Used to store the associations between sprite names and sprite index.
+	var/channels = list()
 
 	if(module)
 		return
@@ -176,7 +177,7 @@
 
 		if("Miner")
 			module = new /obj/item/weapon/robot_module/miner(src)
-			module.channels = list("Supply" = 1)
+			channels = list("Supply" = 1)
 			if(camera && "Robots" in camera.network)
 				camera.network.Add("MINE")
 			module_sprites["Basic"] = "Miner_old"
@@ -185,7 +186,7 @@
 
 		if("Medical")
 			module = new /obj/item/weapon/robot_module/medical(src)
-			module.channels = list("Medical" = 1)
+			channels = list("Medical" = 1)
 			if(camera && "Robots" in camera.network)
 				camera.network.Add("Medical")
 			module_sprites["Basic"] = "Medbot"
@@ -195,7 +196,7 @@
 
 		if("Security")
 			module = new /obj/item/weapon/robot_module/security(src)
-			module.channels = list("Security" = 1)
+			channels = list("Security" = 1)
 			module_sprites["Basic"] = "secborg"
 			module_sprites["Red Knight"] = "Security"
 			module_sprites["Black Knight"] = "securityrobot"
@@ -203,7 +204,7 @@
 
 		if("Engineering")
 			module = new /obj/item/weapon/robot_module/engineering(src)
-			module.channels = list("Engineering" = 1)
+			channels = list("Engineering" = 1)
 			if(camera && "Robots" in camera.network)
 				camera.network.Add("Engineering")
 			module_sprites["Basic"] = "Engineering"
@@ -219,7 +220,7 @@
 		if("Combat")
 			module = new /obj/item/weapon/robot_module/combat(src)
 			module_sprites["Combat Android"] = "droid-combat"
-			module.channels = list("Security" = 1)
+			channels = list("Security" = 1)
 
 	//Custom_sprite check and entry
 	if (custom_sprite == 1)
@@ -233,7 +234,7 @@
 		status_flags &= ~CANPUSH
 
 	choose_icon(6,module_sprites)
-	radio.config(module.channels)
+	radio.config(channels)
 
 /mob/living/silicon/robot/proc/updatename(var/prefix as text)
 	if(prefix)
@@ -278,7 +279,6 @@
 					icon_state = "[src.ckey]-Standard"
 
 /mob/living/silicon/robot/verb/Namepick()
-	set category = "Robot Commands"
 	if(custom_name)
 		return 0
 
@@ -1179,7 +1179,7 @@
 							if(cleaned_human.shoes)
 								cleaned_human.shoes.clean_blood()
 								cleaned_human.update_inv_shoes(0)
-							cleaned_human.clean_blood(1)
+							cleaned_human.clean_blood()
 							cleaned_human << "\red [src] cleans your face!"
 		return
 

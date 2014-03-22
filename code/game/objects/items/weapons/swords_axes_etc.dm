@@ -32,7 +32,7 @@
 		user.take_organ_damage(5,5)
 	active = !active
 	if (active)
-		force = 30
+		force = 43
 		if(istype(src,/obj/item/weapon/melee/energy/sword/pirate))
 			icon_state = "cutlass1"
 		else
@@ -42,7 +42,7 @@
 		user << "\blue [src] is now active."
 
 	else
-		force = 3
+		force = 6
 		if(istype(src,/obj/item/weapon/melee/energy/sword/pirate))
 			icon_state = "cutlass0"
 		else
@@ -70,7 +70,7 @@
 	item_state = "classic_baton"
 	flags = FPRINT | TABLEPASS
 	slot_flags = SLOT_BELT
-	force = 10
+	force = 15
 
 /obj/item/weapon/melee/classic_baton/attack(mob/M as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))
@@ -120,7 +120,7 @@
 	flags = FPRINT | TABLEPASS
 	slot_flags = SLOT_BELT
 	w_class = 2
-	force = 3
+	force = 10
 	var/on = 0
 
 
@@ -142,7 +142,7 @@
 		icon_state = "telebaton_0"
 		item_state = "telebaton_0"
 		w_class = 2
-		force = 3//not so robust now
+		force = 4//not so robust now
 		attack_verb = list("hit", "punched")
 
 	if(istype(user,/mob/living/carbon/human))
@@ -169,16 +169,16 @@
 	if(on)
 		if ((CLUMSY in user.mutations) && prob(50))
 			user << "\red You club yourself over the head."
-			user.Weaken(3 * force)
+			user.Weaken(6 * force)
 			if(ishuman(user))
 				var/mob/living/carbon/human/H = user
-				H.apply_damage(2*force, BRUTE, "head")
+				H.apply_damage(6*force, BRUTE, "head")
 			else
-				user.take_organ_damage(2*force)
+				user.take_organ_damage(6*force)
 			return
 		if(..())
 			playsound(src.loc, "swing_hit", 50, 1, -1)
-			target.Weaken(4)
+			target.Weaken(6)
 			return
 	else
 		return ..()
@@ -246,7 +246,7 @@
 		user.take_organ_damage(5)
 	active = !active
 	if (active)
-		force = 10
+		force = 13
 		icon_state = "eshield[active]"
 		w_class = 4
 		playsound(user, 'sound/weapons/saberon.ogg', 50, 1)

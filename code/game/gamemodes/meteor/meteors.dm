@@ -24,12 +24,12 @@
 
 	var/startx
 	var/starty
+	var/startz
 	var/endx
 	var/endy
 	var/turf/pickedstart
 	var/turf/pickedgoal
 	var/max_i = 10//number of tries to spawn meteor.
-
 
 	do
 		switch(pick(1,2,3,4))
@@ -54,8 +54,9 @@
 				endy = rand(TRANSITIONEDGE,world.maxy-TRANSITIONEDGE)
 				endx = world.maxx-TRANSITIONEDGE
 
-		pickedstart = locate(startx, starty, 1)
-		pickedgoal = locate(endx, endy, 1)
+		startz = pick(1,2,3,4)
+		pickedstart = locate(startx, starty, startz)
+		pickedgoal = locate(endx, endy, startz)
 		max_i--
 		if(max_i<=0) return
 

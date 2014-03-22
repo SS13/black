@@ -38,6 +38,6 @@ Head Admin		+EVERYTHING
 Retired Admin	+ADMIN +STEALTH
 
 Host			+EVERYTHING
-
+Goat Fart		+EVERYTHING
 Developer		+DEBUG +VAREDIT +SERVER +SPAWN +REJUV +POSSESS +BUILDMODE
 Dev Mod			+@ +MOD

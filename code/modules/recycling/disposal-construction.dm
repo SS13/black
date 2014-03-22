@@ -151,9 +151,9 @@
 				return /obj/structure/disposalpipe/sortjunction
 ///// Z-Level stuff
 			if(11)
-				return /obj/structure/disposalpipe/up
+				return /obj/structure/disposalpipe/crossZ/up
 			if(12)
-				return /obj/structure/disposalpipe/down
+				return /obj/structure/disposalpipe/crossZ/down
 ///// Z-Level stuff
 		return
 

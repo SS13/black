@@ -75,3 +75,7 @@
 	A.power_light = light
 	A.updateicon()
 	return
+
+/obj/structure/stool/barstool
+	name = "barstool"
+	icon_state = "barstool"

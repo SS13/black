@@ -78,7 +78,7 @@ var/list/ghostteleportlocs = list()
 			ghostteleportlocs += AR.name
 			ghostteleportlocs[AR.name] = AR
 		var/turf/picked = pick(get_area_turfs(AR.type))
-		if (picked.z == 1 || picked.z == 5 || picked.z == 3)
+		if (picked.z == 1 || picked.z == 2 || picked.z == 3 || picked.z == 4 || picked.z == 5 || picked.z == 7)
 			ghostteleportlocs += AR.name
 			ghostteleportlocs[AR.name] = AR
 
@@ -114,6 +114,11 @@ var/list/ghostteleportlocs = list()
 	luminosity = 1
 	lighting_use_dynamic = 0
 
+/area/shuttle/spaceship
+	name = "\improper Space Ship"
+	icon_state = "shuttle"
+	luminosity = 0
+
 /area/shuttle/arrival
 	name = "\improper Arrival Shuttle"
 
@@ -140,7 +145,7 @@ var/list/ghostteleportlocs = list()
 	icon_state = "shuttle"
 
 /area/shuttle/escape_pod1
-	name = "\improper Escape Pod One"
+	name = "\improper Escape Pod A"
 	music = "music/escape.ogg"
 
 /area/shuttle/escape_pod1/station
@@ -153,7 +158,7 @@ var/list/ghostteleportlocs = list()
 	icon_state = "shuttle"
 
 /area/shuttle/escape_pod2
-	name = "\improper Escape Pod Two"
+	name = "\improper Escape Pod B"
 	music = "music/escape.ogg"
 
 /area/shuttle/escape_pod2/station
@@ -166,7 +171,7 @@ var/list/ghostteleportlocs = list()
 	icon_state = "shuttle"
 
 /area/shuttle/escape_pod3
-	name = "\improper Escape Pod Three"
+	name = "\improper Escape Pod C"
 	music = "music/escape.ogg"
 
 /area/shuttle/escape_pod3/station
@@ -179,7 +184,7 @@ var/list/ghostteleportlocs = list()
 	icon_state = "shuttle"
 
 /area/shuttle/escape_pod5 //Pod 4 was lost to meteors
-	name = "\improper Escape Pod Five"
+	name = "\improper Escape Pod E"
 	music = "music/escape.ogg"
 
 /area/shuttle/escape_pod5/station
@@ -438,6 +443,22 @@ var/list/ghostteleportlocs = list()
 	name = "\improper Syndicate Forward Operating Base"
 	icon_state = "yellow"
 
+/area/syndicate_station/deck1
+	name = "\improper NSV Luna's first deck"
+	icon_state = "southeast"
+
+/area/syndicate_station/deck2
+	name = "\improper NSV Luna's second deck"
+	icon_state = "southeast"
+
+/area/syndicate_station/deck3
+	name = "\improper NSV Luna's third deck"
+	icon_state = "southeast"
+
+/area/syndicate_station/deck4
+	name = "\improper NSV Luna's fourth deck"
+	icon_state = "southeast"
+
 /area/syndicate_station/southwest
 	name = "\improper south-west of SS13"
 	icon_state = "southwest"
@@ -652,6 +673,10 @@ var/list/ghostteleportlocs = list()
 	name = "Engineering Maintenance"
 	icon_state = "amaint"
 
+/area/maintenance/aft4
+	name = "Bridge Deck Aft Maintenance"
+	icon_state = "amaint"
+
 /area/maintenance/storage
 	name = "Atmospherics"
 	icon_state = "green"
@@ -664,7 +689,329 @@ var/list/ghostteleportlocs = list()
 	name = "Waste Disposal"
 	icon_state = "disposal"
 
+//Luna
+
+/area/luna/
+	icon = 'icons/turf/areas_luna.dmi'
+
+/area/luna/hangar
+	name = "Hangar"
+	icon_state = "hangar"
+
+/area/luna/hangar/derelict
+	icon_state = "hangar"
+	name = "DERELICT HANGAR OBJECT TEMPLATE"
+
+/area/luna/hangar/supply
+	name = "Supply Shuttle Hangar"
+	icon_state = "hangar"
+
+/area/luna/hangar/exposed
+	name = "Hangar"
+	icon_state = "hangar"
+
+/area/luna/hangar/escape
+	name = "Escape Hangar"
+	icon_state = "hangar"
+
+/area/luna/hangar/escape/crew
+	name = "Escape Hangar"
+	icon_state = "hangar"
+
+/area/luna/hallway/primary/admin
+	name = "Administrative Block Hallway"
+	icon_state = "hallAdmin"
+
+/area/luna/hallway/primary/aftadmin
+	name = "Administrative Block Hallway Aft"
+	icon_state = "hallaftAdmin"
+
+/area/luna/hallway/primary/fore
+	name = "Fore Primary Hallway"
+	icon_state = "hallF"
+
+/area/luna/hallway/primary/services
+	name = "Vessel Services Hallway"
+	icon_state = "hallV"
+
+/area/luna/hallway/primary/starboard
+	name = "Starboard Primary Hallway"
+	icon_state = "hallS"
+
+
+/area/luna/hallway/primary/aft
+	name = "Aft Primary Hallway"
+	icon_state = "hallA"
+
+/area/luna/hallway/primary/forestarboard
+	name = "Fore Starboard Primary Hallway"
+	icon_state = "hallS"
+
+
+/area/luna/hallway/primary/port
+	name = "Port Primary Hallway"
+	icon_state = "hallP"
+
+
+/area/luna/hallway/primary/central
+	name = "Central Primary Hallway"
+	icon_state = "hallC"
+
+/area/luna/hallway/primary/aftportcentral
+	name = "Central Primary Hallway"
+	icon_state = "hallC"
+
+/area/luna/hallway/primary/aftstarboardcentral
+	name = "Central Primary Hallway"
+	icon_state = "hallC"
+
+/area/luna/hallway/primary/portcentral
+	name = "Central Primary Hallway"
+	icon_state = "hallC"
+
+/area/luna/hallway/primary/starboardcentral
+	name = "Central Primary Hallway"
+	icon_state = "hallC"
+
+
+/area/luna/hallway/secondary/exit
+	name = "Escape Shuttle Hallway"
+	icon_state = "escape"
+
+/area/luna/hallway/secondary/construction
+	name = "Construction Area"
+	icon_state = "construction"
+
+
+/area/luna/hallway/secondary/entry
+	name = "Arrival Shuttle Hallway"
+	icon_state = "entry"
+
+/area/luna/hallway/secondary/research
+	name = "Research Hallway"
+	icon_state = "research"
+
+//Luna Maint
+
+/area/luna/maintenance/fpmaint1
+	name = "Sub Deck Fore Port Maintenance"
+	icon_state = "fpmaint"
+
+/area/luna/maintenance/fpmaint2
+	name = "Main Deck Fore Port Maintenance"
+	icon_state = "fpmaint"
+
+/area/luna/maintenance/fpmaint3
+	name = "Engineering Deck Fore Port Maintenance"
+	icon_state = "fpmaint"
+
+/area/luna/maintenance/fpmaint4
+	name = "Bridge Deck Fore Port Maintenance"
+	icon_state = "fpmaint"
+
+
+/area/luna/maintenance/fsmaint1
+	name = "Sub Deck Fore Starboard Maintenance"
+	icon_state = "fsmaint"
+
+/area/luna/maintenance/fsmaint2
+	name = "Main Deck Fore Starboard Maintenance"
+	icon_state = "fsmaint"
+
+/area/luna/maintenance/fsmaint3
+	name = "Engineering Deck Fore Starboard Maintenance"
+	icon_state = "fsmaint"
+
+/area/luna/maintenance/fsmaint4
+	name = "Bridge Deck Fore Starboard Maintenance"
+	icon_state = "fsmaint"
+
+
+/area/luna/maintenance/asmaint1
+	name = "Sub Deck Aft Starboard Maintenance"
+	icon_state = "asmaint"
+
+/area/luna/maintenance/asmaint2
+	name = "Main Deck Aft Starboard Maintenance"
+	icon_state = "asmaint"
+
+/area/luna/maintenance/asmaint3
+	name = "Engineering Deck Aft Starboard Maintenance"
+	icon_state = "asmaint"
+
+/area/luna/maintenance/asmaint4
+	name = "Bridge Deck Aft Starboard Maintenance"
+	icon_state = "asmaint"
+
+
+/area/luna/maintenance/apmaint1
+	name = "Sub Deck Aft Port Maintenance"
+	icon_state = "apmaint"
+
+/area/luna/maintenance/apmaint2
+	name = "Main Deck Aft Port Maintenance"
+	icon_state = "apmaint"
+
+/area/luna/maintenance/apmaint3
+	name = "Engineering Deck Aft Port Maintenance"
+	icon_state = "apmaint"
+
+/area/luna/maintenance/apmaint4
+	name = "Bridge Deck Aft Port Maintenance"
+	icon_state = "apmaint"
+
+
+/area/luna/maintenance/maintcentral1
+	name = "Sub Deck Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/maintcentral2
+	name = "Main Deck Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/maintcentral3
+	name = "Engineering Deck Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/maintcentral4
+	name = "Bridge Deck Central Maintenance"
+	icon_state = "maintcentral"
+
+
+/area/luna/maintenance/fmaintcentral1
+	name = "Sub Deck Fore Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/fmaintcentral2
+	name = "Main Deck Fore Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/fmaintcentral3
+	name = "Engineering Deck Fore Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/fmaintcentral4
+	name = "Bridge Deck Fore Central Maintenance"
+	icon_state = "maintcentral"
+
+
+/area/luna/maintenance/pmaintcentral1
+	name = "Sub Deck Port Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/pmaintcentral2
+	name = "Main Deck Port Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/pmaintcentral3
+	name = "Engineering Port Central Maintenance"
+	icon_state = "maintcentral"
+
+/area/luna/maintenance/pmaintcentral4
+	name = "Bridge Deck Port Central Maintenance"
+	icon_state = "maintcentral"
+
+
+/area/luna/maintenance/fore1
+	name = "Sub Deck Fore Maintenance"
+	icon_state = "fmaint"
+
+/area/luna/maintenance/fore2
+	name = "Main Deck Fore Maintenance"
+	icon_state = "fmaint"
+
+/area/luna/maintenance/fore3
+	name = "Engineering Deck Fore Maintenance"
+	icon_state = "fmaint"
+
+/area/luna/maintenance/fore4
+	name = "Bridge Deck Fore Maintenance"
+	icon_state = "fmaint"
+
+
+/area/luna/maintenance/starboard1
+	name = "Sub Deck Starboard Maintenance"
+	icon_state = "smaint"
+
+/area/luna/maintenance/starboard2
+	name = "Main Deck Starboard Maintenance"
+	icon_state = "smaint"
+
+/area/luna/maintenance/starboard3
+	name = "Engineering Deck Starboard Maintenance"
+	icon_state = "smaint"
+
+/area/luna/maintenance/starboard4
+	name = "Bridge Deck Starboard Maintenance"
+	icon_state = "smaint"
+
+
+/area/luna/maintenance/hangarequip
+	name = "Hangar Equipment Room"
+	icon_state = "smaint"
+
+
+/area/luna/maintenance/port1
+	name = "Sub Deck Port Maintenance"
+	icon_state = "pmaint"
+
+/area/luna/maintenance/port2
+	name = "Main Deck Port Maintenance"
+	icon_state = "pmaint"
+
+/area/luna/maintenance/port3
+	name = "Engineering Deck Port Maintenance"
+	icon_state = "pmaint"
+
+/area/luna/maintenance/port4
+	name = "Bridge Deck Port Maintenance"
+	icon_state = "pmaint"
+
+
+/area/luna/maintenance/aft1
+	name = "Sub Deck Aft Maintenance"
+	icon_state = "amaint"
+
+/area/luna/maintenance/aft2
+	name = "Main Deck Aft Maintenance"
+	icon_state = "amaint"
+
+/area/luna/maintenance/aft3
+	name = "Engineering Deck Aft Maintenance"
+	icon_state = "amaint"
+
+/*/area/luna/maintenance/aft4					// Moved under ai_monitored
+	name = "Bridge Deck Aft Maintenance"
+	icon_state = "amaint"*/
+
+
+/area/luna/maintenance/starboardsolar
+	name = "Starboard Solar Maintenance"
+	icon_state = "SolarcontrolS"
+
+/area/luna/maintenance/portsolar
+	name = "Port Solar Maintenance"
+	icon_state = "SolarcontrolP"
+
+
+/area/luna/maintenance/storage
+	name = "Atmospherics"
+	icon_state = "green"
+
+
+/area/luna/maintenance/disposal
+	name = "Waste Disposal"
+	icon_state = "disposal"
+
 //Hallway
+
+/area/hallway/primary/admin
+	name = "Administrative Block Hallway"
+	icon_state = "hallAdmin"
+
+/area/hallway/primary/aftadmin
+	name = "Administrative Block Hallway Aft"
+	icon_state = "hallaftAdmin"
 
 /area/hallway/primary/fore
 	name = "\improper Fore Primary Hallway"
@@ -738,6 +1085,10 @@ var/list/ghostteleportlocs = list()
 	name = "\improper Courtroom"
 	icon_state = "courtroom"
 
+/area/crew_quarters/courtlobby
+	name = "\improper Courtroom Lobby"
+	icon_state = "courtroom"
+
 /area/crew_quarters/heads
 	name = "\improper Head of Personnel's Office"
 	icon_state = "head_quarters"
@@ -772,12 +1123,36 @@ var/list/ghostteleportlocs = list()
 	name = "\improper Dormitories"
 	icon_state = "Sleep"
 
+/area/crew_quarters/laundry
+	name = "\improper Laundry Room"
+	icon_state = "Sleep"
+
+/area/crew_quarters/observation
+	name = "\improper Observation Deck"
+	icon_state = "Sleep"
+
+/area/crew_quarters/lounge
+	name = "\improper Crew Lounge"
+	icon_state = "Sleep"
+
 /area/crew_quarters/toilet
 	name = "\improper Dormitory Toilets"
 	icon_state = "toilet"
 
 /area/crew_quarters/sleep
 	name = "\improper Dormitories"
+	icon_state = "Sleep"
+
+/area/crew_quarters/sleep/rooms/dorm1
+	name = "\improper Dormitory A"
+	icon_state = "Sleep"
+
+/area/crew_quarters/sleep/rooms/dorm2
+	name = "\improper Dormitory B"
+	icon_state = "Sleep"
+
+/area/crew_quarters/sleep/rooms/dorm3
+	name = "\improper Dormitory C"
 	icon_state = "Sleep"
 
 /area/crew_quarters/sleep/engi
@@ -922,16 +1297,28 @@ var/list/ghostteleportlocs = list()
 
 /area/engine
 	engine_smes
-		name = "\improper Engineering SMES"
+		name = "Engineering SMES"
 		icon_state = "engine_smes"
-		requires_power = 0//This area only covers the batteries and they deal with their own power
+//		requires_power = 0//This area only covers the batteries and they deal with their own power
+
+	engine_room
+		name = "\improper Engine Room"
+		icon_state = "engine"
+
+	engine_airlock
+		name = "\improper Engine Room Airlock"
+		icon_state = "engine"
+
+	engine_monitoring
+		name = "\improper Engine Monitoring Room"
+		icon_state = "engine_monitoring"
 
 	engineering
 		name = "Engineering"
 		icon_state = "engine_smes"
 
 	break_room
-		name = "\improper Engineering Foyer"
+		name = "Engineering Foyer"
 		icon_state = "engine"
 
 	chiefs_office
@@ -1114,6 +1501,10 @@ var/list/ghostteleportlocs = list()
 	name = "\improper Chemistry"
 	icon_state = "chem"
 
+/area/medical/chemistry/back
+	name = "\improper Chemistry Backroom"
+	icon_state = "chem"
+
 /area/medical/surgery
 	name = "\improper Surgery"
 	icon_state = "surgery"
@@ -1149,7 +1540,11 @@ var/list/ghostteleportlocs = list()
 	icon_state = "security"
 
 /area/security/lobby
-	name = "\improper Security lobby"
+	name = "\improper Security Lobby"
+	icon_state = "security"
+
+/area/security/stair_lobby
+	name = "\improper Security Stair Lobby"
 	icon_state = "security"
 
 /area/security/brig
@@ -1208,6 +1603,11 @@ var/list/ghostteleportlocs = list()
 /area/security/checkpoint2
 	name = "\improper Security Checkpoint"
 	icon_state = "security"
+
+/area/security/checkpoint3
+	name = "\improper Docking Checkpoint"
+	icon_state = "security"
+
 
 /area/security/checkpoint/supply
 	name = "Security Post - Cargo Bay"
@@ -1327,6 +1727,10 @@ var/list/ghostteleportlocs = list()
 
 /area/storage/tools
 	name = "Auxiliary Tool Storage"
+	icon_state = "storage"
+
+/area/storage/fire
+	name = "Fire Station"
 	icon_state = "storage"
 
 /area/storage/primary
@@ -1796,6 +2200,7 @@ var/list/centcom_areas = list (
 
 //SPACE STATION 13
 var/list/the_station_areas = list (
+	/area/luna,
 	/area/shuttle/arrival,
 	/area/shuttle/escape/station,
 	/area/shuttle/escape_pod1/station,

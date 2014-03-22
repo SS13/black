@@ -88,10 +88,9 @@
 
 		for(var/this_type in calmers)
 			var/mob/living/simple_animal/check_effect = locate() in src.loc
-			if(istype(check_effect))
-				if(check_effect.type == this_type)
-					calming = 1
-					break
+			if(check_effect.type == this_type)
+				calming = 1
+				break
 
 		if(calming)
 			if(feral > 0)

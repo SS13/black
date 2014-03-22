@@ -359,7 +359,7 @@ LOOK FOR SURGERY.DM*/
 	m_amt = 15000
 	g_amt = 10000
 	flags = FPRINT | TABLEPASS | CONDUCT
-	force = 15.0
+	force = 21.0
 	w_class = 2.0
 	origin_tech = "materials=1;biotech=1"
 	attack_verb = list("drilled")
@@ -378,7 +378,7 @@ LOOK FOR SURGERY.DM*/
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "scalpel"
 	flags = FPRINT | TABLEPASS | CONDUCT
-	force = 10.0
+	force = 15.0
 	w_class = 2.0
 	throwforce = 5.0
 	throw_speed = 3
@@ -630,7 +630,7 @@ LOOK FOR SURGERY.DM*/
 	icon_state = "saw3"
 	hitsound = 'sound/weapons/circsawhit.ogg'
 	flags = FPRINT | TABLEPASS | CONDUCT
-	force = 15.0
+	force = 20.0
 	w_class = 2.0
 	throwforce = 9.0
 	throw_speed = 3
@@ -814,7 +814,7 @@ LOOK FOR SURGERY.DM*/
 	name = "bone setter"
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "bone setter"
-	force = 8.0
+	force = 10.0
 	throwforce = 9.0
 	throw_speed = 3
 	throw_range = 5

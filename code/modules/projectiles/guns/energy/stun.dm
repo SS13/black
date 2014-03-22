@@ -18,7 +18,7 @@
 	projectile_type = "/obj/item/projectile/energy/electrode"
 	cell_type = "/obj/item/weapon/cell/secborg"
 	var/charge_tick = 0
-	var/recharge_time = 5 //Time it takes for shots to recharge (in ticks)
+	var/recharge_time = 10 //Time it takes for shots to recharge (in ticks)
 
 	New()
 		..()
@@ -33,16 +33,16 @@
 		charge_tick++
 		if(charge_tick < recharge_time) return 0
 		charge_tick = 0
-
+		
 		if(!power_supply) return 0 //sanity
 		if(power_supply.charge >= power_supply.maxcharge) return 0 // check if we actually need to recharge
-
+		
 		if(isrobot(src.loc))
 			var/mob/living/silicon/robot/R = src.loc
 			if(R && R.cell)
 				R.cell.use(charge_cost) 		//Take power from the borg...
 				power_supply.give(charge_cost)	//... to recharge the shot
-
+				
 		update_icon()
 		return 1
 

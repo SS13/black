@@ -50,7 +50,6 @@
 		use(1)
 
 	M.updatehealth()
-
 /obj/item/stack/medical/bruise_pack
 	name = "roll of gauze"
 	singular_name = "gauze length"

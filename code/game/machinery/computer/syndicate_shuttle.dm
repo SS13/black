@@ -55,13 +55,11 @@
 	var/dat = {"Location: [curr_location]<br>
 	Ready to move[max(lastMove + SYNDICATE_SHUTTLE_COOLDOWN - world.time, 0) ? " in [max(round((lastMove + SYNDICATE_SHUTTLE_COOLDOWN - world.time) * 0.1), 0)] seconds" : ": now"]<br>
 	<a href='?src=\ref[src];syndicate=1'>Syndicate Space</a><br>
-	<a href='?src=\ref[src];station_nw=1'>North West of SS13</a> |
-	<a href='?src=\ref[src];station_n=1'>North of SS13</a> |
-	<a href='?src=\ref[src];station_ne=1'>North East of SS13</a><br>
-	<a href='?src=\ref[src];station_sw=1'>South West of SS13</a> |
-	<a href='?src=\ref[src];station_s=1'>South of SS13</a> |
-	<a href='?src=\ref[src];station_se=1'>South East of SS13</a><br>
-	<a href='?src=\ref[src];commssat=1'>South of the Communication Satellite</a> |
+	<a href='?src=\ref[src];deck1=1'>NSV Luna Desk 1</a><br>
+	<a href='?src=\ref[src];deck2=1'>NSV Luna Desk 2</a><br>
+	<a href='?src=\ref[src];deck3=1'>NSV Luna Desk 3</a><br>
+	<a href='?src=\ref[src];deck4=1'>NSV Luna Desk 4</a><br>
+	<a href='?src=\ref[src];commssat=1'>North of the Communication Satellite</a> |
 	<a href='?src=\ref[src];mining=1'>North East of the Mining Asteroid</a><br>
 	<a href='?src=\ref[user];mach_close=computer'>Close</a>"}
 
@@ -79,18 +77,14 @@
 
 	if(href_list["syndicate"])
 		syndicate_move_to(/area/syndicate_station/start)
-	else if(href_list["station_nw"])
-		syndicate_move_to(/area/syndicate_station/northwest)
-	else if(href_list["station_n"])
-		syndicate_move_to(/area/syndicate_station/north)
-	else if(href_list["station_ne"])
-		syndicate_move_to(/area/syndicate_station/northeast)
-	else if(href_list["station_sw"])
-		syndicate_move_to(/area/syndicate_station/southwest)
-	else if(href_list["station_s"])
-		syndicate_move_to(/area/syndicate_station/south)
-	else if(href_list["station_se"])
-		syndicate_move_to(/area/syndicate_station/southeast)
+	else if(href_list["deck1"])
+		syndicate_move_to(/area/syndicate_station/deck1)
+	else if(href_list["deck2"])
+		syndicate_move_to(/area/syndicate_station/deck2)
+	else if(href_list["deck3"])
+		syndicate_move_to(/area/syndicate_station/deck3)
+	else if(href_list["deck4"])
+		syndicate_move_to(/area/syndicate_station/deck4)
 	else if(href_list["commssat"])
 		syndicate_move_to(/area/syndicate_station/commssat)
 	else if(href_list["mining"])

@@ -5,7 +5,7 @@
 		usr << "\red Speech is currently admin-disabled."
 		return
 
-	message = trim(copytext(strip_html_simple(message), 1, MAX_MESSAGE_LEN))
+	message = trim(copytext(sanitize_multi(strip_html_simple(message)), 1, MAX_MESSAGE_LEN))
 
 	if (!message || silent || miming)
 		return
@@ -60,11 +60,8 @@
 			message = replacetext(message, "u", "µ")
 			message = replacetext(message, "b", "ß")
 
-	message = sanitize_multi(message)
-
 	if (src.stuttering)
 		message = stutter(message)
-
 
 	for (var/obj/O in view(message_range, src))
 		spawn (0)
@@ -111,7 +108,7 @@
 		var/message_a = message
 
 		if (italics)
-			message_a = "<i>[sanitize_multi(message_a)]</i>"
+			message_a = "<i>[sanitize(message_a)]</i>"
 		//This appears copied from carbon/living say.dm so the istype check for mob is probably not needed. Appending for src is also not needed as the game will check that automatically.
 		rendered = "<span class='game say'><span class='name'>[GetVoice()]</span>[alt_name] whispers, <span class='message'>\"[message_a]\"</span></span>"
 
@@ -124,7 +121,7 @@
 		message_b = stars(message)
 
 		if (italics)
-			message_b = "<i>[message_b]</i>"
+			message_b = "<i>[sanitize(message_b)]</i>"
 
 		rendered = "<span class='game say'><span class='name'>[src.voice_name]</span> whispers, <span class='message'>\"[message_b]\"</span></span>"
 
@@ -142,7 +139,7 @@
 			M.show_message(rendered, 2)
 
 	if (italics)
-		message = "<i>[message]</i>"
+		message = "<i>[sanitize(message)]</i>"
 	rendered = "<span class='game say'><span class='name'>[GetVoice()]</span>[alt_name] whispers, <span class='message'>\"[message]\"</span></span>"
 
 	for (var/mob/M in dead_mob_list)

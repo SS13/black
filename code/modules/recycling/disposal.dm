@@ -105,7 +105,7 @@
 			if(ismob(G.affecting))
 				var/mob/GM = G.affecting
 				for (var/mob/V in viewers(usr))
-					V.show_message("[usr] starts putting [GM.name] into the disposal.", 3)
+					V.show_message("[usr] starts putting [GM.name] into the [src].", 3)
 				if(do_after(usr, 20))
 					if (GM.client)
 						GM.client.perspective = EYE_PERSPECTIVE
@@ -144,10 +144,10 @@
 		var/msg
 		for (var/mob/V in viewers(usr))
 			if(target == user && !user.stat && !user.weakened && !user.stunned && !user.paralysis)
-				V.show_message("[usr] starts climbing into the disposal.", 3)
+				V.show_message("[usr] starts climbing into the [src].", 3)
 			if(target != user && !user.restrained() && !user.stat && !user.weakened && !user.stunned && !user.paralysis)
 				if(target.anchored) return
-				V.show_message("[usr] starts stuffing [target.name] into the disposal.", 3)
+				V.show_message("[usr] starts stuffing [target.name] into the [src].", 3)
 		if(!do_after(usr, 20))
 			return
 		if(target_loc != target.loc)
@@ -267,7 +267,7 @@
 			return
 
 		if(mode==-1 && !href_list["eject"]) // only allow ejecting if mode is -1
-			usr << "\red The disposal units power is disabled."
+			usr << "\red The [src]'s power is disabled."
 			return
 		..()
 		src.add_fingerprint(usr)
@@ -312,33 +312,36 @@
 
 	// update the icon & overlays to reflect mode & status
 	proc/update()
-		overlays.Cut()
-		if(stat & BROKEN)
-			icon_state = "disposal-broken"
-			mode = 0
-			flush = 0
+		if(icon != 'icons/obj/pipes/disposal.dmi')
 			return
+		else
+			overlays.Cut()
+			if(stat & BROKEN)
+				icon_state = "disposal-broken"
+				mode = 0
+				flush = 0
+				return
 
-		// flush handle
-		if(flush)
-			overlays += image('icons/obj/pipes/disposal.dmi', "dispover-handle")
+			// flush handle
+			if(flush)
+				overlays += image('icons/obj/pipes/disposal.dmi', "dispover-handle")
 
-		// only handle is shown if no power
-		if(stat & NOPOWER || mode == -1)
-			return
+			// only handle is shown if no power
+			if(stat & NOPOWER || mode == -1)
+				return
 
-		// 	check for items in disposal - occupied light
-		if(contents.len > 0)
-			overlays += image('icons/obj/pipes/disposal.dmi', "dispover-full")
+			// 	check for items in disposal - occupied light
+			if(contents.len > 0)
+				overlays += image('icons/obj/pipes/disposal.dmi', "dispover-full")
 
-		// charging and ready light
-		if(mode == 1)
-			overlays += image('icons/obj/pipes/disposal.dmi', "dispover-charge")
-		else if(mode == 2)
-			overlays += image('icons/obj/pipes/disposal.dmi', "dispover-ready")
+			// charging and ready light
+			if(mode == 1)
+				overlays += image('icons/obj/pipes/disposal.dmi', "dispover-charge")
+			else if(mode == 2)
+				overlays += image('icons/obj/pipes/disposal.dmi', "dispover-ready")
 
-	// timed process
-	// charge the gas reservoir and perform flush if ready
+		// timed process
+		// charge the gas reservoir and perform flush if ready
 	process()
 		if(stat & BROKEN)			// nothing can happen if broken
 			return
@@ -907,7 +910,7 @@
 		return
 
 ///// Z-Level stuff
-/obj/structure/disposalpipe/up
+/obj/structure/disposalpipe/crossZ/up
 	icon_state = "pipe-u"
 
 	New()
@@ -940,7 +943,7 @@
 				H.loc = src.loc
 				return
 			else
-				for(var/obj/structure/disposalpipe/down/F in T)
+				for(var/obj/structure/disposalpipe/crossZ/down/F in T)
 					P = F
 
 		else
@@ -960,7 +963,7 @@
 
 		return P
 
-/obj/structure/disposalpipe/down
+/obj/structure/disposalpipe/crossZ/down
 	icon_state = "pipe-d"
 
 	New()
@@ -993,7 +996,7 @@
 				H.loc = src.loc
 				return
 			else
-				for(var/obj/structure/disposalpipe/up/F in T)
+				for(var/obj/structure/disposalpipe/crossZ/up/F in T)
 					P = F
 
 		else

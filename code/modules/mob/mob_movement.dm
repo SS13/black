@@ -28,12 +28,45 @@
 
 
 /client/Northeast()
-	swap_hand()
+	var/obj/item/weapon/W = mob.equipped()
+	if (istype(mob, /mob/dead/observer) && mob.z > 1)
+		mob.Move(locate(mob.x, mob.y, mob.z - 1))
+/*	else if (istype(mob, /mob/living/silicon/ai))
+		var/mob/living/silicon/ai/M = mob
+		if ((!M.current && M.loc.z > 1) || M.current.z > 1)
+			AIMoveZ(UP, mob)		*/
+//	else if(isobj(mob.loc))
+//		mob.loc:relaymove(mob,UP)
+	else if(istype(mob, /mob/living/carbon))
+		if (mob:back && istype(mob:back, /obj/item/weapon/tank/jetpack))
+			mob:back:move_z(UP, mob)
+		else if(mob:belt && istype(mob:belt, /obj/item/weapon/tank/jetpack))
+			mob:belt:move_z(UP, mob)
+		else if(istype(W, /obj/item/weapon/extinguisher) && istype(mob.loc, /turf/space))
+			W:move_z(UP, mob)
+		else
+			mob:swap_hand()
 	return
 
 
 /client/Southeast()
-	attack_self()
+	var/obj/item/weapon/W = mob.equipped()
+	if (istype(mob, /mob/dead/observer) && mob.z < 4)
+		mob.Move(locate(mob.x, mob.y, mob.z + 1))
+//	else if (istype(mob, /mob/living/silicon/ai))
+//		var/mob/living/silicon/ai/M = mob
+//		if ((!M.current && M.loc.z < 4) || M.current.z < 4)
+//			AIMoveZ(DOWN, mob)
+	else if(istype(mob, /mob/living/carbon) && mob:back && istype(mob:back, /obj/item/weapon/tank/jetpack))
+		mob:back:move_z(DOWN, mob)
+	else if(istype(mob, /mob/living/carbon) && mob:belt && istype(mob:belt, /obj/item/weapon/tank/jetpack))
+		mob:belt:move_z(DOWN, mob)
+//	else if(isobj(mob.loc))
+//		mob.loc:relaymove(mob,DOWN)
+	else if(istype(W, /obj/item/weapon/extinguisher))
+		W:move_z(DOWN, mob)
+	else if (W)
+		W.attack_self(mob)
 	return
 
 
@@ -235,9 +268,9 @@
 			if("run")
 				if(mob.drowsyness > 0)
 					move_delay += 6
-				move_delay += config.run_speed
+				move_delay += 1+config.run_speed
 			if("walk")
-				move_delay += config.walk_speed
+				move_delay += 7+config.walk_speed
 		move_delay += mob.movement_delay()
 
 		if(config.Tickcomp)

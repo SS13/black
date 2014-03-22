@@ -148,8 +148,6 @@
 			msg += "<span class='warning'>[t_He] [t_is] wearing \icon[shoes] [shoes.gender==PLURAL?"some":"a"] blood-stained [shoes.name] on [t_his] feet!</span>\n"
 		else
 			msg += "[t_He] [t_is] wearing \icon[shoes] \a [shoes] on [t_his] feet.\n"
-	else if(feet_blood_DNA)
-		msg += "<span class='warning'>[t_He] [t_has] blood-stained feet!</span>\n"
 
 	//mask
 	if(wear_mask && !skipmask)
@@ -439,7 +437,6 @@
 
 
 	if(print_flavor_text()) msg += "[print_flavor_text()]\n"
-	if(mob_alert) msg += "[t_He] looking for something.\n"
 
 	msg += "*---------*</span>"
 	if (pose)
@@ -448,16 +445,6 @@
 		msg += "\n[t_He] is [pose]"
 
 	usr << msg
-
-	if (usr != src && istype(src, /mob/living) && istype(usr, /mob/living))
-		for(var/mob/O in viewers(usr, null))
-			if (istype(O, usr))
-				break
-			if (O != src)
-				O.show_message("<b>[usr]</b> смотрит на <b>[src]</b>.", 1)
-			else
-				O.show_message("<b>[usr]</b> смотрит на <b>вас</b>", 1)
-		usr << "<b>“ы</b> смотришь на <b>[src]</b>"
 
 //Helper procedure. Called by /mob/living/carbon/human/examine() and /mob/living/carbon/human/Topic() to determine HUD access to security and medical records.
 /proc/hasHUD(mob/M as mob, hudtype)

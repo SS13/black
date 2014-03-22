@@ -13,19 +13,19 @@
 			shake_camera(L, 3, 2)
 
 /obj/item/projectile/bullet/weakbullet // "rubber" bullets
-	damage = 15
-	stun = 10
-	weaken = 10
+	damage = 10
+	stun = 5
+	weaken = 5
 	embed = 0
 
 
 /obj/item/projectile/bullet/midbullet
-	damage = 25
-	stun = 10
-	weaken = 10
+	damage = 30
+	stun = 5
+	weaken = 5
 
 /obj/item/projectile/bullet/midbullet2
-	damage = 30
+	damage = 35
 
 /obj/item/projectile/bullet/suffocationbullet//How does this even work?
 	name = "co bullet"
@@ -47,9 +47,9 @@
 /obj/item/projectile/bullet/stunshot
 	name = "stunshot"
 	damage = 5
-	stun = 15
-	weaken = 15
-	stutter = 15
+	stun = 10
+	weaken = 10
+	stutter = 5
 	embed = 0
 
 /obj/item/projectile/bullet/a762

@@ -10,7 +10,7 @@
 
 	var/input
 	if(!message)
-		input = copytext(input(src,"Choose an emote to display.") as text|null,1,MAX_MESSAGE_LEN)
+		input = copytext(sanitize(input(src,"Choose an emote to display.") as text|null),1,MAX_MESSAGE_LEN)
 	else
 		input = message
 	if(input)
@@ -20,7 +20,6 @@
 
 
 	if (message)
-		message = sanitize_multi(message)
 		log_emote("[name]/[key] : [message]")
 
  //Hearing gasp and such every five seconds is not good emotes were not global for a reason.

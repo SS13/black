@@ -48,9 +48,15 @@
 /obj/item/weapon/grab/proc/synch()
 	if(affecting)
 		if(assailant.r_hand == src)
-			hud.screen_loc = ui_rhand
+			if(istype(assailant,/mob/living/carbon/alien))
+				hud.screen_loc = ui_id
+			else
+				hud.screen_loc = ui_rhand
 		else
-			hud.screen_loc = ui_lhand
+			if(istype(assailant,/mob/living/carbon/alien))
+				hud.screen_loc = ui_belt
+			else
+				hud.screen_loc = ui_lhand
 
 
 /obj/item/weapon/grab/process()
@@ -137,7 +143,7 @@
 				affecting.loc = assailant.loc
 			affecting.attack_log += "\[[time_stamp()]\] <font color='orange'>Has had their neck grabbed by [assailant.name] ([assailant.ckey])</font>"
 			assailant.attack_log += "\[[time_stamp()]\] <font color='red'>Grabbed the neck of [affecting.name] ([affecting.ckey])</font>"
-			msg_admin_attack("[key_name(assailant)] grabbed the neck of [key_name(affecting)]")
+			log_attack("<font color='red'>[assailant.name] ([assailant.ckey]) grabbed the neck of [affecting.name] ([affecting.ckey])</font>")
 			hud.icon_state = "disarm/kill"
 			hud.name = "disarm/kill"
 		else
@@ -158,7 +164,7 @@
 					assailant.visible_message("<span class='danger'>[assailant] has tightened \his grip on [affecting]'s neck!</span>")
 					affecting.attack_log += "\[[time_stamp()]\] <font color='orange'>Has been strangled (kill intent) by [assailant.name] ([assailant.ckey])</font>"
 					assailant.attack_log += "\[[time_stamp()]\] <font color='red'>Strangled (kill intent) [affecting.name] ([affecting.ckey])</font>"
-					msg_admin_attack("[key_name(assailant)] strangled (kill intent) [key_name(affecting)]")
+					log_attack("<font color='red'>[assailant.name] ([assailant.ckey]) Strangled (kill intent) [affecting.name] ([affecting.ckey])</font>")
 
 					assailant.next_move = world.time + 10
 					affecting.losebreath += 1

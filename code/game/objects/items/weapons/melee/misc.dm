@@ -5,7 +5,7 @@
 	item_state = "chain"
 	flags = FPRINT | TABLEPASS | CONDUCT
 	slot_flags = SLOT_BELT
-	force = 10
+	force = 15
 	throwforce = 7
 	w_class = 3
 	origin_tech = "combat=4"

@@ -49,6 +49,12 @@
 	if(HULK in user.mutations)
 		power *= 2
 
+/*	if(sharp)																//Это моё говно было, с проникающими ударами. Прошу прощения.
+		if(user.a_intent == "hurt" && user.zone_sel.selecting == "chest")
+			if(prob(force/2))
+				penetrating_hit(M,user)
+				return
+*/
 	if(!istype(M, /mob/living/carbon/human))
 		if(istype(M, /mob/living/carbon/slime))
 			var/mob/living/carbon/slime/slime = M
