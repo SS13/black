@@ -1004,7 +1004,7 @@
 "atp" = (/obj/multiz/stairs/active,/turf/simulated/floor,/area/engine/hallway{name = "\improper Engine Hallway"})
 "atq" = (/obj/machinery/atmospherics/pipe/simple/scrubbers/hidden,/turf/simulated/wall/r_wall,/area/engine/control{name = "\improper Engine Control"})
 "atr" = (/obj/machinery/atmospherics/unary/vent_scrubber{dir = 1; on = 1; scrub_N2O = 0; scrub_Toxins = 0},/obj/structure/closet/crate/radiation,/turf/simulated/floor,/area/engine/control{name = "\improper Engine Control"})
-"ats" = (/obj/structure/cable{d1 = 1; d2 = 4; icon_state = "1-4"},/obj/effect/landmark/start{name = "Engineer"},/turf/simulated/floor,/area/engine/control{name = "\improper Engine Control"})
+"ats" = (/obj/structure/cable{d1 = 1; d2 = 4; icon_state = "1-4"},/obj/effect/landmark/start{name = "Vessel Engineer"},/turf/simulated/floor,/area/engine/control{name = "\improper Engine Control"})
 "att" = (/obj/structure/cable{d1 = 4; d2 = 8; icon_state = "4-8"; pixel_x = 0},/obj/structure/cable{d1 = 1; d2 = 2; icon_state = "1-2"},/turf/simulated/floor,/area/engine/control{name = "\improper Engine Control"})
 "atu" = (/obj/machinery/atmospherics/pipe/simple/supply/hidden,/obj/structure/cable{d1 = 4; d2 = 8; icon_state = "4-8"; pixel_x = 0},/obj/structure/cable{d1 = 2; d2 = 4; icon_state = "2-4"},/obj/machinery/door/airlock/glass_engineering{name = "Core Access"; req_access_txt = "10"},/turf/simulated/floor,/area/engine/control{name = "\improper Engine Control"})
 "atv" = (/obj/structure/cable{d1 = 4; d2 = 8; icon_state = "4-8"; pixel_x = 0},/turf/simulated/floor{tag = "icon-caution (WEST)"; icon_state = "caution"; dir = 8},/area/engine/engine_monitoring)

@@ -143,6 +143,7 @@ var/global/datum/controller/gameticker/ticker
 	lighting_controller.process()	//Start processing DynamicAreaLighting updates
 
 	for(var/obj/multiz/ladder/L in world) L.connect() //Lazy hackfix for ladders. TODO: move this to an actual controller. ~ Z
+	return 1
 
 /datum/controller/gameticker
 	//station_explosion used to be a variable for every mob's hud. Which was a waste!
