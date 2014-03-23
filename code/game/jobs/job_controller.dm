@@ -334,7 +334,7 @@ var/global/datum/controller/occupations/job_master
 		// For those who wanted to be assistant if their preferences were filled, here you go.
 		for(var/mob/new_player/player in unassigned)
 			if(player.client.prefs.alternate_option == BE_ASSISTANT)
-				Debug("AC2 Unassigned located, Player: [player]")
+				Debug("AC2 Assistant located, Player: [player]")
 				AssignRole(player, "Unassigned")
 
 		//For ones returning to lobby
