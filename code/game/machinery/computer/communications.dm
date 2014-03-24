@@ -382,7 +382,7 @@
 			dat += "<BR>\[ <A HREF='?src=\ref[src];operation=ai-messagelist'>Message List</A> \]"
 			dat += "<BR>\[ <A HREF='?src=\ref[src];operation=ai-status'>Set Status Display</A> \]"
 		if(STATE_CALLSHUTTLE)
-			dat += "Are you sure you want to call the shuttle? \[ <A HREF='?src=\ref[src];operation=ai-callshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=ai-main'>Cancel</A> \]"
+			dat += "Are you sure you want to launch the Escape Pods? \[ <A HREF='?src=\ref[src];operation=ai-callshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=ai-main'>Cancel</A> \]"
 		if(STATE_MESSAGELIST)
 			dat += "Messages:"
 			for(var/i = 1; i<=src.messagetitle.len; i++)
@@ -436,7 +436,7 @@
 		return
 
 	if(emergency_shuttle.direction == -1)
-		user << "The escape pods may not be called in such a short time after canceling."
+		user << "The escape pods may not be launched in such a short time after canceling."
 		return
 
 	if(emergency_shuttle.online)
@@ -450,7 +450,7 @@
 	emergency_shuttle.incall()
 	log_game("[key_name(user)] has launched the pods.")
 	message_admins("[key_name_admin(user)] has launched the pods.", 1)
-	captain_announce("The escape pods launch has been initiated. They will be launched in [round(emergency_shuttle.timeleft()/60)] minutes.")
+	captain_announce("The Escape Pods Launch Sequence has been activated. Estimate [round(emergency_shuttle.timeleft()/60)] minutes untill the Escape Pods Launch.")
 	world << sound('sound/AI/shuttlecalled.ogg')
 
 	return
