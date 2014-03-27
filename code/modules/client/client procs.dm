@@ -244,7 +244,7 @@
 //	preload_vox() //Causes long delays with initial start window and subsequent windows when first logged in.
 
 	// Send NanoUI resources to this client
-//	nanomanager.send_resources(src)
+	nanomanager.send_resources(src)
 
 	getFiles(
 		'html/search.js',
