@@ -1,8 +1,9 @@
 /obj/item/weapon/gun/energy/laser
 	name = "laser gun"
 	desc = "a basic weapon designed kill with concentrated energy bolts"
-	icon_state = "laser"
+	icon_state = "oldlaser"
 	item_state = "laser"
+	modifystate = "oldlaser"
 	fire_sound = 'sound/weapons/Laser.ogg'
 	w_class = 3.0
 	m_amt = 2000
