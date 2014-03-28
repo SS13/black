@@ -59,10 +59,10 @@
 	if(usr)
 		if (usr.client)
 			if(usr.client.holder)
-				M << "\bold You hear a voice in your head... \italic [sanitize(html_decode(msg))]"
+				M << "\bold You hear a voice in your head... \italic [sanitize_multi(html_decode(msg))]"
 
 	log_admin("SubtlePM: [key_name(usr)] -> [key_name(M)] : [msg]")
-	message_admins("\blue \bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [sanitize(html_decode(msg))]", 1)
+	message_admins("\blue \bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [sanitize_multi(html_decode(msg))]", 1)
 	feedback_add_details("admin_verb","SMS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/cmd_admin_world_narrate() // Allows administrators to fluff events a little easier -- TLE
@@ -77,9 +77,9 @@
 
 	if (!msg)
 		return
-	world << "[sanitize(html_decode(msg))]"
+	world << "[sanitize_multi(html_decode(msg))]"
 	log_admin("GlobalNarrate: [key_name(usr)] : [msg]")
-	message_admins("\blue \bold GlobalNarrate: [key_name_admin(usr)] : [sanitize(html_decode(msg))]<BR>", 1)
+	message_admins("\blue \bold GlobalNarrate: [key_name_admin(usr)] : [sanitize_multi(html_decode(msg))]<BR>", 1)
 	feedback_add_details("admin_verb","GLN") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/cmd_admin_direct_narrate(var/mob/M)	// Targetted narrate -- TLE
@@ -101,9 +101,9 @@
 	if( !msg )
 		return
 
-	M << sanitize(html_decode(msg))
+	M << sanitize_multi(html_decode(msg))
 	log_admin("DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [msg]")
-	message_admins("\blue \bold DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [sanitize(html_decode(msg))]<BR>", 1)
+	message_admins("\blue \bold DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [sanitize_multi(html_decode(msg))]<BR>", 1)
 	feedback_add_details("admin_verb","DIRN") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/cmd_admin_godmode(mob/M as mob in mob_list)
@@ -540,7 +540,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if(!holder)
 		src << "Only administrators may use this command."
 		return
-	var/input = sanitize(input(usr, "Please enter anything you want the AI to do. Anything. Serious.", "What?", "") as text|null)
+	var/input = sanitize_multi(input(usr, "Please enter anything you want the AI to do. Anything. Serious.", "What?", "") as text|null)
 	if(!input)
 		return
 	for(var/mob/living/silicon/ai/M in mob_list)
@@ -588,8 +588,8 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if(!holder)
 		src << "Only administrators may use this command."
 		return
-	var/input = sanitize(input(usr, "Please enter anything you want. Anything. Serious.", "What?", "") as message|null)
-	var/customname = sanitize(input(usr, "Pick a title for the report.", "Title") as text|null)
+	var/input = sanitize_multi(input(usr, "Please enter anything you want. Anything. Serious.", "What?", "") as message|null)
+	var/customname = sanitize_multi(input(usr, "Pick a title for the report.", "Title") as text|null)
 	if(!input)
 		return
 	if(!customname)

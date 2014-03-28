@@ -1,4 +1,4 @@
-/mob/living/carbon/human/emote(var/act,var/m_type=1,var/message = null)
+/mob/living/carbon/human/emote(var/act,var/m_type=1,var/message = null, var/cooldown = 2)
 	var/param = null
 
 	if (findtext(act, "-", 1, null))
@@ -6,7 +6,7 @@
 		param = copytext(act, t1 + 1, length(act) + 1)
 		act = copytext(act, 1, t1)
 
-	if(findtext(act,"s",-1) && !findtext(act,"_",-2))//Removes ending s's unless they are prefixed with a '_'
+	if(findtext(act,"s",-1) && !findtext(act,"_",-2))//Removes ending s's  unless they are prefixed with a '_'
 		act = copytext(act,1,length(act))
 
 	var/muzzled = istype(src.wear_mask, /obj/item/clothing/mask/muzzle)
@@ -17,6 +17,8 @@
 			I.trigger(act, src)
 
 	if(src.stat == 2.0 && (act != "deathgasp"))
+		return
+	if(emote_cooldown > 0)
 		return
 	switch(act)
 		if ("airguitar")
@@ -543,13 +545,15 @@
 			src << "blink, blink_r, blush, bow-(none)/mob, burp, choke, chuckle, clap, collapse, cough,\ncry, custom, deathgasp, drool, eyebrow, frown, gasp, giggle, groan, grumble, handshake, hug-(none)/mob, glare-(none)/mob,\ngrin, laugh, look-(none)/mob, moan, mumble, nod, pale, point-atom, raise, salute, shake, shiver, shrug,\nsigh, signal-#1-10, smile, sneeze, sniff, snore, stare-(none)/mob, tremble, twitch, twitch_s, whimper,\nwink, yawn"
 
 		else
-			src << "\blue Unusable emote '[act]'. Say *help for a list."
+			message = "<B>[src]</B> [act]."
+			cooldown = 0
 
 
 
 
 
 	if (message)
+		message = sanitize_multi(message)
 		log_emote("[name]/[key] : [message]")
 
  //Hearing gasp and such every five seconds is not good emotes were not global for a reason.
@@ -568,6 +572,9 @@
 		else if (m_type & 2)
 			for (var/mob/O in (hearers(src.loc, null) | get_mobs_in_view(world.view,src)))
 				O.show_message(message, m_type)
+
+		emote_cooldown += cooldown
+
 
 
 /mob/living/carbon/human/verb/pose()

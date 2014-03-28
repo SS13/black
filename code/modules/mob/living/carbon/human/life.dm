@@ -54,6 +54,7 @@
 	//to find it.
 	blinded = null
 	fire_alert = 0 //Reset this here, because both breathe() and handle_environment() have a chance to set it.
+	emote_cooldown = max(emote_cooldown - 1, 0)
 
 	//TODO: seperate this out
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
@@ -1466,7 +1467,7 @@
 			src << "<font color='red'><b>"+pick("It hurts so much!", "You really need some painkillers..", "Dear god, the pain!")
 
 		if(shock_stage >= 30)
-			if(shock_stage == 30) emote("me",1,"is having trouble keeping their eyes open.")
+			if(shock_stage == 30) emote("is having trouble keeping their eyes open.",1)//,"is having trouble keeping their eyes open.")
 			eye_blurry = max(2, eye_blurry)
 			stuttering = max(stuttering, 5)
 
@@ -1474,7 +1475,7 @@
 			src << "<font color='red'><b>"+pick("The pain is excrutiating!", "Please, just end the pain!", "Your whole body is going numb!")
 
 		if (shock_stage >= 60)
-			if(shock_stage == 60) emote("me",1,"'s body becomes limp.")
+			if(shock_stage == 60) emote("'s body becomes limp.",1)//,"'s body becomes limp.")
 			if (prob(2))
 				src << "<font color='red'><b>"+pick("The pain is excrutiating!", "Please, just end the pain!", "Your whole body is going numb!")
 				Weaken(20)
@@ -1490,7 +1491,7 @@
 				Paralyse(5)
 
 		if(shock_stage == 150)
-			emote("me",1,"can no longer stand, collapsing!")
+			emote("can no longer stand, collapsing!",1)//,"can no longer stand, collapsing!")
 			Weaken(20)
 
 		if(shock_stage >= 150)

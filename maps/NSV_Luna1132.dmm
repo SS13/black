@@ -956,7 +956,7 @@
 "ast" = (/obj/structure/cable{d1 = 1; d2 = 2; icon_state = "1-2"},/obj/structure/rack{dir = 8; layer = 2.9},/obj/item/clothing/shoes/magboots,/obj/item/clothing/suit/space/rig,/obj/item/clothing/mask/breath,/obj/item/clothing/head/helmet/space/rig,/turf/simulated/floor{tag = "icon-caution (NORTH)"; icon_state = "caution"; dir = 1},/area/engine/engine_monitoring)
 "asu" = (/obj/structure/table,/obj/item/weapon/tank/jetpack/carbondioxide,/turf/simulated/floor{tag = "icon-caution (NORTH)"; icon_state = "caution"; dir = 1},/area/engine/engine_monitoring)
 "asv" = (/obj/structure/table,/obj/item/weapon/tank/jetpack/carbondioxide,/obj/machinery/light{dir = 1},/turf/simulated/floor{tag = "icon-caution (NORTH)"; icon_state = "caution"; dir = 1},/area/engine/engine_monitoring)
-"asw" = (/obj/structure/table,/obj/item/device/modkit,/obj/item/device/modkit,/turf/simulated/floor{tag = "icon-caution (NORTH)"; icon_state = "caution"; dir = 1},/area/engine/engine_monitoring)
+"asw" = (/obj/structure/table,/obj/item/device/modkit/tajaran,/obj/item/device/modkit/tajaran,/turf/simulated/floor{tag = "icon-caution (NORTH)"; icon_state = "caution"; dir = 1},/area/engine/engine_monitoring)
 "asx" = (/turf/simulated/floor{tag = "icon-cautioncorner (NORTH)"; icon_state = "cautioncorner"; dir = 1},/area/engine/engine_monitoring)
 "asy" = (/obj/structure/sign/signnew/cryogenics,/turf/simulated/wall/r_wall,/area/engine/engine_monitoring)
 "asz" = (/turf/simulated/wall/r_wall,/area/toxins/telesci)
