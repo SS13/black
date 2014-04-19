@@ -148,7 +148,6 @@
 	throw_range = 5
 	w_class = 2.0
 	force_unwielded = 3
-	sharp = 1
 	force_wielded = 30
 	wieldsound = 'sound/weapons/saberon.ogg'
 	unwieldsound = 'sound/weapons/saberoff.ogg'
@@ -177,40 +176,3 @@
 		return 1
 	else
 		return 0
-
-//Ghetto-weapons
-
-//Spears here
-
-/obj/item/weapon/twohanded/spear
-	icon_state = "spearglass0"
-	name = "spear"
-	desc = "A haphazardly-constructed yet still deadly weapon of ancient design."
-	force = 10
-	w_class = 4.0
-	slot_flags = SLOT_BACK
-	sharp = 1
-	force_unwielded = 10
-	force_wielded = 18 // Was 13, Buffed - RR
-	throwforce = 15
-	flags = NOSHIELD
-	hitsound = 'sound/weapons/bladeslice.ogg'
-	attack_verb = list("attacked", "poked", "jabbed", "torn", "gored")
-
-/obj/item/weapon/twohanded/spear/update_icon()
-	icon_state = "spearglass[wielded]"
-	return
-
-
-//toolbox-hammer
-/*
-/obj/item/weapon/twohanded/t_hammer
-	icon_state = "Btoolbox_W"
-	name = "toolbox-hammer"
-	desc = "A strange construction, a toolbox attached to a rod. It looks like a hammer."
-	force = 8
-	w_class = 4.0
-	force_unwielded = 8
-	force_wielded = 20
-	flags = FPRINT | TABLEPASS | NOSHIELD
-*/

@@ -34,16 +34,6 @@
 		..()
 		reagents.add_reagent("inaprovaline", 30)
 
-/obj/item/weapon/reagent_containers/glass/bottle/urine
-	name = "urine bottle"
-	desc = "A small bottle. Contains urine."
-	icon = 'icons/obj/chemical.dmi'
-	icon_state = "bottle15"
-
-	New()
-		..()
-		reagents.add_reagent("urine", 30)
-
 /obj/item/weapon/reagent_containers/glass/bottle/toxin
 	name = "toxin bottle"
 	desc = "A small bottle of toxins. Do not drink, it is poisonous."

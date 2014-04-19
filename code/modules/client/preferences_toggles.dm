@@ -149,8 +149,7 @@
 	feedback_add_details("admin_verb","TBeSpecial") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 
-/*
-	/client/verb/change_ui()
+/client/verb/change_ui()
 	set name = "Change UI"
 	set category = "Preferences"
 	set desc = "Configure your user interface"
@@ -186,4 +185,3 @@
 		prefs.UI_style_color = UI_style_color_new
 		prefs.save_preferences()
 		usr << "UI was saved"
-		*/

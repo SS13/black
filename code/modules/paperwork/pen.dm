@@ -45,10 +45,6 @@
 /obj/item/weapon/pen/attack(mob/M as mob, mob/user as mob)
 	if(!ismob(M))
 		return
-	if(user.zone_sel.selecting != "eyes" && user.zone_sel.selecting != "head")
-		if((CLUMSY in user.mutations) && prob(50))
-			M = user
-	return eyestab(M,user)
 	user << "<span class='warning'>You stab [M] with the pen.</span>"
 //	M << "\red You feel a tiny prick!" //That's a whole lot of meta!
 	M.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been stabbed with [name]  by [user.name] ([user.ckey])</font>")
@@ -63,6 +59,7 @@
 /obj/item/weapon/pen/sleepypen
 	desc = "It's a black ink pen with a sharp point and a carefully engraved \"Waffle Co.\""
 	flags = FPRINT | TABLEPASS | OPENCONTAINER
+	slot_flags = SLOT_BELT
 	origin_tech = "materials=2;syndicate=5"
 
 
@@ -88,8 +85,8 @@
  * Parapens
  */
  /obj/item/weapon/pen/paralysis
- 	desc = "It's a black ink pen with a sharp point and a carefully engraved \"Waffle Co.\""
 	flags = FPRINT | TABLEPASS | OPENCONTAINER
+	slot_flags = SLOT_BELT
 	origin_tech = "materials=2;syndicate=5"
 
 

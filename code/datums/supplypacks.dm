@@ -45,12 +45,13 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 
 /datum/supply_packs/food
 	name = "Food crate"
-	contains = list(/obj/item/weapon/reagent_containers/food/drinks/flour,
+	contains = list(/obj/item/weapon/reagent_containers/food/snacks/flour,
+					/obj/item/weapon/reagent_containers/food/snacks/flour,
+					/obj/item/weapon/reagent_containers/food/snacks/flour,
+					/obj/item/weapon/reagent_containers/food/snacks/flour,
 					/obj/item/weapon/reagent_containers/food/drinks/milk,
 					/obj/item/weapon/reagent_containers/food/drinks/milk,
 					/obj/item/weapon/storage/fancy/egg_box,
-					/obj/item/weapon/reagent_containers/food/condiment/enzyme,
-					/obj/item/weapon/reagent_containers/food/snacks/grown/banana,
 					/obj/item/weapon/reagent_containers/food/snacks/grown/banana,
 					/obj/item/weapon/reagent_containers/food/snacks/grown/banana)
 	cost = 10
@@ -128,12 +129,12 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/item/weapon/reagent_containers/food/drinks/bottle/goldschlager,
 					/obj/item/weapon/storage/fancy/cigarettes/dromedaryco,
 					/obj/item/weapon/lipstick/random,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/ale,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/ale,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/beer,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/beer,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/beer,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/beer)
+					/obj/item/weapon/reagent_containers/food/drinks/cans/ale,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/ale,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer)
 	cost = 20
 	containertype = /obj/structure/closet/crate
 	containername = "Party equipment"
@@ -493,7 +494,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containername = "Field Generator crate"
 	access = access_ce
 	group = "Engineering"
-/*
+
 /datum/supply_packs/engine/sing_gen
 	name = "Singularity Generator crate"
 	contains = list(/obj/machinery/the_singularitygen)
@@ -501,7 +502,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containername = "Singularity Generator crate"
 	access = access_ce
 	group = "Engineering"
-*/
+
 /datum/supply_packs/engine/collector
 	name = "Collector crate"
 	contains = list(/obj/machinery/power/rad_collector,
@@ -510,7 +511,6 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containername = "Collector crate"
 	group = "Engineering"
 
-/*
 /datum/supply_packs/engine/PA
 	name = "Particle Accelerator crate"
 	cost = 40
@@ -525,7 +525,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containername = "Particle Accelerator crate"
 	access = access_ce
 	group = "Engineering"
-*/
+
 /datum/supply_packs/mecha_ripley
 	name = "Circuit Crate (\"Ripley\" APLU)"
 	contains = list(/obj/item/weapon/book/manual/ripley_build_and_repair,

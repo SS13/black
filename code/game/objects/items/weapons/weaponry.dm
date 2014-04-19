@@ -22,7 +22,7 @@
 	item_state = "nullrod"
 	flags = FPRINT | TABLEPASS
 	slot_flags = SLOT_BELT
-	force = 18
+	force = 15
 	throw_speed = 1
 	throw_range = 4
 	throwforce = 10
@@ -77,7 +77,7 @@
 	item_state = "sord"
 	flags = FPRINT | TABLEPASS
 	slot_flags = SLOT_BELT
-	force = 4
+	force = 2
 	throwforce = 1
 	w_class = 3
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
@@ -97,7 +97,7 @@
 	item_state = "claymore"
 	flags = FPRINT | TABLEPASS | CONDUCT
 	slot_flags = SLOT_BELT
-	force = 55
+	force = 40
 	throwforce = 10
 	w_class = 3
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
@@ -120,7 +120,7 @@
 	item_state = "katana"
 	flags = FPRINT | TABLEPASS | CONDUCT
 	slot_flags = SLOT_BELT | SLOT_BACK
-	force = 55
+	force = 40
 	throwforce = 10
 	w_class = 3
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced", "torn", "ripped", "diced", "cut")
@@ -142,7 +142,7 @@
 	desc = "Tharr she blows!"
 	icon_state = "harpoon"
 	item_state = "harpoon"
-	force = 30
+	force = 20
 	throwforce = 15
 	w_class = 3
 	attack_verb = list("jabbed","stabbed","ripped")

@@ -20,9 +20,6 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	var/obj/item/weapon/cartridge/cartridge = null //current cartridge
 	var/mode = 0 //Controls what menu the PDA will display. 0 is hub; the rest are either built in or based on cartridge.
 
-	var/lastmode = 0
-	var/ui_tick = 0
-
 	//Secondary variables
 	var/scanmode = 0 //1 is medical scanner, 2 is forensics, 3 is reagent scanner.
 	var/fon = 0 //Is the flashlight function on?
@@ -44,10 +41,6 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	var/active_conversation = null // New variable that allows us to only view a single conversation.
 	var/list/conversations = list()    // For keeping up with who we have PDA messsages from.
 	var/newmessage = 0			//To remove hackish overlay check
-
-	var/list/cartmodes = list(40, 42, 43, 433, 44, 441, 45, 451, 46, 48, 47, 49) // If you add more cartridge modes add them to this list as well.
-	var/list/no_auto_update = list(1, 40, 43, 44, 441, 45, 451)		     // These modes we turn off autoupdate
-	var/list/update_every_five = list(3, 41, 433, 46, 47, 48, 49)			     // These we update every 5 ticks
 
 	var/obj/item/weapon/card/id/id = null //Making it possible to slot an ID card into the PDA so it can function as both.
 	var/ownjob = null //related to above
@@ -294,7 +287,6 @@ var/global/list/obj/item/device/pda/PDAs = list()
 /obj/item/device/pda/New()
 	..()
 	PDAs += src
-	PDAs = sortAtom(PDAs)
 	if(default_cartridge)
 		cartridge = new default_cartridge(src)
 	new /obj/item/weapon/pen(src)
@@ -327,17 +319,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		return attack_self(M)
 	return
 
-
 /obj/item/device/pda/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null)
-	ui_tick++
-	var/auto_update = 1
-	if(mode in no_auto_update)
-		auto_update = 0
-	if(mode == lastmode && ui_tick % 5 && mode in update_every_five)
-		return
-
-	lastmode = mode
-		
 	var/title = "Personal Data Assistant"
 
 	var/data[0]  // This is the data that will be sent to the PDA
@@ -363,38 +345,35 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	if(cartridge)
 		var/cartdata[0]
 
-		if(mode in cartmodes)
-			data["records"] = cartridge.create_NanoUI_values()
+		data["records"] = cartridge.create_NanoUI_values()
 
-		if(mode == 0)	
-			cartdata["name"] = cartridge.name
-			cartdata["access"] = list(\
-					"access_security" = cartridge.access_security,\
-					"access_engine" = cartridge.access_engine,\
-					"access_atmos" = cartridge.access_atmos,\
-					"access_medical" = cartridge.access_medical,\
-					"access_clown" = cartridge.access_clown,\
-					"access_mime" = cartridge.access_mime,\
-					"access_janitor" = cartridge.access_janitor,\
-					"access_quartermaster" = cartridge.access_quartermaster,\
-					"access_hydroponics" = cartridge.access_hydroponics,\
-					"access_reagent_scanner" = cartridge.access_reagent_scanner,\
-					"access_remote_door" = cartridge.access_remote_door,\
-					"access_status_display" = cartridge.access_status_display\
-			)
-			if(isnull(cartridge.radio))
-				cartdata["radio"] = 0
-			else
-				if(istype(cartridge.radio, /obj/item/radio/integrated/beepsky))
-					cartdata["radio"] = 1
-				if(istype(cartridge.radio, /obj/item/radio/integrated/signal))
-					cartdata["radio"] = 2
-				if(istype(cartridge.radio, /obj/item/radio/integrated/mule))
-					cartdata["radio"] = 3
+		cartdata["name"] = cartridge.name
+		cartdata["access"] = list(\
+				"access_security" = cartridge.access_security,\
+				"access_engine" = cartridge.access_engine,\
+				"access_atmos" = cartridge.access_atmos,\
+				"access_medical" = cartridge.access_medical,\
+				"access_clown" = cartridge.access_clown,\
+				"access_mime" = cartridge.access_mime,\
+				"access_janitor" = cartridge.access_janitor,\
+				"access_quartermaster" = cartridge.access_quartermaster,\
+				"access_hydroponics" = cartridge.access_hydroponics,\
+				"access_reagent_scanner" = cartridge.access_reagent_scanner,\
+				"access_remote_door" = cartridge.access_remote_door,\
+				"access_status_display" = cartridge.access_status_display\
+				)
+		if(isnull(cartridge.radio))
+			cartdata["radio"] = 0
+		else
+			if(istype(cartridge.radio, /obj/item/radio/integrated/beepsky))
+				cartdata["radio"] = 1
+			if(istype(cartridge.radio, /obj/item/radio/integrated/signal))
+				cartdata["radio"] = 2
+			if(istype(cartridge.radio, /obj/item/radio/integrated/mule))
+				cartdata["radio"] = 3
 
-		if(mode == 2)
-			cartdata["type"] = cartridge.type
-			cartdata["charges"] = cartridge.charges ? cartridge.charges : 0
+		cartdata["type"] = cartridge.type
+		cartdata["charges"] = cartridge.charges ? cartridge.charges : 0
 		data["cartridge"] = cartdata
 
 	data["stationTime"] = worldtime2text()
@@ -404,7 +383,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		var/convopdas[0]
 		var/pdas[0]
 		var/count = 0
-		for (var/obj/item/device/pda/P in PDAs)
+		for (var/obj/item/device/pda/P in sortAtom(PDAs))
 			if (!P.owner||P.toff||P == src||P.hidden)       continue
 			if(conversations.Find("\ref[P]"))
 				convopdas.Add(list(list("Name" = "[P]", "Reference" = "\ref[P]", "Detonate" = "[P.detonate]", "inconvo" = "1")))
@@ -434,8 +413,8 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 
 	if(mode==3)
-		var/turf/T = get_turf(user.loc)
-		if(!isnull(T))
+		var/turf/T = get_turf_or_move(user.loc)
+		if(!isnull(T) || mode!=3)
 			var/datum/gas_mixture/environment = T.return_air()
 
 			var/pressure = environment.return_pressure()
@@ -470,8 +449,8 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		ui.set_initial_data(data)
 		// open the new ui window
 		ui.open()
-	// auto update every Master Controller tick
-	ui.set_auto_update(auto_update)
+		// auto update every Master Controller tick
+		ui.set_auto_update(1)
 
 //NOTE: graphic resources are loaded on client login
 /obj/item/device/pda/attack_self(mob/user as mob)
@@ -503,8 +482,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		return 0
 	if(!can_use()) //Why reinvent the wheel? There's a proc that does exactly that.
 		U.unset_machine()
-		if(ui)
-			ui.close()
+		ui.close()
 		return 0
 
 	add_fingerprint(U)
@@ -610,7 +588,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 			if (in_range(src, U) && loc == U)
 				n = copytext(adminscrub(n), 1, MAX_MESSAGE_LEN)
 				if (mode == 1)
-					note = html_decode(n)
+					note = sanitize_multi(html_decode(n)) //Decode before sanitize cauze ßR
 					notehtml = note
 					note = replacetext(note, "\n", "<br>")
 			else
@@ -643,7 +621,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 						U << "The PDA softly beeps."
 						ui.close()
 					else
-						t = copytext(sanitize(t), 1, 20)
+						t = copytext(sanitize_multi(t), 1, 20)
 						ttone = t
 			else
 				ui.close()
@@ -703,7 +681,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 						else
 							M.close()
 
-		if("Detonate")//Detonate PDA... maybe
+		if("Detonate")//Detonate PDA
 			// check if telecomms I/O route 1459 is stable
 			//var/telecomms_intact = telecomms_process(P.owner, owner, t)
 			var/obj/machinery/message_server/useMS = null
@@ -736,7 +714,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 					if (!P.toff && cartridge.charges > 0)
 						cartridge.charges--
 
-						var/difficulty = 2
+						var/difficulty = 0
 
 						if(P.cartridge)
 							difficulty += P.cartridge.access_medical
@@ -744,23 +722,22 @@ var/global/list/obj/item/device/pda/PDAs = list()
 							difficulty += P.cartridge.access_engine
 							difficulty += P.cartridge.access_clown
 							difficulty += P.cartridge.access_janitor
-							difficulty += 3 * P.hidden_uplink
+						else
+							difficulty += 2
 
-						if(prob(difficulty))
+						if(prob(difficulty * 12) || (P.hidden_uplink))
 							U.show_message("\red An error flashes on your [src].", 1)
-						else if (prob(difficulty * 7))
+						else if (prob(difficulty * 3))
 							U.show_message("\red Energy feeds back into your [src]!", 1)
 							ui.close()
-							detonate_act(src)
+							explode()
 							log_admin("[key_name(U)] just attempted to blow up [P] with the Detomatix cartridge but failed, blowing themselves up")
-							message_admins("[key_name_admin(U)] just attempted to blow up [P] with the Detomatix cartridge but failed.", 1)
+							message_admins("[key_name_admin(U)] just attempted to blow up [P] with the Detomatix cartridge but failed, blowing themselves up", 1)
 						else
 							U.show_message("\blue Success!", 1)
-							log_admin("[key_name(U)] just attempted to blow up [P] with the Detomatix cartridge and succeeded")
-							message_admins("[key_name_admin(U)] just attempted to blow up [P] with the Detomatix cartridge and succeeded.", 1)
-							detonate_act(P)
-					else
-						U << "No charges left."
+							log_admin("[key_name(U)] just attempted to blow up [P] with the Detomatix cartridge and succeded")
+							message_admins("[key_name_admin(U)] just attempted to blow up [P] with the Detomatix cartridge and succeded", 1)
+							P.explode()
 				else
 					U << "PDA not found."
 			else
@@ -796,70 +773,6 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 	return 1 // return 1 tells it to refresh the UI in NanoUI
 
-/obj/item/device/pda/proc/detonate_act(var/obj/item/device/pda/P)
-	//TODO: sometimes these attacks show up on the message server
-	var/i = rand(1,100)
-	var/j = rand(0,1) //Possibility of losing the PDA after the detonation
-	var/message = ""
-	var/mob/living/M = null
-	if(ismob(P.loc))
-		M = P.loc
-
-	//switch(i) //Yes, the overlapping cases are intended.
-	if(i<=10) //The traditional explosion
-		P.explode()
-		j=1
-		message += "Your [P] suddenly explodes!"
-	if(i>=10 && i<= 20) //The PDA burns a hole in the holder.
-		j=1
-		if(M && isliving(M))
-			M.apply_damage( rand(30,60) , BURN)
-		message += "You feel a searing heat! Your [P] is burning!"
-	if(i>=20 && i<=25) //EMP
-		empulse(P.loc, 3, 6, 1)
-		message += "Your [P] emits a wave of electomagnetic energy!"
-	if(i>=25 && i<=40) //Smoke
-		var/datum/effect/effect/system/smoke_spread/chem/S = new /datum/effect/effect/system/smoke_spread/chem
-		S.attach(P.loc)
-		S.set_up(P, 10, 0, P.loc)
-		playsound(P.loc, 'sound/effects/smoke.ogg', 50, 1, -3)
-		S.start()
-		message += "Large clouds of smoke billow forth from your [P]!"
-	if(i>=40 && i<=45) //Bad smoke
-		var/datum/effect/effect/system/smoke_spread/bad/B = new /datum/effect/effect/system/smoke_spread/bad
-		B.attach(P.loc)
-		B.set_up(P, 10, 0, P.loc)
-		playsound(P.loc, 'sound/effects/smoke.ogg', 50, 1, -3)
-		B.start()
-		message += "Large clouds of noxious smoke billow forth from your [P]!"
-	if(i>=65 && i<=75) //Weaken
-		if(M && isliving(M))
-			M.apply_effects(0,1)
-		message += "Your [P] flashes with a blinding white light! You feel weaker."
-	if(i>=75 && i<=85) //Stun and stutter
-		if(M && isliving(M))
-			M.apply_effects(1,0,0,0,1)
-		message += "Your [P] flashes with a blinding white light! You feel weaker."
-	if(i>=85) //Sparks
-		var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
-		s.set_up(2, 1, P.loc)
-		s.start()
-		message += "Your [P] begins to spark violently!"
-	if(i>45 && i<65 && prob(50)) //Nothing happens
-		message += "Your [P] bleeps loudly."
-		j = prob(10)
-
-	if(j) //This kills the PDA
-		P.Del()
-		if(message)
-			message += "It melts in a puddle of plastic."
-		else
-			message += "Your [P] shatters in a thousand pieces!"
-
-	if(M && isliving(M))
-		message = "\red" + message
-		M.show_message(message, 1)
-
 /obj/item/device/pda/proc/remove_id()
 	if (id)
 		if (ismob(loc))
@@ -873,7 +786,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 /obj/item/device/pda/proc/create_message(var/mob/living/U = usr, var/obj/item/device/pda/P)
 
 	var/t = input(U, "Please enter message", name, null) as text
-	t = copytext(sanitize(t), 1, MAX_MESSAGE_LEN)
+	t = copytext(sanitize_multi(t), 1, MAX_MESSAGE_LEN)
 	if (!t || !istype(P))
 		return
 	if (!in_range(src, U) && loc != U)
@@ -1213,17 +1126,25 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		user << "\blue Paper scanned." //concept of scanning paper copyright brainoblivion 2009
 
 
-/obj/item/device/pda/proc/explode() //This needs tuning. //Sure did.
+/obj/item/device/pda/proc/explode() //This needs tuning.
 	if(!src.detonate) return
 	var/turf/T = get_turf(src.loc)
+
+	if (ismob(loc))
+		var/mob/M = loc
+		M.show_message("\red Your [src] explodes!", 1)
+
 	if(T)
 		T.hotspot_expose(700,125)
-		explosion(T, 0, 0, 1, rand(1,2))
+
+		explosion(T, -1, -1, 2, 3)
+
+	del(src)
 	return
 
 /obj/item/device/pda/Del()
 	PDAs -= src
-	if (src.id && prob(90)) //IDs are kept in 90% of the cases
+	if (src.id)
 		src.id.loc = get_turf(src.loc)
 	..()
 

@@ -6,7 +6,7 @@
 // these define the time taken for the shuttle to get to SS13
 // and the time before it leaves again
 #define SHUTTLEARRIVETIME 600		// 10 minutes = 600 seconds
-#define SHUTTLELEAVETIME 0		// 3 minutes = 180 seconds
+#define SHUTTLELEAVETIME 180		// 3 minutes = 180 seconds
 #define SHUTTLETRANSITTIME 120		// 2 minutes = 120 seconds
 
 var/global/datum/shuttle_controller/emergency_shuttle/emergency_shuttle
@@ -55,7 +55,7 @@ datum/shuttle_controller/proc/recall()
 		if(alert == 0)
 			if(timeleft >= 600)
 				return
-			captain_announce("The escape pods launch has been canceled.")
+			captain_announce("The emergency shuttle has been recalled.")
 			world << sound('sound/AI/shuttlerecalled.ogg')
 			setdirection(-1)
 			online = 1
@@ -64,7 +64,7 @@ datum/shuttle_controller/proc/recall()
 					A.readyreset()
 			return
 		else //makes it possible to send shuttle back.
-			captain_announce("The escape pods launch has been canceled.")
+			captain_announce("The shuttle has been recalled.")
 			setdirection(-1)
 			online = 1
 			alert = 0 // set alert back to 0 after an admin recall
@@ -229,8 +229,6 @@ datum/shuttle_controller/emergency_shuttle/process()
 
 					online = 0
 
-					captain_announce("The Escape Pods have docked with the Central Command.")
-
 					return 1
 
 					/* --- Shuttle has docked centcom after being recalled --- */
@@ -246,9 +244,66 @@ datum/shuttle_controller/emergency_shuttle/process()
 				fake_recall = 0
 				return 0
 
-					/* --- Time out, shooting off pods - begin countdown to transit --- */
-
+					/* --- Shuttle has docked with the station - begin countdown to transit --- */
 			else if(timeleft <= 0)
+				location = 1
+				var/area/start_location = locate(/area/shuttle/escape/centcom)
+				var/area/end_location = locate(/area/shuttle/escape/station)
+
+				var/list/dstturfs = list()
+				var/throwy = world.maxy
+
+				for(var/turf/T in end_location)
+					dstturfs += T
+					if(T.y < throwy)
+						throwy = T.y
+
+				// hey you, get out of the way!
+				for(var/turf/T in dstturfs)
+					// find the turf to move things to
+					var/turf/D = locate(T.x, throwy - 1, 1)
+					//var/turf/E = get_step(D, SOUTH)
+					for(var/atom/movable/AM as mob|obj in T)
+						AM.Move(D)
+						// NOTE: Commenting this out to avoid recreating mass driver glitch
+						/*
+						spawn(0)
+							AM.throw_at(E, 1, 1)
+							return
+						*/
+
+					if(istype(T, /turf/simulated))
+						del(T)
+
+				for(var/mob/living/carbon/bug in end_location) // If someone somehow is still in the shuttle's docking area...
+					bug.gib()
+
+				for(var/mob/living/simple_animal/pest in end_location) // And for the other kind of bug...
+					pest.gib()
+
+				start_location.move_contents_to(end_location)
+				settimeleft(SHUTTLELEAVETIME)
+				//send2irc("Server", "The Emergency Shuttle has docked with the station.")
+				captain_announce("The Emergency Shuttle has docked with the station. You have [round(timeleft()/60,1)] minutes to board the Emergency Shuttle.")
+				world << sound('sound/AI/shuttledock.ogg')
+
+				return 1
+
+		if(1)
+
+			// Just before it leaves, close the damn doors!
+			if(timeleft == 2 || timeleft == 1)
+				var/area/start_location = locate(/area/shuttle/escape/station)
+				for(var/obj/machinery/door/unpowered/shuttle/D in start_location)
+					spawn(0)
+						D.close()
+						D.locked = 1
+
+			if(timeleft>0)
+				return 0
+
+			/* --- Shuttle leaves the station, enters transit --- */
+			else
 
 				// Turn on the star effects
 
@@ -290,7 +345,7 @@ datum/shuttle_controller/emergency_shuttle/process()
 				//pods
 				start_location = locate(/area/shuttle/escape_pod1/station)
 				end_location = locate(/area/shuttle/escape_pod1/transit)
-				start_location.move_contents_to(end_location, /turf/simulated/floor/engine/vacuum/hull, NORTH)
+				start_location.move_contents_to(end_location, null, NORTH)
 				for(var/obj/machinery/door/D in end_location)
 					spawn(0)
 						D.close()
@@ -308,7 +363,7 @@ datum/shuttle_controller/emergency_shuttle/process()
 
 				start_location = locate(/area/shuttle/escape_pod2/station)
 				end_location = locate(/area/shuttle/escape_pod2/transit)
-				start_location.move_contents_to(end_location, /turf/simulated/floor/engine/vacuum/hull, NORTH)
+				start_location.move_contents_to(end_location, null, NORTH)
 				for(var/obj/machinery/door/D in end_location)
 					spawn(0)
 						D.close()
@@ -326,7 +381,7 @@ datum/shuttle_controller/emergency_shuttle/process()
 
 				start_location = locate(/area/shuttle/escape_pod3/station)
 				end_location = locate(/area/shuttle/escape_pod3/transit)
-				start_location.move_contents_to(end_location, /turf/simulated/floor/engine/vacuum/hull, NORTH)
+				start_location.move_contents_to(end_location, null, NORTH)
 				for(var/obj/machinery/door/D in end_location)
 					spawn(0)
 						D.close()
@@ -344,7 +399,7 @@ datum/shuttle_controller/emergency_shuttle/process()
 
 				start_location = locate(/area/shuttle/escape_pod5/station)
 				end_location = locate(/area/shuttle/escape_pod5/transit)
-				start_location.move_contents_to(end_location, /turf/simulated/floor/engine/vacuum/hull, EAST)
+				start_location.move_contents_to(end_location, null, EAST)
 				for(var/obj/machinery/door/D in end_location)
 					spawn(0)
 						D.close()
@@ -360,28 +415,12 @@ datum/shuttle_controller/emergency_shuttle/process()
 						if(!M.buckled)
 							M.Weaken(5)
 
-				captain_announce("The Escape Pods have left the ship. Estimate [round(timeleft()/60,1)] minutes until they dock at Central Command.")
+				captain_announce("The Emergency Shuttle has left the station. Estimate [round(timeleft()/60,1)] minutes until the shuttle docks at Central Command.")
 
 				return 1
 
 		else
 			return 1
-
-
-			// Just before it leaves, close the damn doors!
-			if(timeleft == 2 || timeleft == 1)
-				var/area/start_location = locate(/area/shuttle/escape/station)
-				for(var/obj/machinery/door/unpowered/shuttle/D in start_location)
-					spawn(0)
-						D.close()
-						D.locked = 1
-
-			if(timeleft>0)
-				return 0
-
-			/* --- Shuttle leaves the station, enters transit --- */
-
-			//I've copied it to previos section
 
 
 /*

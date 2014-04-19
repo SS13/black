@@ -23,9 +23,9 @@ datum
 		var/list/data = null
 		var/volume = 0
 		var/nutriment_factor = 0
-		var/custom_metabolism = REAGENTS_METABOLISM
+		var/custom_metabolism = REAGENTS_METABOLISM //Default 0.2
 		var/overdose = 0
-		var/overdose_dam = 1
+		var/overdose_dam = 10
 		//var/list/viruses = list()
 		var/color = "#000000" // rgb: 0, 0, 0 (does not support alpha channels - yet!)
 
@@ -166,8 +166,6 @@ datum
 						blood_prop.viruses += newVirus
 						newVirus.holder = blood_prop
 				return
-
-
 
 /* Must check the transfering of reagents and their data first. They all can point to one disease datum.
 
@@ -1394,6 +1392,13 @@ datum
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		holywater
+			name = "Holy Water"
+			id = "holywater"
+			description = "This was once water, but has been altered by higher powers."
+			reagent_state = LIQUID
+			color = "#535E66" // rgb: 83, 94, 102
 
 		nanites
 			name = "Nanomachines"

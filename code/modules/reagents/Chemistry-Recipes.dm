@@ -84,6 +84,12 @@ datum
 			required_reagents = list("oxygen" = 1, "carbon" = 1, "sugar" = 1)
 			result_amount = 3
 
+		cocksitizite
+			name = "Cocksitizite"
+			id = "cocksitizite"
+			result = "cocksitizite"
+			required_reagents = list("dexalin" = 1, "bicaridine" = 1 )
+
 		anti_toxin
 			name = "Anti-Toxin (Dylovene)"
 			id = "anti_toxin"
@@ -485,7 +491,7 @@ datum
 			name = "Potassium Chlorophoride"
 			id = "potassium_chlorophoride"
 			result = "potassium_chlorophoride"
-			required_reagents = list("potassium_chloride" = 1, "plasma" = 1, "chloralhydrate" = 1)
+			required_reagents = list("potassium_chloride" = 1, "plasma" = 1, "chloral_hydrate" = 1)
 			result_amount = 4
 
 		stoxin

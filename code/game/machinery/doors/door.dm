@@ -218,7 +218,7 @@
 	icon_state = "door0"
 	src.SetOpacity(0)
 	sleep(10)
-	src.layer = 2.8
+	src.layer = 2.7
 	src.density = 0
 	explosion_resistance = 0
 	update_icon()

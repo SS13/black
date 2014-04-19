@@ -53,8 +53,10 @@
 
 	var/failed_last_breath = 0 //This is used to determine if the mob failed a breath. If they did fail a brath, they will attempt to breathe each tick, otherwise just once per 4 ticks.
 
-	var/emote_cooldown = 0
 	var/xylophone = 0 //For the spoooooooky xylophone cooldown
+
+	var/emote_cooldown = 0
+	var/mob_alert = 0
 
 	var/mob/remoteview_target = null
 	var/hand_blood_color

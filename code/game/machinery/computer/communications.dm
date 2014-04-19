@@ -44,7 +44,7 @@
 /obj/machinery/computer/communications/Topic(href, href_list)
 	if(..())
 		return
-	if (src.z > 4)
+	if (src.z > 1)
 		usr << "\red <b>Unable to establish a connection</b>: \black You're too far away from the station!"
 		return
 	usr.set_machine(src)
@@ -102,7 +102,7 @@
 		if("announce")
 			if(src.authenticated==2)
 				if(message_cooldown)	return
-				var/input = stripped_input(usr, "Please choose a message to announce to the ship's crew.", "What?")
+				var/input = stripped_input(usr, "Please choose a message to announce to the station crew.", "What?")
 				if(!input || !(usr in view(1,src)))
 					return
 				captain_announce(input)//This should really tell who is, IE HoP, CE, HoS, RD, Captain
@@ -286,7 +286,7 @@
 	var/dat = "<head><title>Communications Console</title></head><body>"
 	if (emergency_shuttle.online && emergency_shuttle.location==0)
 		var/timeleft = emergency_shuttle.timeleft()
-		dat += "<B>Escape Pods</B>\n<BR>\nETA: [timeleft / 60 % 60]:[add_zero(num2text(timeleft % 60), 2)]<BR>"
+		dat += "<B>Emergency shuttle</B>\n<BR>\nETA: [timeleft / 60 % 60]:[add_zero(num2text(timeleft % 60), 2)]<BR>"
 
 	if (istype(user, /mob/living/silicon))
 		var/dat2 = src.interact_ai(user) // give the AI a different interact proc to limit its access
@@ -311,18 +311,18 @@
 				dat += "<BR>\[ <A HREF='?src=\ref[src];operation=changeseclevel'>Change alert level</A> \]"
 				if(emergency_shuttle.location==0)
 					if (emergency_shuttle.online)
-						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=cancelshuttle'>Cancel Escape Pods Launch</A> \]"
+						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=cancelshuttle'>Cancel Shuttle Call</A> \]"
 					else
-						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=callshuttle'>Launch Escape Pods</A> \]"
+						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=callshuttle'>Call Emergency Shuttle</A> \]"
 
 				dat += "<BR>\[ <A HREF='?src=\ref[src];operation=status'>Set Status Display</A> \]"
 			else
 				dat += "<BR>\[ <A HREF='?src=\ref[src];operation=login'>Log In</A> \]"
 			dat += "<BR>\[ <A HREF='?src=\ref[src];operation=messagelist'>Message List</A> \]"
 		if(STATE_CALLSHUTTLE)
-			dat += "Are you sure you want to launch the pods? \[ <A HREF='?src=\ref[src];operation=callshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=main'>Cancel</A> \]"
+			dat += "Are you sure you want to call the shuttle? \[ <A HREF='?src=\ref[src];operation=callshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=main'>Cancel</A> \]"
 		if(STATE_CANCELSHUTTLE)
-			dat += "Are you sure you want to abort the pods launch? \[ <A HREF='?src=\ref[src];operation=cancelshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=main'>Cancel</A> \]"
+			dat += "Are you sure you want to cancel the shuttle? \[ <A HREF='?src=\ref[src];operation=cancelshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=main'>Cancel</A> \]"
 		if(STATE_MESSAGELIST)
 			dat += "Messages:"
 			for(var/i = 1; i<=src.messagetitle.len; i++)
@@ -378,11 +378,11 @@
 	switch(src.aistate)
 		if(STATE_DEFAULT)
 			if(emergency_shuttle.location==0 && !emergency_shuttle.online)
-				dat += "<BR>\[ <A HREF='?src=\ref[src];operation=ai-callshuttle'>Launch Escape Pods</A> \]"
+				dat += "<BR>\[ <A HREF='?src=\ref[src];operation=ai-callshuttle'>Call Emergency Shuttle</A> \]"
 			dat += "<BR>\[ <A HREF='?src=\ref[src];operation=ai-messagelist'>Message List</A> \]"
 			dat += "<BR>\[ <A HREF='?src=\ref[src];operation=ai-status'>Set Status Display</A> \]"
 		if(STATE_CALLSHUTTLE)
-			dat += "Are you sure you want to launch the Escape Pods? \[ <A HREF='?src=\ref[src];operation=ai-callshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=ai-main'>Cancel</A> \]"
+			dat += "Are you sure you want to call the shuttle? \[ <A HREF='?src=\ref[src];operation=ai-callshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=ai-main'>Cancel</A> \]"
 		if(STATE_MESSAGELIST)
 			dat += "Messages:"
 			for(var/i = 1; i<=src.messagetitle.len; i++)
@@ -406,7 +406,7 @@
 		if(STATE_STATUSDISPLAY)
 			dat += "Set Status Displays<BR>"
 			dat += "\[ <A HREF='?src=\ref[src];operation=setstat;statdisp=blank'>Clear</A> \]<BR>"
-			dat += "\[ <A HREF='?src=\ref[src];operation=setstat;statdisp=shuttle'>Pods ETA</A> \]<BR>"
+			dat += "\[ <A HREF='?src=\ref[src];operation=setstat;statdisp=shuttle'>Shuttle ETA</A> \]<BR>"
 			dat += "\[ <A HREF='?src=\ref[src];operation=setstat;statdisp=message'>Message</A> \]"
 			dat += "<ul><li> Line 1: <A HREF='?src=\ref[src];operation=setmsg1'>[ stat_msg1 ? stat_msg1 : "(none)"]</A>"
 			dat += "<li> Line 2: <A HREF='?src=\ref[src];operation=setmsg2'>[ stat_msg2 ? stat_msg2 : "(none)"]</A></ul><br>"
@@ -428,19 +428,19 @@
 		return
 
 	if(sent_strike_team == 1)
-		user << "Centcom will not allow the pods to be launched. Consider all contracts terminated."
+		user << "Centcom will not allow the shuttle to be called. Consider all contracts terminated."
 		return
 
 	if(world.time < 6000) // Ten minute grace period to let the game get going without lolmetagaming. -- TLE
-		user << "The escape pods are refueling. Please wait another [round((6000-world.time)/600)] minutes before trying again."
+		user << "The emergency shuttle is refueling. Please wait another [round((6000-world.time)/600)] minutes before trying again."
 		return
 
 	if(emergency_shuttle.direction == -1)
-		user << "The escape pods may not be launched in such a short time after canceling."
+		user << "The emergency shuttle may not be called while returning to CentCom."
 		return
 
 	if(emergency_shuttle.online)
-		user << "The escape pods launch has already been initiated."
+		user << "The emergency shuttle is already on its way."
 		return
 
 	if(ticker.mode.name == "blob")
@@ -448,9 +448,9 @@
 		return
 
 	emergency_shuttle.incall()
-	log_game("[key_name(user)] has launched the pods.")
-	message_admins("[key_name_admin(user)] has launched the pods.", 1)
-	captain_announce("The Escape Pods Launch Sequence has been activated. Estimate [round(emergency_shuttle.timeleft()/60)] minutes untill the Escape Pods Launch.")
+	log_game("[key_name(user)] has called the shuttle.")
+	message_admins("[key_name_admin(user)] has called the shuttle.", 1)
+	captain_announce("The emergency shuttle has been called. It will arrive in [round(emergency_shuttle.timeleft()/60)] minutes.")
 	world << sound('sound/AI/shuttlecalled.ogg')
 
 	return
@@ -460,25 +460,25 @@
 		return
 
 	if(emergency_shuttle.direction == -1)
-		user << "The pods may not be called in such a short time after canceling."
+		user << "The shuttle may not be called while returning to CentCom."
 		return
 
 	if(emergency_shuttle.online)
-		user << "The escape pods launch has already been initiated"
+		user << "The shuttle is already on its way."
 		return
 
 	// if force is 0, some things may stop the shuttle call
 	if(!force)
 		if(emergency_shuttle.deny_shuttle)
-			user << "Centcom permits the escape pods launch. Please try again later."
+			user << "Centcom does not currently have a shuttle available in your sector. Please try again later."
 			return
 
 		if(sent_strike_team == 1)
-			user << "Centcom permits the escape pods launch. Consider all contracts terminated."
+			user << "Centcom will not allow the shuttle to be called. Consider all contracts terminated."
 			return
 
 		if(world.time < 54000) // 30 minute grace period to let the game get going
-			user << "The pods may not be called at the beginning of the shift. Please wait another [round((54000-world.time)/600)] minutes before trying again."//may need to change "/600"
+			user << "The shuttle is refueling. Please wait another [round((54000-world.time)/600)] minutes before trying again."//may need to change "/600"
 			return
 
 		if(ticker.mode.name == "revolution" || ticker.mode.name == "AI malfunction" || ticker.mode.name == "sandbox")
@@ -491,9 +491,9 @@
 
 	emergency_shuttle.shuttlealert(1)
 	emergency_shuttle.incall()
-	log_game("[key_name(user)] has launched the pods.")
-	message_admins("[key_name_admin(user)] has launched the pods.", 1)
-	captain_announce("A crew transfer has been initiated. The escape pods will be launched in [round(emergency_shuttle.timeleft()/60)] minutes.")
+	log_game("[key_name(user)] has called the shuttle.")
+	message_admins("[key_name_admin(user)] has called the shuttle.", 1)
+	captain_announce("A crew transfer has been initiated. The shuttle has been called. It will arrive in [round(emergency_shuttle.timeleft()/60)] minutes.")
 
 	return
 
@@ -505,8 +505,8 @@
 
 	if(emergency_shuttle.direction != -1 && emergency_shuttle.online) //check that shuttle isn't already heading to centcomm
 		emergency_shuttle.recall()
-		log_game("[key_name(user)] has canceled the pods launch.")
-		message_admins("[key_name_admin(user)] has canceled the pods launch.", 1)
+		log_game("[key_name(user)] has recalled the shuttle.")
+		message_admins("[key_name_admin(user)] has recalled the shuttle.", 1)
 	return
 
 /obj/machinery/computer/communications/proc/post_status(var/command, var/data1, var/data2)
@@ -550,9 +550,9 @@
 		return ..()
 
 	emergency_shuttle.incall(2)
-	log_game("All the AIs, comm consoles and boards are destroyed. Pods launch started.")
-	message_admins("All the AIs, comm consoles and boards are destroyed. Pods launch started.", 1)
-	captain_announce("The escape pods launch has been initiated. They will be launched in [round(emergency_shuttle.timeleft()/60)] minutes.")
+	log_game("All the AIs, comm consoles and boards are destroyed. Shuttle called.")
+	message_admins("All the AIs, comm consoles and boards are destroyed. Shuttle called.", 1)
+	captain_announce("The emergency shuttle has been called. It will arrive in [round(emergency_shuttle.timeleft()/60)] minutes.")
 	world << sound('sound/AI/shuttlecalled.ogg')
 
 	..()
@@ -575,9 +575,9 @@
 		return ..()
 
 	emergency_shuttle.incall(2)
-	log_game("All the AIs, comm consoles and boards are destroyed. Pods launch started.")
-	message_admins("All the AIs, comm consoles and boards are destroyed. Pods launch started.", 1)
-	captain_announce("The escape pods launch has been initiated. They will be launched in [round(emergency_shuttle.timeleft()/60)] minutes.")
+	log_game("All the AIs, comm consoles and boards are destroyed. Shuttle called.")
+	message_admins("All the AIs, comm consoles and boards are destroyed. Shuttle called.", 1)
+	captain_announce("The emergency shuttle has been called. It will arrive in [round(emergency_shuttle.timeleft()/60)] minutes.")
 	world << sound('sound/AI/shuttlecalled.ogg')
 
 	..()

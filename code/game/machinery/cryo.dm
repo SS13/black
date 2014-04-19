@@ -4,9 +4,8 @@
 	icon_state = "cell-off"
 	density = 1
 	anchored = 1.0
-	layer = MOB_LAYER+0.1
+	layer = 2.8
 
-	var/eject_dir = 2
 	var/on = 0
 	var/temperature_archived
 	var/mob/living/carbon/occupant = null
@@ -122,13 +121,13 @@
 				data["beakerVolume"] += R.volume
 
 	// update the ui if it exists, returns null if no ui is passed/found
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data)
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data)	
 	if (!ui)
 		// the ui does not exist, so we'll create a new() one
         // for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
 		ui = new(user, src, ui_key, "cryo.tmpl", "Cryo Cell Control System", 520, 410)
 		// when the ui is first opened this is the data it will use
-		ui.set_initial_data(data)
+		ui.set_initial_data(data)		
 		// open the new ui window
 		ui.open()
 		// auto update every Master Controller tick
@@ -252,7 +251,7 @@
 	if (occupant.client)
 		occupant.client.eye = occupant.client.mob
 		occupant.client.perspective = MOB_PERSPECTIVE
-	occupant.loc = get_step(loc, eject_dir)	//this doesn't account for walls or anything, but i don't forsee that being a problem.
+	occupant.loc = get_step(loc, SOUTH)	//this doesn't account for walls or anything, but i don't forsee that being a problem.
 	if (occupant.bodytemperature < 261 && occupant.bodytemperature >= 70) //Patch by Aranclanos to stop people from taking burn damage after being ejected
 		occupant.bodytemperature = 261									  // Changed to 70 from 140 by Zuhayr due to reoccurance of bug.
 //	occupant.metabslow = 0

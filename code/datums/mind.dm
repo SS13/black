@@ -74,7 +74,7 @@ datum/mind
 			current.mind = null
 		if(new_character.mind)		//remove any mind currently in our new body's mind variable
 			new_character.mind.current = null
-
+			
 		nanomanager.user_transferred(current, new_character) // transfer active NanoUI instances to new user
 
 		current = new_character		//link ourself to our new body
@@ -129,7 +129,7 @@ datum/mind
 		if (istype(current, /mob/living/carbon/human) || istype(current, /mob/living/carbon/monkey))
 			/** Impanted**/
 			if(istype(current, /mob/living/carbon/human))
-				if(H.is_loyalty_implanted(H))
+				if(H.is_loyalty_implanted(H)) 
 					text = "Loyalty Implant:<a href='?src=\ref[src];implant=remove'>Remove</a>|<b>Implanted</b></br>"
 				else
 					text = "Loyalty Implant:<b>No Implant</b>|<a href='?src=\ref[src];implant=add'>Implant him!</a></br>"
@@ -1198,7 +1198,7 @@ datum/mind
 //HUMAN
 /mob/living/carbon/human/mind_initialize()
 	..()
-	if(!mind.assigned_role)	mind.assigned_role = "Unassigned"	//defualt
+	if(!mind.assigned_role)	mind.assigned_role = "Assistant"	//defualt
 
 //MONKEY
 /mob/living/carbon/monkey/mind_initialize()

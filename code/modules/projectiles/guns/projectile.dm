@@ -26,7 +26,7 @@
 	return
 
 
-/obj/item/weapon/gun/projectile/process_chambered()
+/obj/item/weapon/gun/projectile/load_into_chamber()
 	if(in_chamber)
 		return 1 //{R}
 

@@ -55,7 +55,7 @@
 
 	//get message text, limit it's length.and clean/escape html
 	if(!msg)
-		msg = sanitize_multi(input(src,"Message:", "Private message to [key_name(C, 0, 0, holder?1:0 )]") as text|null)
+		msg = sanitize_russian(input(src,"Message:", "Private message to [key_name(C, 0, 0, holder?1:0 )]") as text|null)
 
 		if(!msg)	return
 		if(!C)
@@ -77,14 +77,15 @@
 
 
 	if(holder)
-		if ( holder.rights & R_ADMIN )
-			recieve_color = "red"
-			send_pm_type = "Administrator "//holder.rank + " "
-			recieve_pm_type = "Administrator "//holder.rank
-		else
-			recieve_color = "maroon" //mod PMs are maroon
-			send_pm_type = "Moderator "//holder.rank + " "
-			recieve_pm_type = "Moderator "//holder.rank
+		//mod PMs are maroon
+		//PMs sent from admins and mods display their rank
+		if(holder)
+			if( holder.rights & R_ADMIN )
+				recieve_color = "red"
+			else
+				recieve_color = "maroon"
+			send_pm_type = holder.rank + " "
+			recieve_pm_type = holder.rank
 
 	else if(!C.holder)
 		src << "<font color='red'>Error: Admin-PM: Non-admin to non-admin PM communication is forbidden.</font>"
@@ -121,8 +122,58 @@
 	if(C.prefs.toggles & SOUND_ADMINHELP)
 		C << 'sound/effects/adminhelp.ogg'
 
-	log_admin("PM: [key_name(src, real_key = 1)]->[key_name(C, real_key = 1)]: [msg]")
+	/*
+	if(C.holder)
+		if(holder)	//both are admins
+			if(holder.rank == "Moderator") //If moderator
+				C << "<font color='maroon'>Mod PM from-<b>[key_name(src, C, 1)]</b>: [msg]</font>"
+				src << "<font color='blue'>Mod PM to-<b>[key_name(C, src, 1)]</b>: [msg]</font>"
+			else
+				C << "<font color='red'>Admin PM from-<b>[key_name(src, C, 1)]</b>: [msg]</font>"
+				src << "<font color='blue'>Admin PM to-<b>[key_name(C, src, 1)]</b>: [msg]</font>"
 
+		else		//recipient is an admin but sender is not
+			C << "<font color='red'>Reply PM from-<b>[key_name(src, C, 1)]</b>: [msg]</font>"
+			src << "<font color='blue'>PM to-<b>Admins</b>: [msg]</font>"
+
+		//play the recieving admin the adminhelp sound (if they have them enabled)
+		if(C.prefs.toggles & SOUND_ADMINHELP)
+			C << 'sound/effects/adminhelp.ogg'
+
+	else
+		if(holder)	//sender is an admin but recipient is not. Do BIG RED TEXT
+			if(holder.rank == "Moderator")
+				C << "<font color='maroon'>Mod PM from-<b>[key_name(src, C, 0)]</b>: [msg]</font>"
+				C << "<font color='maroon'><i>Click on the moderators's name to reply.</i></font>"
+				src << "<font color='blue'>Mod PM to-<b>[key_name(C, src, 1)]</b>: [msg]</font>"
+			else
+				C << "<font color='red' size='4'><b>-- Administrator private message --</b></font>"
+				C << "<font color='red'>Admin PM from-<b>[key_name(src, C, 0)]</b>: [msg]</font>"
+				C << "<font color='red'><i>Click on the administrator's name to reply.</i></font>"
+				src << "<font color='blue'>Admin PM to-<b>[key_name(C, src, 1)]</b>: [msg]</font>"
+
+			//always play non-admin recipients the adminhelp sound
+			C << 'sound/effects/adminhelp.ogg'
+
+			//AdminPM popup for ApocStation and anybody else who wants to use it. Set it with POPUP_ADMIN_PM in config.txt ~Carn
+			if(config.popup_admin_pm)
+				spawn()	//so we don't hold the caller proc up
+					var/sender = src
+					var/sendername = key
+					var/reply = input(C, msg,"Admin PM from-[sendername]", "") as text|null		//show message and await a reply
+					if(C && reply)
+						if(sender)
+							C.cmd_admin_pm(sender,reply)										//sender is still about, let's reply to them
+						else
+							adminhelp(reply)													//sender has left, adminhelp instead
+					return
+
+		else		//neither are admins
+			src << "<font color='red'>Error: Admin-PM: Non-admin to non-admin PM communication is forbidden.</font>"
+			return
+	*/
+
+	log_admin("PM: [key_name(src)]->[key_name(C)]: [msg]")
 	//we don't use message_admins here because the sender/receiver might get it too
 	for(var/client/X in admins)
 		//check client/X is an admin and isn't the sender or recipient

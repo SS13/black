@@ -17,7 +17,7 @@
  * Utensils
  */
 /obj/item/weapon/kitchen/utensil
-	force = 8.0
+	force = 5.0
 	w_class = 1.0
 	throwforce = 5.0
 	throw_speed = 3
@@ -112,7 +112,7 @@
 	name = "knife"
 	desc = "Can cut through any food."
 	icon_state = "knife"
-	force = 17.5
+	force = 10.0
 	throwforce = 10.0
 
 	suicide_act(mob/user)
@@ -121,14 +121,22 @@
 							"\red <b>[user] is slitting \his stomach open with the [src.name]! It looks like \he's trying to commit seppuku.</b>")
 		return (BRUTELOSS)
 
+/obj/item/weapon/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
+	if ((CLUMSY in user.mutations) && prob(50))
+		user << "\red You accidentally cut yourself with the [src]."
+		user.take_organ_damage(20)
+		return
+	playsound(loc, 'sound/weapons/bladeslice.ogg', 50, 1, -1)
+	return ..()
+
 /obj/item/weapon/kitchen/utensil/pknife
 	name = "plastic knife"
 	desc = "The bluntest of blades."
 	icon_state = "pknife"
-	force = 13.0
+	force = 10.0
 	throwforce = 10.0
 
-/obj/item/weapon/kitchen/utensil/pknife/attack(target as mob, mob/living/user as mob)
+/obj/item/weapon/kitchen/utensil/knife/attack(target as mob, mob/living/user as mob)
 	if ((CLUMSY in user.mutations) && prob(50))
 		user << "\red You somehow managed to cut yourself with the [src]."
 		user.take_organ_damage(20)
@@ -146,7 +154,7 @@
 	desc = "A general purpose Chef's Knife made by SpaceCook Incorporated. Guaranteed to stay sharp for years to come."
 	flags = FPRINT | TABLEPASS | CONDUCT
 	sharp = 1
-	force = 18.0
+	force = 10.0
 	w_class = 3.0
 	throwforce = 6.0
 	throw_speed = 3
@@ -176,7 +184,7 @@
 	icon_state = "butch"
 	desc = "A huge thing used for chopping and chopping up meat. This includes clowns and clown-by-products."
 	flags = FPRINT | TABLEPASS | CONDUCT
-	force = 22.0
+	force = 15.0
 	w_class = 2.0
 	throwforce = 8.0
 	throw_speed = 3
@@ -197,7 +205,7 @@
 	name = "rolling pin"
 	desc = "Used to knock out the Bartender."
 	icon_state = "rolling_pin"
-	force = 12.0
+	force = 8.0
 	throwforce = 10.0
 	throw_speed = 2
 	throw_range = 7
@@ -355,10 +363,10 @@
 				O.show_message(text("\red <B>[] slams [] with the tray!</B>", user, M), 1)
 		if(prob(10))
 			M.Stun(rand(1,3))
-			M.take_organ_damage(5)
+			M.take_organ_damage(3)
 			return
 		else
-			M.take_organ_damage(7)
+			M.take_organ_damage(5)
 			return
 
 	else //No eye or head protection, tough luck!
@@ -379,12 +387,12 @@
 				O.show_message(text("\red <B>[] slams [] in the face with the tray!</B>", user, M), 1)
 		if(prob(30))
 			M.Stun(rand(2,4))
-			M.take_organ_damage(5)
+			M.take_organ_damage(4)
 			return
 		else
-			M.take_organ_damage(10)
+			M.take_organ_damage(8)
 			if(prob(30))
-				M.Weaken(4)
+				M.Weaken(2)
 				return
 			return
 

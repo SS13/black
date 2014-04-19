@@ -4,7 +4,6 @@
 	icon = 'icons/obj/doors/rapid_pdoor.dmi'
 	icon_state = "pdoor1"
 	var/id = 1.0
-	dir = 1
 	explosion_resistance = 25
 
 /obj/machinery/door/poddoor/Bumped(atom/AM)
@@ -40,7 +39,6 @@
 	src.icon_state = "pdoor0"
 	src.SetOpacity(0)
 	sleep(10)
-	layer = initial(layer)
 	src.density = 0
 	update_nearby_tiles()
 
@@ -55,7 +53,6 @@
 	if (src.operating)
 		return
 	src.operating = 1
-	layer = 3.3
 	flick("pdoorc1", src)
 	src.icon_state = "pdoor1"
 	src.density = 1

@@ -268,7 +268,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	..()
 	statpanel("Status")
 	if (client.statpanel == "Status")
-		stat(null, "Ship's Time: [worldtime2text()]")
+		stat(null, "Station Time: [worldtime2text()]")
 		if(ticker)
 			if(ticker.mode)
 				//world << "DEBUG: ticker not null"
@@ -447,9 +447,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/analyze_air()
 	set name = "Analyze Air"
 	set category = "Ghost"
-
+	
 	if(!istype(usr, /mob/dead/observer)) return
-
+	
 	// Shamelessly copied from the Gas Analyzers
 	if (!( istype(usr.loc, /turf) ))
 		return

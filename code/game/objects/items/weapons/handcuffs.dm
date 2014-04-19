@@ -95,32 +95,32 @@
 /obj/item/weapon/handcuffs/cable
 	name = "cable restraints"
 	desc = "Looks like some cables tied together. Could be used to tie something up."
-	icon_state = "cuff_white"
+	icon_state = "cuff_red"
 	breakouttime = 300 //Deciseconds = 30s
 
 /obj/item/weapon/handcuffs/cable/red
-	color = "#DD0000"
+	icon_state = "cuff_red"
 
 /obj/item/weapon/handcuffs/cable/yellow
-	color = "#DDDD00"
+	icon_state = "cuff_yellow"
 
 /obj/item/weapon/handcuffs/cable/blue
-	color = "#0000DD"
+	icon_state = "cuff_blue"
 
 /obj/item/weapon/handcuffs/cable/green
-	color = "#00DD00"
+	icon_state = "cuff_green"
 
 /obj/item/weapon/handcuffs/cable/pink
-	color = "#DD00DD"
+	icon_state = "cuff_pink"
 
 /obj/item/weapon/handcuffs/cable/orange
-	color = "#DD8800"
+	icon_state = "cuff_orange"
 
 /obj/item/weapon/handcuffs/cable/cyan
-	color = "#00DDDD"
+	icon_state = "cuff_cyan"
 
 /obj/item/weapon/handcuffs/cable/white
-	color = "#FFFFFF"
+	icon_state = "cuff_white"
 
 /obj/item/weapon/handcuffs/cyborg
 	dispenser = 1

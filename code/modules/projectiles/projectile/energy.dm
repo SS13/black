@@ -15,7 +15,8 @@
 	weaken = 10
 	stutter = 10
 
-	damage_type = BURN
+	agony = 80
+	damage_type = HALLOSS
 	//Damage will be handled on the MOB side, to prevent window shattering.
 
 
@@ -54,9 +55,9 @@
 /obj/item/projectile/energy/neurotoxin
 	name = "neuro"
 	icon_state = "neurotoxin"
-	damage = 10
+	damage = 5
 	damage_type = TOX
-	weaken = 8
+	weaken = 5
 
 /obj/item/projectile/energy/plasma
 	name = "plasma bolt"

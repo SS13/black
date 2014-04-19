@@ -1,9 +1,8 @@
 /obj/item/weapon/gun/energy/laser
 	name = "laser gun"
 	desc = "a basic weapon designed kill with concentrated energy bolts"
-	icon_state = "oldlaser"
+	icon_state = "laser"
 	item_state = "laser"
-	modifystate = "oldlaser"
 	fire_sound = 'sound/weapons/Laser.ogg'
 	w_class = 3.0
 	m_amt = 2000
@@ -51,7 +50,7 @@ obj/item/weapon/gun/energy/laser/retro
 
 
 
-/obj/item/weapon/gun/energy/laser/cyborg/process_chambered()
+/obj/item/weapon/gun/energy/laser/cyborg/load_into_chamber()
 	if(in_chamber)
 		return 1
 	if(isrobot(src.loc))
@@ -77,7 +76,7 @@ obj/item/weapon/gun/energy/laser/retro
 	isHandgun()
 		return 0
 
-/obj/item/weapon/gun/energy/lasercannon/cyborg/process_chambered()
+/obj/item/weapon/gun/energy/lasercannon/cyborg/load_into_chamber()
 	if(in_chamber)
 		return 1
 	if(isrobot(src.loc))

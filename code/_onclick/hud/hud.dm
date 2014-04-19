@@ -98,11 +98,8 @@ var/datum/global_hud/global_hud = new()
 	var/obj/screen/blobhealthdisplay
 	var/obj/screen/r_hand_hud_object
 	var/obj/screen/l_hand_hud_object
-	var/obj/screen/swaphands_hud_object
 	var/obj/screen/action_intent
 	var/obj/screen/move_intent
-	var/obj/screen/rest_hud_object
-
 
 	var/list/adding
 	var/list/other
@@ -127,21 +124,21 @@ datum/hud/New(mob/owner)
 			if(H.l_ear)		H.l_ear.screen_loc = ui_l_ear
 			if(H.r_ear)		H.r_ear.screen_loc = ui_r_ear
 			if(H.glasses)	H.glasses.screen_loc = ui_glasses
-//			if(H.w_uniform)	H.w_uniform.screen_loc = ui_iclothing
-//			if(H.wear_suit)	H.wear_suit.screen_loc = ui_oclothing
-//			if(H.wear_mask)	H.wear_mask.screen_loc = ui_mask
-//			if(H.head)		H.head.screen_loc = ui_head
+			if(H.w_uniform)	H.w_uniform.screen_loc = ui_iclothing
+			if(H.wear_suit)	H.wear_suit.screen_loc = ui_oclothing
+			if(H.wear_mask)	H.wear_mask.screen_loc = ui_mask
+			if(H.head)		H.head.screen_loc = ui_head
 		else
 			if(H.shoes)		H.shoes.screen_loc = null
 			if(H.gloves)	H.gloves.screen_loc = null
 			if(H.l_ear)		H.l_ear.screen_loc = null
 			if(H.r_ear)		H.r_ear.screen_loc = null
 			if(H.glasses)	H.glasses.screen_loc = null
-/*			if(H.w_uniform)	H.w_uniform.screen_loc = ui_iclothing		//It is no longer hidden.
-			if(H.wear_suit)	H.wear_suit.screen_loc = ui_oclothing
-			if(H.wear_mask)	H.wear_mask.screen_loc = ui_mask
-			if(H.head)		H.head.screen_loc = ui_head
-*/
+			if(H.w_uniform)	H.w_uniform.screen_loc = null
+			if(H.wear_suit)	H.wear_suit.screen_loc = null
+			if(H.wear_mask)	H.wear_mask.screen_loc = null
+			if(H.head)		H.head.screen_loc = null
+
 
 /datum/hud/proc/persistant_inventory_update()
 	if(!mymob)
@@ -156,10 +153,6 @@ datum/hud/New(mob/owner)
 			if(H.back)		H.back.screen_loc = ui_back
 			if(H.l_store)	H.l_store.screen_loc = ui_storage1
 			if(H.r_store)	H.r_store.screen_loc = ui_storage2
-			if(H.w_uniform)	H.w_uniform.screen_loc = ui_iclothing
-			if(H.wear_suit)	H.wear_suit.screen_loc = ui_oclothing
-			if(H.wear_mask)	H.wear_mask.screen_loc = ui_mask
-			if(H.head)		H.head.screen_loc = ui_head
 		else
 			if(H.s_store)	H.s_store.screen_loc = null
 			if(H.wear_id)	H.wear_id.screen_loc = null
@@ -167,11 +160,6 @@ datum/hud/New(mob/owner)
 			if(H.back)		H.back.screen_loc = null
 			if(H.l_store)	H.l_store.screen_loc = null
 			if(H.r_store)	H.r_store.screen_loc = null
-			if(H.w_uniform)	H.w_uniform.screen_loc = null
-			if(H.wear_suit)	H.wear_suit.screen_loc = null
-			if(H.wear_mask)	H.wear_mask.screen_loc = null
-			if(H.head)		H.head.screen_loc = null
-
 
 
 /datum/hud/proc/instantiate()

@@ -1,3 +1,4 @@
+//Lallander was here
 /mob/living/carbon/human/whisper(message as text)
 
 	if(say_disabled)	//This is here to try to identify lag problems

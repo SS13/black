@@ -13,7 +13,7 @@ RCD
 	density = 0
 	anchored = 0.0
 	flags = FPRINT | TABLEPASS| CONDUCT
-	force = 13.0
+	force = 10.0
 	throwforce = 10.0
 	throw_speed = 1
 	throw_range = 5

@@ -8,9 +8,9 @@
 	flags = FPRINT | TABLEPASS | CONDUCT
 	throwforce = 10
 	w_class = 3.0
-	throw_speed = 1.5
-	throw_range = 7
-	force = 15.0
+	throw_speed = 2
+	throw_range = 10
+	force = 10.0
 	m_amt = 90
 	attack_verb = list("slammed", "whacked", "bashed", "thunked", "battered", "bludgeoned", "thrashed")
 	var/max_water = 50
@@ -27,7 +27,7 @@
 	flags = FPRINT | TABLEPASS
 	throwforce = 2
 	w_class = 2.0
-	force = 5.0
+	force = 3.0
 	m_amt = 0
 	max_water = 30
 	sprite_name = "miniFE"

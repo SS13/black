@@ -899,6 +899,45 @@ obj/item/weapon/organ/head/New(loc, mob/living/carbon/human/H)
 	brainmob.stat = 2
 	brainmob.death()
 
+obj/item/weapon/organ/l_arm/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "l_arm_m" : "l_arm_f"
+	..()
+
+obj/item/weapon/organ/l_foot/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "l_foot_m" : "l_foot_f"
+	..()
+
+obj/item/weapon/organ/l_hand/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "l_hand_m" : "l_hand_f"
+	..()
+
+obj/item/weapon/organ/l_leg/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "l_leg_m" : "l_leg_f"
+	..()
+
+obj/item/weapon/organ/r_arm/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "r_arm_m" : "r_arm_f"
+	..()
+
+obj/item/weapon/organ/r_foot/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "r_foot_m" : "r_foot_f"
+	..()
+
+obj/item/weapon/organ/r_hand/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "r_hand_m" : "r_hand_f"
+	..()
+
+obj/item/weapon/organ/r_leg/New(loc, mob/living/carbon/human/H)
+	if(istype(H))
+		src.icon_state = H.gender == MALE? "r_leg_m" : "r_leg_f"
+
 obj/item/weapon/organ/head/proc/transfer_identity(var/mob/living/carbon/human/H)//Same deal as the regular brain proc. Used for human-->head
 	brainmob = new(src)
 	brainmob.name = H.real_name

@@ -390,6 +390,7 @@
 	del(src)
 	return
 
+
 /obj/item/weapon/storage/toolbox/mechanical/attackby(var/obj/item/stack/tile/plasteel/T, mob/user as mob)
 	if(!istype(T, /obj/item/stack/tile/plasteel))
 		..()
@@ -405,7 +406,6 @@
 	user << "<span class='notice'>You add the tiles into the empty toolbox. They protrude from the top.</span>"
 	user.drop_from_inventory(src)
 	del(src)
-
 
 /obj/item/weapon/toolbox_tiles/attackby(var/obj/item/W, mob/user as mob)
 	..()

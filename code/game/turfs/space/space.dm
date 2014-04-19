@@ -8,17 +8,8 @@
 //	heat_capacity = 700000 No.
 
 /turf/space/New()
-	var/turf/controllerlocation = locate(1, 1, z)
-	for(var/obj/effect/landmark/zcontroller/controller in controllerlocation)
-		// check if there is something to draw below
-		if(controller.down)
-			var/turf/temp =  get_turf(locate(x,y,controller.down_target))
-			if(!istype(temp,/turf/space))
-				src.ChangeTurf(/turf/simulated/floor/open)
-			return
 	if(!istype(src, /turf/space/transit))
 		icon_state = "[((x + y) ^ ~(x * y) + z) % 25]"
-	return
 
 /turf/space/attack_paw(mob/user as mob)
 	return src.attack_hand(user)
@@ -82,7 +73,7 @@
 
 		// Okay, so let's make it so that people can travel z levels but not nuke disks!
 		// if(ticker.mode.name == "nuclear emergency")	return
-		if(A.z > 7) return
+		if(A.z > 6) return
 		if (A.x <= TRANSITIONEDGE || A.x >= (world.maxx - TRANSITIONEDGE - 1) || A.y <= TRANSITIONEDGE || A.y >= (world.maxy - TRANSITIONEDGE - 1))
 			if(istype(A, /obj/effect/meteor)||istype(A, /obj/effect/space_dust))
 				del(A)
@@ -260,39 +251,3 @@
 				if ((A && A.loc))
 					A.loc.Entered(A)
 	return
-
-
-/*
-/turf/space/hull
-	name = "Hull Plating"
-	icon = 'icons/turf/floors.dmi'
-	icon_state = "engine"
-
-/turf/space/hull/New()
-	return
-	oxygen = 0
-	nitrogen = 0.000
-	temperature = TCMB
-	thermal_conductivity = OPEN_HEAT_TRANSFER_COEFFICIENT
-	heat_capacity = 700000
-	thermal_conductivity = 0.025
-
-/turf/space/hull/attackby(obj/item/weapon/C as obj, mob/user as mob)
-	if(!C)
-		return
-	if(!user)
-		return
-	if(istype(C, /obj/item/weapon/wrench))
-		user << "\blue Removing rods..."
-		playsound(src.loc, 'sound/items/Ratchet.ogg', 80, 1)
-		if(do_after(user, 30))
-			new /obj/item/stack/rods(src, 2)
-			ChangeTurf(/turf/simulated/floor/airless)
-			var/turf/simulated/floor/airless/F = src
-			F.make_plating()
-			return
-	if (istype(C, /obj/item/stack/rods))
-		user << "\blue Floor already reinforced."
-		return
-*/
-//Will fix this later, need to make it act as a reinf floor

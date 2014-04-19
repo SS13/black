@@ -79,8 +79,8 @@ var/prison_shuttle_timeleft = 0
 			dat = src.temp
 		else
 			dat += {"<BR><B>Prison Shuttle</B><HR>
-			\nLocation: [prison_shuttle_moving_to_station || prison_shuttle_moving_to_prison ? "Moving ([prison_shuttle_timeleft] Secs.)":prison_shuttle_at_station ? "Ship":"Dock"]<BR>
-			[prison_shuttle_moving_to_station || prison_shuttle_moving_to_prison ? "\n*Shuttle already called*<BR>\n<BR>":prison_shuttle_at_station ? "\n<A href='?src=\ref[src];sendtodock=1'>Send to Dock</A><BR>\n<BR>":"\n<A href='?src=\ref[src];sendtostation=1'>Send to ship</A><BR>\n<BR>"]
+			\nLocation: [prison_shuttle_moving_to_station || prison_shuttle_moving_to_prison ? "Moving to station ([prison_shuttle_timeleft] Secs.)":prison_shuttle_at_station ? "Station":"Dock"]<BR>
+			[prison_shuttle_moving_to_station || prison_shuttle_moving_to_prison ? "\n*Shuttle already called*<BR>\n<BR>":prison_shuttle_at_station ? "\n<A href='?src=\ref[src];sendtodock=1'>Send to Dock</A><BR>\n<BR>":"\n<A href='?src=\ref[src];sendtostation=1'>Send to station</A><BR>\n<BR>"]
 			\n<A href='?src=\ref[user];mach_close=computer'>Close</A>"}
 
 		user << browse(dat, "window=computer;size=575x450")
@@ -205,11 +205,7 @@ var/prison_shuttle_timeleft = 0
 						AM.Move(D)
 					if(istype(T, /turf/simulated))
 						del(T)
-				start_location.move_contents_to(end_location, /turf/space)
-/*				for(var/turf/t in end_location)
-					air_master.tiles_to_update |= t
-				for(var/turf/t in start_location)
-					air_master.tiles_to_update |= t			*/
+				start_location.move_contents_to(end_location)
 
 			if(1)
 				prison_shuttle_at_station = 0
@@ -246,9 +242,5 @@ var/prison_shuttle_timeleft = 0
 				for(var/mob/living/simple_animal/pest in end_location) // And for the other kind of bug...
 					pest.gib()
 
-				start_location.move_contents_to(end_location, /turf/space)
-/*				for(var/turf/t in end_location)
-					air_master.tiles_to_update |= t
-				for(var/turf/t in start_location)
-					air_master.tiles_to_update |= t			*/
+				start_location.move_contents_to(end_location)
 		return

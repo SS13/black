@@ -4,22 +4,22 @@
 #define HUMAN_MAX_OXYLOSS 1 //Defines how much oxyloss humans can get per tick. A tile with no air at all (such as space) applies this value, otherwise it's a percentage of it.
 #define HUMAN_CRIT_MAX_OXYLOSS ( (last_tick_duration) /5) //The amount of damage you'll get when in critical condition. We want this to be a 5 minute deal = 300s. There are 100HP to get through, so (1/3)*last_tick_duration per second. Breaths however only happen every 4 ticks.
 
-#define HEAT_DAMAGE_LEVEL_1 3 //Amount of damage applied when your body temperature just passes the 360.15k safety point
-#define HEAT_DAMAGE_LEVEL_2 6 //Amount of damage applied when your body temperature passes the 400K point
-#define HEAT_DAMAGE_LEVEL_3 9 //Amount of damage applied when your body temperature passes the 1000K point
+#define HEAT_DAMAGE_LEVEL_1 2 //Amount of damage applied when your body temperature just passes the 360.15k safety point
+#define HEAT_DAMAGE_LEVEL_2 4 //Amount of damage applied when your body temperature passes the 400K point
+#define HEAT_DAMAGE_LEVEL_3 8 //Amount of damage applied when your body temperature passes the 1000K point
 
 #define COLD_DAMAGE_LEVEL_1 0.5 //Amount of damage applied when your body temperature just passes the 260.15k safety point
-#define COLD_DAMAGE_LEVEL_2 3.5 //Amount of damage applied when your body temperature passes the 200K point
-#define COLD_DAMAGE_LEVEL_3 5 //Amount of damage applied when your body temperature passes the 120K point
+#define COLD_DAMAGE_LEVEL_2 1.5 //Amount of damage applied when your body temperature passes the 200K point
+#define COLD_DAMAGE_LEVEL_3 3 //Amount of damage applied when your body temperature passes the 120K point
 
 //Note that gas heat damage is only applied once every FOUR ticks.
-#define HEAT_GAS_DAMAGE_LEVEL_1 3 //Amount of damage applied when the current breath's temperature just passes the 360.15k safety point
-#define HEAT_GAS_DAMAGE_LEVEL_2 6 //Amount of damage applied when the current breath's temperature passes the 400K point
-#define HEAT_GAS_DAMAGE_LEVEL_3 9 //Amount of damage applied when the current breath's temperature passes the 1000K point
+#define HEAT_GAS_DAMAGE_LEVEL_1 2 //Amount of damage applied when the current breath's temperature just passes the 360.15k safety point
+#define HEAT_GAS_DAMAGE_LEVEL_2 4 //Amount of damage applied when the current breath's temperature passes the 400K point
+#define HEAT_GAS_DAMAGE_LEVEL_3 8 //Amount of damage applied when the current breath's temperature passes the 1000K point
 
 #define COLD_GAS_DAMAGE_LEVEL_1 0.5 //Amount of damage applied when the current breath's temperature just passes the 260.15k safety point
-#define COLD_GAS_DAMAGE_LEVEL_2 3.5 //Amount of damage applied when the current breath's temperature passes the 200K point
-#define COLD_GAS_DAMAGE_LEVEL_3 5 //Amount of damage applied when the current breath's temperature passes the 120K point
+#define COLD_GAS_DAMAGE_LEVEL_2 1.5 //Amount of damage applied when the current breath's temperature passes the 200K point
+#define COLD_GAS_DAMAGE_LEVEL_3 3 //Amount of damage applied when the current breath's temperature passes the 120K point
 
 /mob/living/carbon/human
 	var/oxygen_alert = 0
@@ -55,6 +55,13 @@
 	blinded = null
 	fire_alert = 0 //Reset this here, because both breathe() and handle_environment() have a chance to set it.
 	emote_cooldown = max(emote_cooldown - 1, 0)
+
+	if(mob_alert)
+		var/mob/living/l = locate(/mob/living) in oview(3, src)
+		if(l)
+			src << "You see [l]."
+			src << 'sound/effects/adminhelp.ogg'
+
 
 	//TODO: seperate this out
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
@@ -106,7 +113,7 @@
 	handle_environment(environment)
 
 	//Status updates, death etc.
-	handle_regular_status_updates()		//TODO: optimise ~Carn
+	handle_regular_status_updates()		//TODO: optimise ~Carn  NO SHIT ~Ccomp
 	update_canmove()
 
 	//Update our name based on whether our face is obscured/disfigured
@@ -221,12 +228,13 @@
 			if((COLD_RESISTANCE in mutations) || (prob(1)))
 				heal_organ_damage(0,1)
 
-		if ((HULK in mutations) && health <= 25)
-			mutations.Remove(HULK)
-			update_mutations()		//update our mutation overlays
-			src << "\red You suddenly feel very weak."
-			Weaken(3)
-			emote("collapse")
+		// DNA2 - Gene processing.
+		// The HULK stuff that was here is now in the hulk gene.
+		for(var/datum/dna/gene/gene in dna_genes)
+			if(!gene.block)
+				continue
+			if(gene.is_active(src))
+				gene.OnMobLife(src)
 
 		if (radiation)
 			if (radiation > 100)
@@ -325,7 +333,7 @@
 
 					breath = loc.remove_air(breath_moles)
 
-					if(istype(wear_mask, /obj/item/clothing/mask/gas))
+					if(istype(wear_mask, /obj/item/clothing/mask/gas) && breath)
 						var/obj/item/clothing/mask/gas/G = wear_mask
 						var/datum/gas_mixture/filtered = new
 
@@ -1067,6 +1075,13 @@
 				if(halloss > 0)
 					adjustHalLoss(-1)
 
+			if(embedded_flag && !(life_tick % 10))
+				var/list/E
+				E = get_visible_implants(0)
+				if(!E.len)
+					embedded_flag = 0
+
+
 			//Eyes
 			if(sdisabilities & BLIND)	//disabled-blind, doesn't get better on its own
 				blinded = 1
@@ -1289,7 +1304,7 @@
 						if(2)	healths.icon_state = "health7"
 						else
 							//switch(health - halloss)
-							switch(100 - ((species && species.flags & NO_PAIN) ? 0 : traumatic_shock))
+							switch(100 - ((species && species.flags & NO_PAIN & !IS_SYNTHETIC) ? 0 : traumatic_shock))
 								if(100 to INFINITY)		healths.icon_state = "health0"
 								if(80 to 100)			healths.icon_state = "health1"
 								if(60 to 80)			healths.icon_state = "health2"
@@ -1467,7 +1482,7 @@
 			src << "<font color='red'><b>"+pick("It hurts so much!", "You really need some painkillers..", "Dear god, the pain!")
 
 		if(shock_stage >= 30)
-			if(shock_stage == 30) emote("is having trouble keeping their eyes open.",1)//,"is having trouble keeping their eyes open.")
+			if(shock_stage == 30) emote("me",1,"is having trouble keeping their eyes open.")
 			eye_blurry = max(2, eye_blurry)
 			stuttering = max(stuttering, 5)
 
@@ -1475,7 +1490,7 @@
 			src << "<font color='red'><b>"+pick("The pain is excrutiating!", "Please, just end the pain!", "Your whole body is going numb!")
 
 		if (shock_stage >= 60)
-			if(shock_stage == 60) emote("'s body becomes limp.",1)//,"'s body becomes limp.")
+			if(shock_stage == 60) emote("me",1,"'s body becomes limp.")
 			if (prob(2))
 				src << "<font color='red'><b>"+pick("The pain is excrutiating!", "Please, just end the pain!", "Your whole body is going numb!")
 				Weaken(20)
@@ -1491,7 +1506,7 @@
 				Paralyse(5)
 
 		if(shock_stage == 150)
-			emote("can no longer stand, collapsing!",1)//,"can no longer stand, collapsing!")
+			emote("me",1,"can no longer stand, collapsing!")
 			Weaken(20)
 
 		if(shock_stage >= 150)

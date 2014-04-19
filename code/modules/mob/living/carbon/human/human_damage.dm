@@ -32,13 +32,6 @@
 		amount += O.brute_dam
 	return amount
 
-/mob/living/carbon/human/getFireLoss()
-	var/amount = 0
-	for(var/datum/organ/external/O in organs)
-		amount += O.burn_dam
-	return amount
-
-
 /mob/living/carbon/human/adjustBruteLoss(var/amount)
 	if(species && species.brute_mod)
 		amount = amount*species.brute_mod
@@ -47,6 +40,12 @@
 		take_overall_damage(amount, 0)
 	else
 		heal_overall_damage(-amount, 0)
+
+/mob/living/carbon/human/getFireLoss()
+	var/amount = 0
+	for(var/datum/organ/external/O in organs)
+		amount += O.burn_dam
+	return amount
 
 /mob/living/carbon/human/adjustFireLoss(var/amount)
 	if(species && species.burn_mod)
@@ -251,6 +250,7 @@ This function restores all organs.
 		if( (damage > (10*W.w_class)) && ( (sharp && !ismob(W.loc)) || prob(damage/W.w_class) ) )
 			organ.implants += W
 			visible_message("<span class='danger'>\The [W] sticks in the wound!</span>")
+			embedded_flag = 1
 			src.verbs += /mob/proc/yank_out_object
 			W.add_blood(src)
 			if(ismob(W.loc))

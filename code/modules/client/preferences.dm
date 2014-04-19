@@ -109,8 +109,6 @@ datum/preferences
 
 	var/nanotrasen_relation = "Neutral"
 
-	var/uplinklocation = "PDA"
-
 		// OOC Metadata:
 	var/metadata = ""
 	var/slot_name = ""
@@ -247,12 +245,12 @@ datum/preferences
 		dat += "<b>UI Style:</b> <a href='?_src_=prefs;preference=ui'><b>[UI_style]</b></a><br>"
 		dat += "<b>Custom UI</b>(recommended for White UI):<br>"
 		dat += "-Color: <a href='?_src_=prefs;preference=UIcolor'><b>[UI_style_color]</b></a> <table style='display:inline;' bgcolor='[UI_style_color]'><tr><td>__</td></tr></table><br>"
-		dat += "-Alpha(transparency): <a href='?_src_=prefs;preference=UIalpha'><b>[UI_style_alpha]</b></a><br>"
+		dat += "-Alpha(transparence): <a href='?_src_=prefs;preference=UIalpha'><b>[UI_style_alpha]</b></a><br>"
 		dat += "<b>Play admin midis:</b> <a href='?_src_=prefs;preference=hear_midis'><b>[(toggles & SOUND_MIDI) ? "Yes" : "No"]</b></a><br>"
 		dat += "<b>Play lobby music:</b> <a href='?_src_=prefs;preference=lobby_music'><b>[(toggles & SOUND_LOBBY) ? "Yes" : "No"]</b></a><br>"
-		dat += "<b>Ghost ears:</b> <a href='?_src_=prefs;preference=ghost_ears'><b>[(toggles & CHAT_GHOSTEARS) ? "All Speech" : "Nearest Creatures"]</b></a><br>"
-		dat += "<b>Ghost sight:</b> <a href='?_src_=prefs;preference=ghost_sight'><b>[(toggles & CHAT_GHOSTSIGHT) ? "All Emotes" : "Nearest Creatures"]</b></a><br>"
-		dat += "<b>Ghost radio:</b> <a href='?_src_=prefs;preference=ghost_radio'><b>[(toggles & CHAT_GHOSTRADIO) ? "All Chatter" : "Nearest Speakers"]</b></a><br>"
+		dat += "<b>Ghost ears:</b> <a href='?_src_=prefs;preference=ghost_ears'><b>[(toggles & CHAT_GHOSTEARS) ? "Nearest Creatures" : "All Speech"]</b></a><br>"
+		dat += "<b>Ghost sight:</b> <a href='?_src_=prefs;preference=ghost_sight'><b>[(toggles & CHAT_GHOSTSIGHT) ? "Nearest Creatures" : "All Emotes"]</b></a><br>"
+		dat += "<b>Ghost radio:</b> <a href='?_src_=prefs;preference=ghost_radio'><b>[(toggles & CHAT_GHOSTRADIO) ? "Nearest Speakers" : "All Chatter"]</b></a><br>"
 
 		if(config.allow_Metadata)
 			dat += "<b>OOC Notes:</b> <a href='?_src_=prefs;preference=metadata;task=input'> Edit </a><br>"
@@ -351,8 +349,6 @@ datum/preferences
 		else
 			dat += "<b><a href=\"byond://?src=\ref[user];preference=records;record=1\">Character Records</a></b><br>"
 
-		dat += "<b><a href=\"byond://?src=\ref[user];preference=antagoptions;active=0\">Set Antag Options</b></a><br>"
-
 		dat += "\t<a href=\"byond://?src=\ref[user];preference=skills\"><b>Set Skills</b> (<i>[GetSkillClass(used_skillpoints)][used_skillpoints > 0 ? " [used_skillpoints]" : "0"])</i></a><br>"
 
 		dat += "<a href='byond://?src=\ref[user];preference=flavor_text;task=input'><b>Set Flavor Text</b></a><br>"
@@ -446,7 +442,7 @@ datum/preferences
 				var/available_in_days = job.available_in_days(user.client)
 				HTML += "<font color=red>[rank]</font></td><td><font color=red> \[IN [(available_in_days)] DAYS]</font></td></tr>"
 				continue
-			if((job_civilian_low & ASSISTANT) && (rank != "Unassigned"))
+			if((job_civilian_low & ASSISTANT) && (rank != "Assistant"))
 				HTML += "<font color=orange>[rank]</font></td><td></td></tr>"
 				continue
 			if((rank in command_positions) || (rank == "AI"))//Bold head jobs
@@ -458,7 +454,7 @@ datum/preferences
 
 			HTML += "<a href='?_src_=prefs;preference=job;task=input;text=[rank]'>"
 
-			if(rank == "Unassigned")//Assistant is special
+			if(rank == "Assistant")//Assistant is special
 				if(job_civilian_low & ASSISTANT)
 					HTML += " <font color=green>\[Yes]</font>"
 				else
@@ -486,7 +482,7 @@ datum/preferences
 			if(GET_RANDOM_JOB)
 				HTML += "<center><br><u><a href='?_src_=prefs;preference=job;task=random'><font color=green>Get random job if preferences unavailable</font></a></u></center><br>"
 			if(BE_ASSISTANT)
-				HTML += "<center><br><u><a href='?_src_=prefs;preference=job;task=random'><font color=red>Be unassigned if preference unavailable</font></a></u></center><br>"
+				HTML += "<center><br><u><a href='?_src_=prefs;preference=job;task=random'><font color=red>Be assistant if preference unavailable</font></a></u></center><br>"
 			if(RETURN_TO_LOBBY)
 				HTML += "<center><br><u><a href='?_src_=prefs;preference=job;task=random'><font color=purple>Return to lobby if preference unavailable</font></a></u></center><br>"
 
@@ -551,24 +547,6 @@ datum/preferences
 		user << browse(HTML, "window=records;size=350x300")
 		return
 
-	proc/SetAntagoptions(mob/user)
-		var/HTML = "<body>"
-		HTML += "<tt><center>"
-		HTML += "<b>Antagonist Options</b> <hr />"
-		HTML += "<br>"
-		HTML +="Uplink Type : <b><a href='?src=\ref[user];preference=antagoptions;antagtask=uplinktype;active=1'>[uplinklocation]</a></b>"
-		HTML +="<br>"
-		HTML +="<hr />"
-		HTML +="<a href='?src=\ref[user];preference=antagoptions;antagtask=done;active=1'>\[Done\]</a>"
-
-		HTML += "</center></tt>"
-
-		user << browse(null, "window=preferences")
-		user << browse(HTML, "window=antagoptions")
-		return
-
-
-
 	proc/GetPlayerAltTitle(datum/job/job)
 		return player_alt_titles.Find(job.title) > 0 \
 			? player_alt_titles[job.title] \
@@ -589,7 +567,7 @@ datum/preferences
 			ShowChoices(user)
 			return
 
-		if(role == "Unassigned")
+		if(role == "Assistant")
 			if(job_civilian_low & job.flag)
 				job_civilian_low &= ~job.flag
 			else
@@ -804,23 +782,6 @@ datum/preferences
 					gen_record = genmsg
 					SetRecords(user)
 
-		else if (href_list["preference"] == "antagoptions")
-			if(text2num(href_list["active"]) == 0)
-				SetAntagoptions(user)
-				return
-			if (href_list["antagtask"] == "uplinktype")
-				if (uplinklocation == "PDA")
-					uplinklocation = "Headset"
-				else if(uplinklocation == "Headset")
-					uplinklocation = "None"
-				else
-					uplinklocation = "PDA"
-				SetAntagoptions(user)
-			if (href_list["antagtask"] == "done")
-				user << browse(null, "window=antagoptions")
-				ShowChoices(user)
-			return 1
-
 		switch(href_list["task"])
 			if("random")
 				switch(href_list["preference"])
@@ -963,12 +924,11 @@ datum/preferences
 							b_type = new_b_type
 
 					if("hair")
-						if(species == "Human" || species == "Unathi")
-							var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference") as color|null
-							if(new_hair)
-								r_hair = hex2num(copytext(new_hair, 2, 4))
-								g_hair = hex2num(copytext(new_hair, 4, 6))
-								b_hair = hex2num(copytext(new_hair, 6, 8))
+						var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference") as color|null // Translate it 1940
+						if(new_hair)
+							r_hair = hex2num(copytext(new_hair, 2, 4))
+							g_hair = hex2num(copytext(new_hair, 4, 6))
+							b_hair = hex2num(copytext(new_hair, 6, 8))
 
 					if("h_style")
 						var/list/valid_hairstyles = list()
@@ -979,12 +939,12 @@ datum/preferences
 
 							valid_hairstyles[hairstyle] = hair_styles_list[hairstyle]
 
-						var/new_h_style = input(user, "Choose your character's hair style:", "Character Preference")  as null|anything in valid_hairstyles
+						var/new_h_style = input(user, "Choose your character's hair style:", "Character Preference")  as null|anything in valid_hairstyles // Translate it 1941
 						if(new_h_style)
 							h_style = new_h_style
 
 					if("facial")
-						var/new_facial = input(user, "Choose your character's facial-hair colour:", "Character Preference") as color|null
+						var/new_facial = input(user, "Choose your character's facial-hair colour:", "Character Preference") as color|null // Translate it 1942
 						if(new_facial)
 							r_facial = hex2num(copytext(new_facial, 2, 4))
 							g_facial = hex2num(copytext(new_facial, 4, 6))
@@ -1027,11 +987,9 @@ datum/preferences
 							b_eyes = hex2num(copytext(new_eyes, 6, 8))
 
 					if("s_tone")
-						if(species != "Human")
-							return
-						var/new_s_tone = input(user, "Choose your character's skin-tone:\n(Light 1 - 220 Dark)", "Character Preference")  as num|null
+						var/new_s_tone = input(user, "Choose your character's skin-tone:", "Character Preference")  as num|null // Translate it 1946
 						if(new_s_tone)
-							s_tone = 35 - max(min( round(new_s_tone), 220),1)
+							s_tone = 100 - max(min( round(new_s_tone), 550),1)
 
 					if("ooccolor")
 						var/new_ooccolor = input(user, "Choose your OOC colour:", "Game Preference") as color|null
@@ -1049,7 +1007,7 @@ datum/preferences
 							nanotrasen_relation = new_relation
 
 					if("flavor_text")
-						var/msg = input(usr,"Set the flavor text in your 'examine' verb. This can also be used for OOC notes and preferences!","Flavor Text",html_decode(flavor_text)) as message
+						var/msg = sanitize_uni(input(usr,"Set the flavor text in your 'examine' verb. This can also be used for OOC notes and preferences!","Flavor Text",html_decode(flavor_text)) as message)
 
 						if(msg != null)
 							msg = copytext(msg, 1, MAX_MESSAGE_LEN)

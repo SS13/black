@@ -173,7 +173,7 @@
 			if(affecting == "head")
 
 				var/obj/item/ammo_casing/AC = loaded[1]
-				if(!process_chambered())
+				if(!load_into_chamber())
 					user.visible_message("\red *click*", "\red *click*")
 					playsound(user, 'sound/weapons/empty.ogg', 100, 1)
 					return

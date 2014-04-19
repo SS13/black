@@ -30,7 +30,6 @@
 	var/id
 	var/sync = 0
 	var/part_set
-	var/eject_dir = 2
 	var/obj/being_built
 	var/list/queue = list()
 	var/processing_queue = 0
@@ -179,8 +178,8 @@
 	T = 0
 	for(var/obj/item/weapon/stock_parts/manipulator/Ml in component_parts)
 		T += Ml.rating
-	if(T>= 2)
-		T -= 2
+	if(T>= 1)
+		T -= 1
 	diff = round(initial(time_coeff) - (initial(time_coeff)*(T))/25,0.01)
 	if(time_coeff!=diff)
 		time_coeff = diff
@@ -374,7 +373,7 @@
 	src.overlays -= "fab-active"
 	src.desc = initial(src.desc)
 	if(being_built)
-		src.being_built.Move(get_step(src,eject_dir))
+		src.being_built.Move(get_step(src,SOUTH))
 		src.visible_message("\icon[src] <b>[src]</b> beeps, \"The following has been completed: [src.being_built] is built\".")
 		src.being_built = null
 	src.updateUsrDialog()
@@ -503,11 +502,9 @@
 		temp = "Updating local R&D database..."
 		src.updateUsrDialog()
 		sleep(30) //only sleep if called by user
-	var/found = 0
 	for(var/obj/machinery/computer/rdconsole/RDC in get_area(src))
 		if(!RDC.sync)
 			continue
-		found++
 		for(var/datum/tech/T in RDC.files.known_tech)
 			files.AddTech2Known(T)
 		for(var/datum/design/D in RDC.files.known_designs)
@@ -522,11 +519,6 @@
 			src.updateUsrDialog()
 		if(i || tech_output)
 			src.visible_message("\icon[src] <b>[src]</b> beeps, \"Successfully synchronized with R&D server. New data processed.\"")
-	if(found == 0)
-		temp = "Couldn't contact R&D server.<br>"
-		temp += "<a href='?src=\ref[src];clear_temp=1'>Return</a>"
-		src.updateUsrDialog()
-		src.visible_message("\icon[src] <b>[src]</b> beeps, \"Error! Couldn't connect to R&D server.\"")
 	return
 
 /obj/machinery/mecha_part_fabricator/proc/get_resource_cost_w_coeff(var/obj/item/part as obj,var/resource as text, var/roundto=1)

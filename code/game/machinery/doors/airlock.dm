@@ -94,28 +94,6 @@ Airlock index -> wire color are { 9, 4, 6, 7, 5, 8, 1, 2, 3 }.
 	var/obj/item/weapon/airlock_electronics/electronics = null
 	var/hasShocked = 0 //Prevents multiple shocks from happening
 
-/obj/machinery/door/airlock/New()
-	. = ..()
-	if(density)
-		layer = 3.2 //Above most items if closed
-		explosion_resistance = initial(explosion_resistance)
-		update_heat_protection(get_turf(src))
-	else
-		layer = 2.7 //Under all objects if opened. 2.7 due to tables being at 2.6
-		explosion_resistance = 0
-
-
-	if(width > 1)
-		if(dir in list(EAST, WEST))
-			bound_width = width * world.icon_size
-			bound_height = world.icon_size
-		else
-			bound_width = world.icon_size
-			bound_height = width * world.icon_size
-
-	update_nearby_tiles(need_rebuild=1)
-	return
-
 /obj/machinery/door/airlock/command
 	name = "Airlock"
 	icon = 'icons/obj/doors/Doorcom.dmi'
@@ -1310,12 +1288,13 @@ About the new airlock wires panel:
 				M.adjustBruteLoss(DOOR_CRUSH_DAMAGE)
 			else
 				M.adjustBruteLoss(DOOR_CRUSH_DAMAGE)
-				M.SetWeakened(3)
+				M.SetStunned(5)
+				M.SetWeakened(5)
 				var/obj/effect/stop/S
 				S = new /obj/effect/stop
 				S.victim = M
 				S.loc = M.loc
-				spawn(10)
+				spawn(20)
 					del(S)
 				M.emote("scream")
 			var/turf/location = src.loc

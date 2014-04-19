@@ -10,9 +10,6 @@
 		return
 	if (istype(target, /turf/unsimulated) || istype(target, /turf/simulated/shuttle) || istype(target, /obj/item/weapon/storage/))
 		return
-	if (istype(target, /obj/machinery/door/poddoor/))
-		user << "\red Wait, it's famous titanium blast door! You think, that planting C4 on it is a stupid thing"
-		return
 	user << "Planting explosives..."
 	if(ismob(target))
 
@@ -31,9 +28,6 @@
 		if (ismob(target))
 			target:attack_log += "\[[time_stamp()]\]<font color='orange'> Had the [name] planted on them by [user.real_name] ([user.ckey])</font>"
 			user.visible_message("\red [user.name] finished planting an explosive on [target.name]!")
-			//log_admin("ATTACK: [user] ([user.ckey]) planted [src] on [target] ([target:ckey]).")
-			message_admins("ATTACK: [user] ([user.ckey])(<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>) planted [src] on [target] ([target:ckey]).", 2)
-			log_attack("[user] ([user.ckey]) planted [name] on [target.name] ([target:ckey])")
 		target.overlays += image('icons/obj/assemblies.dmi', "plastic-explosive2")
 		user << "Bomb has been planted. Timer counting down from [timer]."
 		spawn(timer*10)

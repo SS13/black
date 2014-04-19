@@ -1,5 +1,9 @@
-<h1>Welcome to Space Station 13!</h1>
+<h1>Добро пожаловать на Animus Black!</h1>
 
--<i>This server is running <a href="http://baystation12.net/">Baystation 12's</a> modification of the <a href="http://ss13.eu/">/tg/station13</a> SS13 code.</i>
-<br><br>
-<strong>Bugtracker:</strong> <a href="http://baystation12.net/forums/viewtopic.php?f=18&t=8185">http://baystation12.net/forums/viewtopic.php?f=18&t=8185</a>
+-<i>Сервер работает на модифицированной сборке <a href="http://baystation12.net/">Baystation 12's</a>.</i>
+<br>
+<br><a href="http://wiki.ss13.ru/index.php?title=Rules">Правила игры.</a><br>
+<a href="http://forum.ss13.ru/index.php?showforum=18">Подфорум сервера.</a>
+<br>
+<br>Это ролевой сервер. Правила игры обязательны к соблюдению всеми игроками, при нарушении правил игрок получает дисциплинарное взыскание от Администрации.<br>
+Если у вас возникли вопросы, не стесняйтесь задавать их Администратору, воспользовавшись функцией "adminhelp" или отправив сообщение на форуме.

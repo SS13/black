@@ -53,6 +53,13 @@
 	return
 
 /datum/species/proc/handle_death(var/mob/living/carbon/human/H) //Handles any species-specific death events (such as dionaea nymph spawns).
+	if(flags & IS_SYNTHETIC)
+		//H.make_jittery(200) //S-s-s-s-sytem f-f-ai-i-i-i-i-lure-ure-ure-ure
+		H.h_style = ""
+		spawn(100)
+			//H.is_jittery = 0
+			//H.jitteriness = 0
+			H.update_hair()
 	return
 
 /datum/species/human
@@ -84,7 +91,7 @@
 	heat_level_2 = 480 //Default 400
 	heat_level_3 = 1100 //Default 1000
 
-	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL
+	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL | HAS_SKIN_TONE
 
 	flesh_color = "#34AF10"
 
@@ -108,7 +115,7 @@
 
 	primitive = /mob/living/carbon/monkey/tajara
 
-	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL
+	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL | HAS_SKIN_TONE
 
 	flesh_color = "#AFA59E"
 
@@ -119,7 +126,7 @@
 	language = "Skrellian"
 	primitive = /mob/living/carbon/monkey/skrell
 
-	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR
+	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_TONE
 
 	flesh_color = "#8CD7A3"
 
@@ -139,7 +146,7 @@
 	eyes = "vox_eyes_s"
 	breath_type = "nitrogen"
 
-	flags = NO_SCAN | NO_BLOOD
+	flags = NO_SCAN | NO_BLOOD | HAS_SKIN_TONE
 
 	blood_color = "#2299FC"
 	flesh_color = "#808D11"
@@ -186,7 +193,7 @@
 	heat_level_2 = 3000
 	heat_level_3 = 4000
 
-	flags = IS_WHITELISTED | NO_BREATHE | REQUIRE_LIGHT | NO_SCAN | IS_PLANT | RAD_ABSORB | NO_BLOOD | IS_SLOW | NO_PAIN
+	flags = IS_WHITELISTED | NO_BREATHE | REQUIRE_LIGHT | NO_SCAN | IS_PLANT | RAD_ABSORB | NO_BLOOD | IS_SLOW | NO_PAIN | HAS_SKIN_TONE
 
 	blood_color = "#004400"
 	flesh_color = "#907E4A"
@@ -219,8 +226,8 @@
 	punch_damage = 2
 
 	eyes = "blank_eyes"
-	brute_mod = 1.5
-	burn_mod = 1.5
+	brute_mod = 0.5
+	burn_mod = 1
 
 	warning_low_pressure = 50
 	hazard_low_pressure = 10
@@ -233,7 +240,7 @@
 	heat_level_2 = 3000
 	heat_level_3 = 4000
 
-	flags = IS_WHITELISTED | NO_BREATHE | NO_SCAN | NO_BLOOD | NO_PAIN | IS_SYNTHETIC
+	flags = IS_WHITELISTED | NO_BREATHE | NO_SCAN | NO_BLOOD | NO_PAIN | IS_SYNTHETIC | HAS_SKIN_TONE
 
-	blood_color = "#FFFFFF"
-	flesh_color = "#AAAAAA"
+	blood_color = "#1F181F"
+	flesh_color = "#575757"

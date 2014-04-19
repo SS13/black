@@ -163,8 +163,8 @@
 				continue
 			var/datum/disease/dnaspread/D = new
 			D.strain_data["name"] = H.real_name
-			D.strain_data["UI"] = H.dna.UI
-			D.strain_data["SE"] = H.dna.SE
+			D.strain_data["UI"] = H.dna.uni_identity
+			D.strain_data["SE"] = H.dna.struc_enzymes
 			D.carrier = 1
 			D.holder = H
 			D.affected_mob = H
@@ -187,8 +187,8 @@
 	//world << sound('sound/AI/aliens.ogg')
 	var/list/vents = list()
 	for(var/obj/machinery/atmospherics/unary/vent_pump/temp_vent in machines)
-		if(temp_vent.loc.z >= 1 && temp_vent.loc.z <= 4 && !temp_vent.welded && temp_vent.network)
-			if(temp_vent.network.normal_members.len > 30) // Stops Aliens getting stuck in small networks. See: Security, Virology
+		if(temp_vent.loc.z == 1 && !temp_vent.welded && temp_vent.network)
+			if(temp_vent.network.normal_members.len > 50) // Stops Aliens getting stuck in small networks. See: Security, Virology
 				vents += temp_vent
 
 	var/list/candidates = get_alien_candidates()
@@ -224,7 +224,7 @@
 		var/turf/T = get_turf(H)
 		if(!T)
 			continue
-		if(!(T.z >= 1 && T.z <= 4))
+		if(T.z != 1)
 			continue
 		if(istype(H,/mob/living/carbon/human))
 			H.apply_effect((rand(15,75)),IRRADIATE,0)
@@ -233,19 +233,19 @@
 			if (prob(25))
 				if (prob(75))
 					randmutb(H)
-					domutcheck(H,null,1)
+					domutcheck(H,null,MUTCHK_FORCED)
 				else
 					randmutg(H)
-					domutcheck(H,null,1)
+					domutcheck(H,null,MUTCHK_FORCED)
 	for(var/mob/living/carbon/monkey/M in living_mob_list)
 		var/turf/T = get_turf(M)
 		if(!T)
 			continue
-		if(!(T.z >= 1 && T.z <= 4))
+		if(T.z != 1)
 			continue
 		M.apply_effect((rand(15,75)),IRRADIATE,0)
 	sleep(100)
-	command_alert("High levels of radiation detected near the ship. Please report to the Med-bay if you feel strange.", "Anomaly Alert")
+	command_alert("High levels of radiation detected near the station. Please report to the Med-bay if you feel strange.", "Anomaly Alert")
 	for(var/mob/M in player_list)
 		M << sound('sound/AI/radiation.ogg')
 
@@ -257,7 +257,7 @@
 
 	var/list/area/areas = list()
 	for(var/area/A in world)
-		if(istype(A, /area/prison) || istype(A, /area/security/prison) || istype(A, /area/security/brig))
+		if(istype(A, /area/security/prison) || istype(A, /area/security/brig))
 			areas += A
 
 	if(areas && areas.len > 0)

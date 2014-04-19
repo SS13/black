@@ -4,10 +4,10 @@
 	icon = 'icons/obj/gun.dmi'
 	icon_state = "detective"
 	item_state = "gun"
-	flags = FPRINT | TABLEPASS | CONDUCT | USEDELAY
+	flags =  FPRINT | TABLEPASS | CONDUCT
 	slot_flags = SLOT_BELT
 	m_amt = 2000
-	w_class = 3
+	w_class = 3.0
 	throwforce = 5
 	throw_speed = 4
 	throw_range = 5
@@ -30,7 +30,7 @@
 	var/tmp/told_cant_shoot = 0 //So that it doesn't spam them with the fact they cannot hit them.
 	var/firerate = 1 	// 0 for one bullet after tarrget moves and aim is lowered,
 						//1 for keep shooting until aim is lowered
-	var/fire_delay = 3
+	var/fire_delay = 6
 	var/last_fired = 0
 
 	proc/ready_to_fire()
@@ -40,7 +40,7 @@
 		else
 			return 0
 
-	proc/process_chambered()
+	proc/load_into_chamber()
 		return 0
 
 	proc/special_check(var/mob/M) //Placeholder for any special checks, like detective's revolver.
@@ -101,7 +101,7 @@
 			user << "<span class='warning'>[src] is not ready to fire again!"
 		return
 
-	if(!process_chambered()) //CHECK
+	if(!load_into_chamber()) //CHECK
 		return click_empty(user)
 
 	if(!in_chamber)
@@ -136,6 +136,14 @@
 	in_chamber.current = curloc
 	in_chamber.yo = targloc.y - curloc.y
 	in_chamber.xo = targloc.x - curloc.x
+	if(istype(user, /mob/living/carbon))
+		var/mob/living/carbon/mob = user
+		if(mob.shock_stage > 120)
+			in_chamber.yo += rand(-2,2)
+			in_chamber.xo += rand(-2,2)
+		else if(mob.shock_stage > 70)
+			in_chamber.yo += rand(-1,1)
+			in_chamber.xo += rand(-1,1)
 
 	if(params)
 		var/list/mouse_control = params2list(params)
@@ -158,7 +166,7 @@
 		user.update_inv_r_hand()
 
 /obj/item/weapon/gun/proc/can_fire()
-	return process_chambered()
+	return load_into_chamber()
 
 /obj/item/weapon/gun/proc/can_hit(var/mob/living/target as mob, var/mob/living/user as mob)
 	return in_chamber.check_fire(target,user)
@@ -180,25 +188,24 @@
 			M.visible_message("\blue [user] decided life was worth living")
 			mouthshoot = 0
 			return
-		if (process_chambered())
+		if (load_into_chamber())
 			user.visible_message("<span class = 'warning'>[user] pulls the trigger.</span>")
 			if(silenced)
 				playsound(user, fire_sound, 10, 1)
 			else
 				playsound(user, fire_sound, 50, 1)
+			if(istype(in_chamber, /obj/item/projectile/beam/lastertag))		
+				user.show_message("<span class = 'warning'>You feel rather silly, trying to commit suicide with a toy.</span>")
+				mouthshoot = 0
+				return
+
 			in_chamber.on_hit(M)
-			if (!in_chamber.nodamage)
-				user.apply_damage(in_chamber.damage*3, in_chamber.damage_type, "head", used_weapon = "Point blank shot in the mouth with \a [in_chamber]")
-				//user.death()
+			if (in_chamber.damage_type != HALLOSS)
+				user.apply_damage(in_chamber.damage*2.5, in_chamber.damage_type, "head", used_weapon = "Point blank shot in the mouth with \a [in_chamber]")
+				user.death()
 			else
 				user << "<span class = 'notice'>Ow...</span>"
 				user.apply_effect(110,AGONY,0)
-
-			M.attack_log += text("\[[]\] <b>[]/[]</b> shot <b>[]/[]</b> point blank with a <b>[]</b>", time_stamp(), user, user.ckey, M, M.ckey, src)
-			user.attack_log += text("\[[]\] <b>[]/[]</b> shot <b>[]/[]</b> point blank with a <b>[]</b>", time_stamp(), user, user.ckey, M, M.ckey, src)
-			log_admin("ATTACK: [user] ([user.ckey]) shot [M] ([M.ckey]) point blank with [src].")
-			message_admins("ATTACK: [user] ([user.ckey])(<A HREF='?src=%admin_ref%;adminplayerobservejump=\ref[user]'>JMP</A>) shot [M] ([M.ckey]) point blank with [src].", 2)
-
 			del(in_chamber)
 			mouthshoot = 0
 			return
@@ -207,11 +214,11 @@
 			mouthshoot = 0
 			return
 
-	if (process_chambered())
+	if (load_into_chamber())
 		//Point blank shooting if on harm intent or target we were targeting.
 		if(user.a_intent == "hurt")
 			user.visible_message("\red <b> \The [user] fires \the [src] point blank at [M]!</b>")
-			in_chamber.damage *= 1.75
+			in_chamber.damage *= 1.3
 			Fire(M,user)
 			return
 		else if(target && M in target)

@@ -6,6 +6,7 @@
 	icon_state = "body_m_s"
 	var/list/hud_list = list()
 	var/datum/species/species //Contains icon generation and language information, set during New().
+	var/embedded_flag	  //To check if we've need to roll for damage on movement while an item is imbedded in us.
 
 /mob/living/carbon/human/dummy
 	real_name = "Test Dummy"
@@ -35,6 +36,11 @@
 	species = new /datum/species/diona(src)
 	..()
 
+/mob/living/carbon/human/machine/New()
+	h_style = "blue IPC screen"
+	set_species("Machine")
+	..()
+
 /mob/living/carbon/human/New()
 
 	if(!species)
@@ -46,6 +52,7 @@
 
 	if(!dna)
 		dna = new /datum/dna(null)
+		dna.species=species.name
 
 	for(var/i=0;i<7;i++) // 2 for medHUDs and 5 for secHUDs
 		hud_list += image('icons/mob/hud.dmi', src, "hudunknown")
@@ -386,7 +393,8 @@
 	<BR><B>Right Hand:</B> <A href='?src=\ref[src];item=r_hand'>[(r_hand ? r_hand : "Nothing")]</A>
 	<BR><B>Gloves:</B> <A href='?src=\ref[src];item=gloves'>[(gloves ? gloves : "Nothing")]</A>
 	<BR><B>Eyes:</B> <A href='?src=\ref[src];item=eyes'>[(glasses ? glasses : "Nothing")]</A>
-	<BR><B>Ears:</B> <A href='?src=\ref[src];item=l_ear'>[(l_ear ? l_ear : "Nothing")]</A>
+	<BR><B>Left Ear:</B> <A href='?src=\ref[src];item=l_ear'>[(l_ear ? l_ear : "Nothing")]</A>
+	<BR><B>Right Ear:</B> <A href='?src=\ref[src];item=r_ear'>[(r_ear ? r_ear : "Nothing")]</A>
 	<BR><B>Head:</B> <A href='?src=\ref[src];item=head'>[(head ? head : "Nothing")]</A>
 	<BR><B>Shoes:</B> <A href='?src=\ref[src];item=shoes'>[(shoes ? shoes : "Nothing")]</A>
 	<BR><B>Belt:</B> <A href='?src=\ref[src];item=belt'>[(belt ? belt : "Nothing")]</A>
@@ -669,6 +677,8 @@
 								if(setmedical != "Cancel")
 									R.fields["p_stat"] = setmedical
 									modified = 1
+									if(PDA_Manifest.len)
+										PDA_Manifest.Cut()
 
 									spawn()
 										if(istype(usr,/mob/living/carbon/human))
@@ -1021,9 +1031,11 @@
 		O.status &= ~ORGAN_BROKEN
 		O.status &= ~ORGAN_BLEEDING
 		O.status &= ~ORGAN_SPLINTED
+		O.status &= ~ORGAN_CUT_AWAY
 		O.status &= ~ORGAN_ATTACHABLE
 		if (!O.amputated)
 			O.status &= ~ORGAN_DESTROYED
+			O.destspawn = 0
 		O.wounds.Cut()
 		O.heal_damage(1000,1000,1,1)
 
@@ -1116,7 +1128,7 @@
 		update_inv_shoes(1)
 		return 1
 
-/mob/living/carbon/human/proc/get_visible_implants(var/class = 0)
+/mob/living/carbon/human/get_visible_implants(var/class = 0)
 
 	var/list/visible_implants = list()
 	for(var/datum/organ/external/organ in src.organs)
@@ -1183,8 +1195,14 @@
 
 /mob/living/carbon/human/proc/set_species(var/new_species)
 
-	if(!new_species)
-		new_species = "Human"
+	if(!dna)
+		if(!new_species)
+			new_species = "Human"
+	else
+		if(!new_species)
+			new_species = dna.species
+		else
+			dna.species = new_species
 
 	if(species && (species.name && species.name == new_species))
 		return
@@ -1260,3 +1278,10 @@
 		W.update_icon()
 		W.message = message
 		W.add_fingerprint(src)
+
+/mob/living/carbon/human/verb/ToggleMobAlert()
+	set name = "Toggle Mob Alert"
+	set category = "IC"
+
+	mob_alert = !mob_alert
+	src << "You turn [(mob_alert) ? "on" : "off"] mob alert."

@@ -388,7 +388,7 @@ var/list/intents = list("help","disarm","grab","hurt")
 			if("left")
 				a_intent = intent_numeric((intent_numeric(a_intent)+3) % 4)
 		if(hud_used && hud_used.action_intent)
-			hud_used.action_intent.icon_state = "[a_intent]"
+			hud_used.action_intent.icon_state = "intent_[a_intent]"
 
 	else if(isrobot(src) || ismonkey(src) || islarva(src))
 		switch(input)

@@ -59,10 +59,10 @@
 	if(usr)
 		if (usr.client)
 			if(usr.client.holder)
-				M << "\bold You hear a voice in your head... \italic [sanitize_multi(html_decode(msg))]"
+				M << "\bold You hear a voice in your head... \italic [sanitize(html_decode(msg))]"
 
 	log_admin("SubtlePM: [key_name(usr)] -> [key_name(M)] : [msg]")
-	message_admins("\blue \bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [sanitize_multi(html_decode(msg))]", 1)
+	message_admins("\blue \bold SubtleMessage: [key_name_admin(usr)] -> [key_name_admin(M)] : [sanitize(html_decode(msg))]", 1)
 	feedback_add_details("admin_verb","SMS") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/cmd_admin_world_narrate() // Allows administrators to fluff events a little easier -- TLE
@@ -77,9 +77,9 @@
 
 	if (!msg)
 		return
-	world << "[sanitize_multi(html_decode(msg))]"
+	world << "[sanitize(html_decode(msg))]"
 	log_admin("GlobalNarrate: [key_name(usr)] : [msg]")
-	message_admins("\blue \bold GlobalNarrate: [key_name_admin(usr)] : [sanitize_multi(html_decode(msg))]<BR>", 1)
+	message_admins("\blue \bold GlobalNarrate: [key_name_admin(usr)] : [sanitize(html_decode(msg))]<BR>", 1)
 	feedback_add_details("admin_verb","GLN") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/cmd_admin_direct_narrate(var/mob/M)	// Targetted narrate -- TLE
@@ -101,9 +101,9 @@
 	if( !msg )
 		return
 
-	M << sanitize_multi(html_decode(msg))
+	M << sanitize(html_decode(msg))
 	log_admin("DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [msg]")
-	message_admins("\blue \bold DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [sanitize_multi(html_decode(msg))]<BR>", 1)
+	message_admins("\blue \bold DirectNarrate: [key_name(usr)] to ([M.name]/[M.key]): [sanitize(html_decode(msg))]<BR>", 1)
 	feedback_add_details("admin_verb","DIRN") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 /client/proc/cmd_admin_godmode(mob/M as mob in mob_list)
@@ -228,7 +228,7 @@ Ccomp's first proc.
 
 /client/proc/get_ghosts(var/notify = 0,var/what = 2)
 	// what = 1, return ghosts ass list.
-	// what = 2, return mob list
+	// what = 2, return mob list	
 
 	var/list/mobs = list()
 	var/list/ghosts = list()
@@ -264,22 +264,22 @@ Ccomp's first proc.
 		src << "Hrm, appears you didn't select a ghost"		// Sanity check, if no ghosts in the list we don't want to edit a null variable and cause a runtime error.
 		return
 
-	var/mob/dead/observer/G = ghosts[target]
-	if(G.has_enabled_antagHUD && config.antag_hud_restricted)
+	var/mob/dead/observer/G = ghosts[target]					
+	if(G.has_enabled_antagHUD && config.antag_hud_restricted)	
 		var/response = alert(src, "Are you sure you wish to allow this individual to play?","Ghost has used AntagHUD","Yes","No")
-		if(response == "No") return
+		if(response == "No") return	
 	G.timeofdeath=-19999						/* time of death is checked in /mob/verb/abandon_mob() which is the Respawn verb.
 									   timeofdeath is used for bodies on autopsy but since we're messing with a ghost I'm pretty sure
 									   there won't be an autopsy.
 									*/
-	G.has_enabled_antagHUD = 2
+	G.has_enabled_antagHUD = 2	
 	G.can_reenter_corpse = 1
 
 	G:show_message(text("\blue <B>You may now respawn.  You should roleplay as if you learned nothing about the round during your time with the dead.</B>"), 1)
 	log_admin("[key_name(usr)] allowed [key_name(G)] to bypass the 30 minute respawn limit")
 	message_admins("Admin [key_name_admin(usr)] allowed [key_name_admin(G)] to bypass the 30 minute respawn limit", 1)
 
-
+	 
 /client/proc/toggle_antagHUD_use()
 	set category = "Server"
 	set name = "Toggle antagHUD usage"
@@ -295,7 +295,7 @@ Ccomp's first proc.
 			if(g.antagHUD)
 				g.antagHUD = 0						// Disable it on those that have it enabled
 				g.has_enabled_antagHUD = 2				// We'll allow them to respawn
-				g << "\red <B>The Administrator has disabled AntagHUD </B>"
+				g << "\red <B>The Administrator has disabled AntagHUD </B>"    
 		config.antag_hud_allowed = 0
 		src << "\red <B>AntagHUD usage has been disabled</B>"
 		action = "disabled"
@@ -307,8 +307,8 @@ Ccomp's first proc.
 		config.antag_hud_allowed = 1
 		action = "enabled"
 		src << "\blue <B>AntagHUD usage has been enabled</B>"
-
-
+		
+	
 	log_admin("[key_name(usr)] has [action] antagHUD usage for observers")
 	message_admins("Admin [key_name_admin(usr)] has [action] antagHUD usage for observers", 1)
 
@@ -325,7 +325,7 @@ Ccomp's first proc.
 		for(var/mob/dead/observer/g in get_ghosts())
 			g << "\blue <B>The administrator has lifted restrictions on joining the round if you use AntagHUD</B>"
 		action = "lifted restrictions"
-		config.antag_hud_restricted = 0
+		config.antag_hud_restricted = 0		
 		src << "\blue <B>AntagHUD restrictions have been lifted</B>"
 	else
 		for(var/mob/dead/observer/g in get_ghosts())
@@ -339,7 +339,7 @@ Ccomp's first proc.
 
 	log_admin("[key_name(usr)] has [action] on joining the round if they use AntagHUD")
 	message_admins("Admin [key_name_admin(usr)] has [action] on joining the round if they use AntagHUD", 1)
-
+	
 
 
 
@@ -540,7 +540,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if(!holder)
 		src << "Only administrators may use this command."
 		return
-	var/input = sanitize_multi(input(usr, "Please enter anything you want the AI to do. Anything. Serious.", "What?", "") as text|null)
+	var/input = sanitize(input(usr, "Please enter anything you want the AI to do. Anything. Serious.", "What?", "") as text|null)
 	if(!input)
 		return
 	for(var/mob/living/silicon/ai/M in mob_list)
@@ -588,8 +588,8 @@ Traitors and the like can also be revived with the previous role mostly intact.
 	if(!holder)
 		src << "Only administrators may use this command."
 		return
-	var/input = sanitize_multi(input(usr, "Please enter anything you want. Anything. Serious.", "What?", "") as message|null)
-	var/customname = sanitize_multi(input(usr, "Pick a title for the report.", "Title") as text|null)
+	var/input = sanitize(input(usr, "Please enter anything you want. Anything. Serious.", "What?", "") as message|null)
+	var/customname = sanitize(input(usr, "Pick a title for the report.", "Title") as text|null)
 	if(!input)
 		return
 	if(!customname)
@@ -864,7 +864,7 @@ Traitors and the like can also be revived with the previous role mostly intact.
 			return
 
 	emergency_shuttle.incall()
-	captain_announce("The Escape Pods Launch Sequence has been activated. Estimate [round(emergency_shuttle.timeleft()/60)] minutes untill the Escape Pods Launch.")
+	captain_announce("Вызван эвакуационный шаттл. Он прибудет на станцию через [round(emergency_shuttle.timeleft()/60)] минут.")
 	world << sound('sound/AI/shuttlecalled.ogg')
 	feedback_add_details("admin_verb","CSHUT") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 	log_admin("[key_name(usr)] admin-called the emergency shuttle.")

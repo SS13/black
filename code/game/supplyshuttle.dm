@@ -1,6 +1,6 @@
 //Config stuff
-#define SUPPLY_DOCKZ 6          //Z-level of the Dock.
-#define SUPPLY_STATIONZ 4       //Z-level of the Station.
+#define SUPPLY_DOCKZ 2          //Z-level of the Dock.
+#define SUPPLY_STATIONZ 1       //Z-level of the Station.
 #define SUPPLY_STATION_AREATYPE "/area/supply/station" //Type of the supply shuttle area for station
 #define SUPPLY_DOCK_AREATYPE "/area/supply/dock"	//Type of the supply shuttle area for dock
 
@@ -404,7 +404,7 @@ var/list/mechtoys = list(
 		if(!istype(P))	return
 
 		var/timeout = world.time + 600
-		var/reason = copytext(sanitize(input(usr,"Reason:","Why do you require this item?","") as null|text),1,MAX_MESSAGE_LEN)
+		var/reason = copytext(sanitize_multi(input(usr,"Reason:","Why do you require this item?","") as null|text),1,MAX_MESSAGE_LEN)
 		if(world.time > timeout)	return
 		if(!reason)	return
 
@@ -597,7 +597,7 @@ var/list/mechtoys = list(
 		if(!istype(P))	return
 
 		var/timeout = world.time + 600
-		var/reason = copytext(sanitize(input(usr,"Reason:","Why do you require this item?","") as null|text),1,MAX_MESSAGE_LEN)
+		var/reason = copytext(sanitize_multi(input(usr,"Reason:","Why do you require this item?","") as null|text),1,MAX_MESSAGE_LEN)
 		if(world.time > timeout)	return
 		if(!reason)	return
 
