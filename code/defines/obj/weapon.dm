@@ -25,6 +25,124 @@
 	flags = TABLEPASS
 	w_class = 3.0
 
+
+/obj/item/weapon/spacecash
+	name = "1 credit"
+	desc = "It's worth 1 credit."
+	gender = PLURAL
+	icon = 'icons/obj/items.dmi'
+	icon_state = "spacecash"
+	opacity = 0
+	density = 0
+	anchored = 0.0
+	force = 1.0
+	throwforce = 1.0
+	throw_speed = 1
+	throw_range = 2
+	w_class = 1.0
+	var/access = list()
+	access = access_crate_cash
+	var/worth = 1
+
+/obj/item/weapon/spacecash/proc/update_cash()
+	name = "[src.worth] credit"
+	desc = "It's worth [src.worth] credits."
+	if (src.worth < 1) del(src)
+	else if (src.worth<20) src.icon_state = "spacecash10"
+	else if (src.worth<50) src.icon_state = "spacecash20"
+	else if (src.worth<100) src.icon_state = "spacecash50"
+	else if (src.worth<200) src.icon_state = "spacecash100"
+	else if (src.worth<500) src.icon_state = "spacecash200"
+	else if (src.worth<1000) src.icon_state = "spacecash500"
+	else src.icon_state = "spacecash1000"
+
+/obj/item/weapon/spacecash/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if(istype(W, /obj/item/weapon/spacecash))
+		src.worth+=W:worth
+		user.drop_item()
+		del(W)
+		src.update_cash()
+
+/obj/item/weapon/spacecash/attack_self(mob/user as mob)
+	var/cash = round(input(usr,"How many cash we gonna take?","Take part of cash",100) as num|null)
+	if (cash > src.worth || cash < 1)
+		return
+	src.worth -= cash
+	src.update_cash()
+	var/obj/item/weapon/spacecash/S = new
+	S.worth = cash
+	S.update_cash()
+	if((user.hand && !user.r_hand)||(!user.hand && !user.l_hand))
+		return user.put_in_inactive_hand(S)
+	else
+		S.loc = user.loc
+
+/obj/item/weapon/spacecash/c10
+	name = "10 credit"
+	icon_state = "spacecash10"
+	access = access_crate_cash
+	desc = "It's worth 10 credits."
+	worth = 10
+
+/obj/item/weapon/spacecash/c20
+	name = "20 credit"
+	icon_state = "spacecash20"
+	access = access_crate_cash
+	desc = "It's worth 20 credits."
+	worth = 20
+
+/obj/item/weapon/spacecash/c50
+	name = "50 credit"
+	icon_state = "spacecash50"
+	access = access_crate_cash
+	desc = "It's worth 50 credits."
+	worth = 50
+
+/obj/item/weapon/spacecash/c100
+	name = "100 credit"
+	icon_state = "spacecash100"
+	access = access_crate_cash
+	desc = "It's worth 100 credits."
+	worth = 100
+
+/obj/item/weapon/spacecash/c200
+	name = "200 credit"
+	icon_state = "spacecash200"
+	access = access_crate_cash
+	desc = "It's worth 200 credits."
+	worth = 200
+
+/obj/item/weapon/spacecash/c500
+	name = "500 credit"
+	icon_state = "spacecash500"
+	access = access_crate_cash
+	desc = "It's worth 500 credits."
+	worth = 500
+
+/obj/item/weapon/spacecash/c1000
+	name = "1000 credit"
+	icon_state = "spacecash1000"
+	access = access_crate_cash
+	desc = "It's worth 1000 credits."
+	worth = 1000
+
+/obj/item/weapon/strangecash
+	icon = 'icons/obj/items.dmi'
+	name = "uncommon cash"
+	desc = "A stack of uncommon cash. Who issued it?"
+	icon_state = "strangecash"
+	w_class = 1.0
+	throwforce = 2
+	throw_speed = 2
+	throw_range = 3
+
+/obj/item/weapon/strangecash/c100
+	icon_state = "strangecash2"
+
+/obj/item/weapon/strangecash/c1000
+	icon_state = "strangecash3"
+
+
 /obj/item/weapon/bananapeel
 	name = "banana peel"
 	desc = "A peel from a banana."
@@ -62,6 +180,10 @@
 	desc = "A Nanotrasen brand bar of soap. Smells of plasma."
 	icon_state = "soapnt"
 
+/obj/item/weapon/soap/blue
+	desc = "Generic brand of space soap. Smells of detergent."
+	icon_state = "soapblue"
+
 /obj/item/weapon/soap/deluxe
 	desc = "A deluxe Waffle Co. brand bar of soap. Smells of condoms."
 	icon_state = "soapdeluxe"
@@ -69,6 +191,10 @@
 /obj/item/weapon/soap/syndie
 	desc = "An untrustworthy bar of soap. Smells of fear."
 	icon_state = "soapsyndie"
+
+/obj/item/weapon/soap/homemade
+	desc = "An ugly bar of soap, rough to the touch. Smells of vomit and chemicals and looks to be homemade."
+	icon_state = "soaphomemade"
 
 /obj/item/weapon/bikehorn
 	name = "bike horn"
@@ -108,6 +234,19 @@
 	m_amt = 50
 	attack_verb = list("bludgeoned", "whacked", "disciplined", "thrashed")
 
+/obj/item/weapon/icepick
+	name = "ice pick"
+	desc = "A tool used to crush ice for cocktail making. Or, you know, crush skulls."
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "icepick"
+	item_state = "icepick"
+	flags = FPRINT | TABLEPASS| CONDUCT
+	force = 7.0
+	throwforce = 7.0
+	w_class = 2.0
+	m_amt = 50
+	attack_verb = list("crushed", "stabbed", "ice-picked")
+
 /obj/item/weapon/disk
 	name = "disk"
 	icon = 'icons/obj/items.dmi'
@@ -119,7 +258,33 @@
 	item_state = "card-id"
 	w_class = 1.0
 
-/*
+/obj/item/weapon/hdd
+	name = "supermagnetic data storage disk"
+	desc = "Up to 64 zettabytes of data right here in your pocket."
+	icon = 'icons/obj/stock_parts.dmi'
+	icon_state = "hdd2"
+	item_state = "card-id"
+	w_class = 1.0
+	flags = FPRINT | TABLEPASS| CONDUCT
+	attack_verb = list("zip-filed", "formatted")
+
+/obj/item/weapon/hdd/mini
+	desc = "Up to 32 zettabytes of data right here in your pocket."
+	icon_state = "hdd1"
+
+//TODO: Figure out wtf this is and possibly remove it -Nodrak
+/obj/item/weapon/dummy
+	name = "dummy"
+	invisibility = 101.0
+	anchored = 1.0
+	flags = TABLEPASS
+
+/obj/item/weapon/dummy/ex_act()
+	return
+
+/obj/item/weapon/dummy/blob_act()
+	return
+
 /obj/item/weapon/game_kit
 	name = "Gaming Kit"
 	icon = 'icons/obj/items.dmi'
@@ -130,7 +295,6 @@
 	var/base_url = "http://svn.slurm.us/public/spacestation13/misc/game_kit"
 	item_state = "sheet-metal"
 	w_class = 5.0
-*/
 
 /obj/item/weapon/gift
 	name = "gift"
@@ -153,6 +317,21 @@
 	w_class = 3.0
 	origin_tech = "materials=1"
 	var/breakouttime = 300	//Deciseconds = 30s = 0.5 minute
+
+/obj/item/weapon/legcuffs/attack(mob/living/carbon/C as mob, mob/user as mob)
+	if(istype(src, /obj/item/weapon/handcuffs/cyborg) && isrobot(user))
+		if(!C.legcuffed)
+			var/turf/p_loc = user.loc
+			var/turf/p_loc_m = C.loc
+			playsound(src.loc, 'sound/weapons/handcuffs.ogg', 30, 1, -2)
+			for(var/mob/O in viewers(user, null))
+				O.show_message("\red <B>[user] is trying to put legcuffs on [C]!</B>", 1)
+			spawn(30)
+				if(!C)	return
+				if(p_loc == user.loc && p_loc_m == C.loc)
+					C.legcuffed = new /obj/item/weapon/legcuffs(C)
+					C.update_inv_legcuffed()
+
 
 /obj/item/weapon/legcuffs/beartrap
 	name = "bear trap"
@@ -325,13 +504,6 @@
 	icon = 'icons/obj/wizard.dmi'
 	icon_state = "broom"
 
-/obj/item/weapon/staff/gentcane
-	name = "Gentlemans Cane"
-	desc = "An ebony can with an ivory tip."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "cane"
-	item_state = "stick"
-
 /obj/item/weapon/staff/stick
 	name = "stick"
 	desc = "A great tool to drag someone else's drinks across the bar."
@@ -367,7 +539,7 @@
 	name = "wooden table parts"
 	desc = "Keep away from fire."
 	icon_state = "wood_tableparts"
-	flags = null
+	flags = FPRINT | TABLEPASS| CONDUCT
 
 /obj/item/weapon/wire
 	desc = "This is just a simple piece of regular insulated wire."
@@ -401,8 +573,6 @@
 	name = "power control module"
 	icon_state = "power_mod"
 	desc = "Heavy-duty switching circuits for power control."
-	m_amt = 50
-	g_amt = 50
 
 /obj/item/weapon/module/id_auth
 	name = "\improper ID authentication module"
@@ -504,8 +674,7 @@
 	origin_tech = "materials=2;combat=2"
 	attack_verb = list("chopped", "sliced", "cut", "reaped")
 
-/obj/item/weapon/scythe/afterattack(atom/A, mob/user as mob, proximity)
-	if(!proximity) return
+/obj/item/weapon/scythe/afterattack(atom/A, mob/user as mob)
 	if(istype(A, /obj/effect/spacevine))
 		for(var/obj/effect/spacevine/B in orange(A,1))
 			if(prob(80))
@@ -539,11 +708,149 @@
 	icon = 'icons/obj/assemblies.dmi'
 	icon_state = "plastic-explosive0"
 	item_state = "plasticx"
-	flags = FPRINT | TABLEPASS | NOBLUDGEON
+	flags = FPRINT | TABLEPASS | USEDELAY
 	w_class = 2.0
 	origin_tech = "syndicate=2"
 	var/timer = 10
 	var/atom/target = null
+
+
+/obj/item/weapon/blownshotgun
+	name = "blown-up shotgun"
+	desc = "This once used to ba a shotgun. Now it`s but a useless piece of trash."
+	icon = 'icons/obj/gun.dmi'
+	icon_state = "b-shotgun"
+	item_state = "shotgun"
+	flags = FPRINT | TABLEPASS
+	w_class = 4.0
+	m_amt = 60
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/item/weapon/blownextinguisher
+	name = "blown-up extinguisher"
+	desc = "This fire extinguisher probably exploded because of too high internal pressure. Not so robust now, huh?"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "exting_blown"
+	item_state = "coil"
+	w_class = 3.0
+	force = 5.0
+	m_amt = 30
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/item/weapon/brokenscrewdriwer
+	name = "broken screwdriwer"
+	desc = "This was once supposed to be a screwdriwer, supposedly."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "screwdriver_broken"
+	item_state = "screwdriver_blue"
+	w_class = 2.0
+	m_amt = 10
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/item/weapon/brokencrowbar
+	name = "broken crowbar"
+	desc = "A crowbar broken by prolonged use."
+	icon = 'icons/obj/items.dmi'
+	icon_state = "crowbar_broken"
+	item_state = "stick"
+	w_class = 2.0
+	m_amt = 20
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/item/weapon/brokenriot
+	name = "broken riot shield"
+	desc = "A riot shield broken from too powerful impact, now useless"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "riot_broken"
+	item_state = "sheet-glass"
+	w_class = 4.0
+	m_amt = 20
+	g_amt = 100
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/item/weapon/brokenegun
+	name = "broken energy gun"
+	desc = "This energy gun is dead beyond repair"
+	icon = 'icons/obj/gun.dmi'
+	icon_state = "egun-broken"
+	item_state = "gun"
+	w_class = 3.0
+	m_amt = 40
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/item/weapon/brokenlaser
+	name = "broken laser gun"
+	desc = "This laser gun is dead beyond repair"
+	icon = 'icons/obj/gun.dmi'
+	icon_state = "laser-broken"
+	item_state = "gun"
+	w_class = 3.0
+	m_amt = 50
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/item/weapon/brokentaser
+	name = "broken taser gun"
+	desc = "This taser gun is dead beyond repair"
+	icon = 'icons/obj/gun.dmi'
+	icon_state = "taser-broken"
+	item_state = "gun"
+	w_class = 3.0
+	m_amt = 30
+	New()
+		src.pixel_x = rand(-5.0, 5)
+		src.pixel_y = rand(-5.0, 5)
+
+/obj/structure/blownfueltank //Oh God, where the hell do I put it? If doesn`t fit in both structures and weapons!
+	name = "blown-up fueltank"
+	desc = "What part of refueling the welder didn`t you get clear?"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "fuel_blown"
+	anchored = 0
+	flags = FPRINT
+	New()
+		src.pixel_x = rand(-10.0, 10)
+		src.pixel_y = rand(-10.0, 10)
+
+/obj/item/weapon/cannedcarp
+	name = "canned fish"
+	desc = "Eeek, some canned space carp. Wait, how are you gonna open it?"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "cannedtuna"
+	flags = FPRINT | TABLEPASS | CONDUCT
+	force = 4.0
+	throwforce = 6.0
+	throw_speed = 3
+	throw_range = 6
+	w_class = 2
+	attack_verb = list("canned")
+
+/obj/item/weapon/cannedmeat
+	name = "canned meat"
+	desc = "Eeek, is that some 'tushonka'? Wait, how are you gonna open it?"
+	icon_state = "cannedmeat"
+	icon = 'icons/obj/items.dmi'
+	flags = FPRINT | TABLEPASS | CONDUCT
+	force = 4.0
+	throwforce = 6.0
+	throw_speed = 3
+	throw_range = 6
+	w_class = 2
+	attack_verb = list("canned")
+
 
 ///////////////////////////////////////Stock Parts /////////////////////////////////
 
@@ -761,3 +1068,29 @@
 	icon_state = "capacitor"
 	desc = "A debug item for research."
 	origin_tech = "materials=8;programming=8;magnets=8;powerstorage=8;bluespace=8;combat=8;biotech=8;syndicate=8"
+
+
+/*
+ * Ding! Bellboys ahoy!
+ */
+/obj/item/weapon/servicebell
+	name = "service bell"
+	desc = "Use this to summon bellboys."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "servicebell"
+	item_state = "zippo"
+	throwforce = 3
+	w_class = 1.0
+	throw_speed = 3
+	throw_range = 6
+	attack_verb = list("bellboyed")
+	var/spam_flag = 0
+
+/obj/item/weapon/servicebell/attack_self(mob/user as mob)
+	if (spam_flag == 0)
+		spam_flag = 1
+		playsound(src.loc, 'sound/items/servicebell.ogg', 100, 1)
+		src.add_fingerprint(user)
+		spawn(70)
+			spam_flag = 0
+	return

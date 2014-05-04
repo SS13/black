@@ -469,6 +469,8 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		moblist.Add(M)
 	for(var/mob/living/simple_animal/M in sortmob)
 		moblist.Add(M)
+	for(var/mob/living/parasite/meme/M in sortmob)
+		moblist.Add(M)
 //	for(var/mob/living/silicon/hivebot/M in world)
 //		mob_list.Add(M)
 //	for(var/mob/living/silicon/hive_mainframe/M in world)
@@ -493,7 +495,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		return -M
 
 
-/proc/key_name(var/whom, var/include_link = null, var/include_name = 1)
+/proc/key_name(var/whom, var/include_link = null, var/include_name = 1, var/real_key = 0)
 	var/mob/M
 	var/client/C
 	var/key
@@ -519,7 +521,7 @@ Turf and target are seperate in case you want to teleport some distance from a t
 		if(include_link && C)
 			. += "<a href='?priv_msg=\ref[C]'>"
 
-		if(C && C.holder && C.holder.fakekey && !include_name)
+		if(C && C.holder && C.holder.fakekey && !include_name && !real_key)
 			. += "Administrator"
 		else
 			. += key

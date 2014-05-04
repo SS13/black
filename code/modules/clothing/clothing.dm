@@ -22,13 +22,13 @@
 				if(H.species.name in species_restricted)
 					wearable = 1
 
-			if(!wearable && (slot != 15 && slot != 16)) //Pockets.
+			if(!wearable)
 				M << "\red Your species cannot wear [src]."
 				return 0
 
 	return ..()
 
-//Ears: headsets, earmuffs and tiny objects
+//Ears: currently only used for headsets and earmuffs
 /obj/item/clothing/ears
 	name = "ears"
 	w_class = 1.0
@@ -141,9 +141,6 @@ BLIND     // can't see anything
 			cell.reliability -= 10 / severity
 	..()
 
-// Called just before an attack_hand(), in mob/UnarmedAttack()
-/obj/item/clothing/gloves/proc/Touch(var/atom/A, var/proximity)
-	return 0 // return 1 to cancel attack_hand()
 
 //Head
 /obj/item/clothing/head
@@ -159,6 +156,8 @@ BLIND     // can't see anything
 	icon = 'icons/obj/clothing/masks.dmi'
 	body_parts_covered = HEAD
 	slot_flags = SLOT_MASK
+	var/can_breath = 0
+	var/can_eat = 1
 
 //Shoes
 /obj/item/clothing/shoes

@@ -135,10 +135,10 @@
 	if(istext(selhand))
 		selhand = lowertext(selhand)
 
-		if(selhand == "right" || selhand == "r")
-			selhand = 0
-		if(selhand == "left" || selhand == "l")
-			selhand = 1
+	if(selhand == "right" || selhand == "r")
+		selhand = 0
+	if(selhand == "left" || selhand == "l")
+		selhand = 1
 
 	if(selhand != src.hand)
 		swap_hand()
@@ -221,6 +221,96 @@
 
 // ++++ROCKDTBEN++++ MOB PROCS //END
 
+/mob/living/carbon/proc/handle_ventcrawl() // -- TLE -- Merged by Carn
+
+	if(stat)
+		src << "You must be conscious to do this!"
+		return
+
+	if(lying)
+		src << "You can't vent crawl while you're stunned!"
+		return
+
+	var/obj/machinery/atmospherics/unary/vent_pump/vent_found
+	for(var/obj/machinery/atmospherics/unary/vent_pump/v in range(1,src))
+		if(!v.welded)
+			vent_found = v
+		else
+			src << "\red That vent is welded."
+			return
+
+	if(!vent_found)
+		src << "You must be standing on or beside an air vent to enter it."
+		return
+
+	if(!vent_found.network&&vent_found.network.normal_members.len)
+		src << "This vent is not connected to anything."
+		return
+
+	var/list/vents[0]
+	for(var/obj/machinery/atmospherics/unary/vent_pump/temp_vent in vent_found.network.normal_members)
+		if(temp_vent.loc == loc)
+			continue
+		if(temp_vent.welded)
+			continue
+		var/turf/T = get_turf(temp_vent)
+
+		if(!T || T.z != loc.z)
+			continue
+
+		var/i = 1
+		var/index = "[T.loc.name]\[[i]\]"
+		while(index in vents)
+			i++
+			index = "[T.loc.name]\[[i]\]"
+		vents[index] = temp_vent
+
+	var/turf/startloc = loc
+	var/obj/selection = input("Select a destination.", "Duct System") as null|anything in sortList(vents)
+
+	if(!selection)
+		return
+
+	if(!do_after(src, 45))
+		return
+
+	if(!src||!selection)
+		return
+
+	if(!loc==startloc)
+		src << "You need to remain still while entering a vent."
+		return
+
+	if(contents.len)
+		for(var/obj/item/carried_item in contents)//If the monkey got on objects.
+			if( !istype(carried_item, /obj/item/weapon/implant) && !istype(carried_item, /obj/item/clothing/mask/facehugger) )//If it's not an implant or a facehugger
+				src << "\red You can't be carrying items or have items equipped when vent crawling!"
+				return
+	var/obj/machinery/atmospherics/unary/vent_pump/target_vent = vents[selection]
+	if(target_vent)
+		for(var/mob/O in viewers(src, null))
+			O.show_message(text("<B>[src] scrambles into the ventillation ducts!</B>"), 1)
+		loc = target_vent
+
+		var/travel_time = round(get_dist(loc, target_vent.loc) / 2)
+
+		spawn(travel_time)
+
+			if(!target_vent)	return
+			for(var/mob/O in hearers(target_vent,null))
+				O.show_message("You hear something squeezing through the ventilation ducts.",2)
+
+			sleep(travel_time)
+
+			if(!target_vent)	return
+			if(target_vent.welded)			//the vent can be welded while alien scrolled through the list or travelled.
+				target_vent = vent_found 	//travel back. No additional time required.
+				src << "\red The vent you were heading to appears to be welded."
+			loc = target_vent.loc
+			var/area/new_area = get_area(loc)
+			if(new_area)
+				new_area.Entered(src)
+
 /mob/living/carbon/clean_blood()
 	. = ..()
 	if(ishuman(src))
@@ -240,6 +330,19 @@
 //Throwing stuff
 
 /mob/living/carbon/proc/toggle_throw_mode()
+	var/obj/item/W = get_active_hand()
+	if( !W )//Not holding anything
+		if( client && (TK in mutations) )
+			var/obj/item/tk_grab/O = new(src)
+			put_in_active_hand(O)
+			O.host = src
+		return
+
+	if( istype(W,/obj/item/tk_grab) )
+		if(hand)	del(l_hand)
+		else		del(r_hand)
+		return
+
 	if (src.in_throw_mode)
 		throw_mode_off()
 	else
@@ -253,10 +356,7 @@
 	src.in_throw_mode = 1
 	src.throw_icon.icon_state = "act_throw_on"
 
-/mob/proc/throw_item(atom/target)
-	return
-
-/mob/living/carbon/throw_item(atom/target)
+/mob/living/carbon/proc/throw_item(atom/target)
 	src.throw_mode_off()
 	if(usr.stat || !target)
 		return
@@ -386,15 +486,6 @@
 			return method ? ">250" : "extremely weak and fast, patient's artery feels like a thread"
 //			output for machines^	^^^^^^^output for people^^^^^^^^^
 
-/mob/living/carbon/verb/mob_sleep()
-	set name = "Sleep"
-	set category = "IC"
-
-	if(usr.sleeping)
-		usr << "\red You are already sleeping"
-		return
-	if(alert(src,"You sure you want to sleep for a while?","Sleep","Yes","No") == "Yes")
-		usr.sleeping = 20 //Short nap
 
 //Brain slug proc for voluntary removal of control.
 /mob/living/carbon/proc/release_control()
@@ -439,7 +530,7 @@
 		B.host_brain << "\red <B><FONT size=3>Horrific, burning agony lances through you, ripping a soundless scream from your trapped mind!</FONT></B>"
 
 //Check for brain worms in head.
-/mob/proc/has_brain_worms()
+/mob/living/carbon/proc/has_brain_worms()
 
 	for(var/I in contents)
 		if(istype(I,/mob/living/simple_animal/borer))

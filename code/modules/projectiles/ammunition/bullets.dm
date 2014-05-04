@@ -43,10 +43,6 @@
 	caliber = ".45"
 	projectile_type = "/obj/item/projectile/bullet/midbullet"
 
-/obj/item/ammo_casing/c45r
-	desc = "A .45 rubber bullet casing."
-	caliber = ".45"
-	projectile_type = "/obj/item/projectile/bullet/weakbullet"
 
 /obj/item/ammo_casing/a12mm
 	desc = "A 12mm bullet casing."
@@ -99,9 +95,12 @@
 	caliber = "a762"
 	projectile_type = "/obj/item/projectile/bullet/a762"
 
-/obj/item/ammo_casing/rocket
-	name = "rocket shell"
-	desc = "A high explosive designed to be fired from a launcher."
-	icon_state = "rocketshell"
-	projectile_type = "/obj/item/missile"
-	caliber = "rocket"
+/obj/item/ammo_casing/beretta
+	desc = "A 9x19 bullet casing."
+	caliber = "Beretta"
+	projectile_type = "/obj/item/projectile/bullet/beretta"
+
+/obj/item/ammo_casing/a357/SW
+	desc = "A .357 bullet casing."
+	caliber = "357"
+	projectile_type = "/obj/item/projectile/bullet/SW"

@@ -3,6 +3,10 @@
 	desc = "You sit in this. Either by will or force."
 	icon_state = "chair"
 
+/obj/structure/stool/bed/chair/evac
+	name = "comfy chair"
+	icon_state = "schair"
+
 /obj/structure/stool/MouseDrop(atom/over_object)
 	return
 
@@ -30,13 +34,6 @@
 		SK.master = E
 		del(src)
 
-/obj/structure/stool/bed/chair/attack_tk(mob/user as mob)
-	if(buckled_mob)
-		..()
-	else
-		rotate()
-	return
-
 /obj/structure/stool/bed/chair/proc/handle_rotation()	//making this into a seperate proc so office chairs can call it on Move()
 	if(src.dir == NORTH)
 		src.layer = FLY_LAYER
@@ -55,8 +52,6 @@
 		handle_rotation()
 		return
 	else
-		if(istype(usr,/mob/living/simple_animal/mouse))
-			return
 		if(!usr || !isturf(usr.loc))
 			return
 		if(usr.stat || usr.restrained())
@@ -82,10 +77,15 @@
 	name = "wooden chair"
 	desc = "Old is never too old to not be in fashion."
 
+/obj/structure/stool/bed/chair/wood/comfy
+	icon_state = "comfychair_wooden"
+	name = "wooden comfy chair"
+	desc = "A wery comfortable wooden chair with butt-softening padding for you seating pleasure. Luxurious."
+
 /obj/structure/stool/bed/chair/wood/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if(istype(W, /obj/item/weapon/wrench))
 		playsound(src.loc, 'sound/items/Ratchet.ogg', 50, 1)
-		new /obj/item/stack/sheet/wood(src.loc)
+		new /obj/item/stack/sheet/mineral/wood(src.loc)
 		del(src)
 	else
 		..()

@@ -54,14 +54,6 @@
 	//to find it.
 	blinded = null
 	fire_alert = 0 //Reset this here, because both breathe() and handle_environment() have a chance to set it.
-	emote_cooldown = max(emote_cooldown - 1, 0)
-
-	if(mob_alert)
-		var/mob/living/l = locate(/mob/living) in oview(3, src)
-		if(l)
-			src << "You see [l]."
-			src << 'sound/effects/adminhelp.ogg'
-
 
 	//TODO: seperate this out
 	// update the current life tick, can be used to e.g. only do something every 4 ticks
@@ -105,7 +97,7 @@
 
 		handle_pain()
 
-		handle_medical_side_effects()
+//		handle_medical_side_effects()
 
 	handle_stasis_bag()
 
@@ -113,7 +105,7 @@
 	handle_environment(environment)
 
 	//Status updates, death etc.
-	handle_regular_status_updates()		//TODO: optimise ~Carn  NO SHIT ~Ccomp
+	handle_regular_status_updates()		//TODO: optimise ~Carn
 	update_canmove()
 
 	//Update our name based on whether our face is obscured/disfigured
@@ -228,13 +220,47 @@
 			if((COLD_RESISTANCE in mutations) || (prob(1)))
 				heal_organ_damage(0,1)
 
-		// DNA2 - Gene processing.
-		// The HULK stuff that was here is now in the hulk gene.
-		for(var/datum/dna/gene/gene in dna_genes)
-			if(!gene.block)
-				continue
-			if(gene.is_active(src))
-				gene.OnMobLife(src)
+		if ((HULK in mutations) && health <= 25)
+			mutations.Remove(HULK)
+			update_mutations()		//update our mutation overlays
+			src << "\red You suddenly feel very weak."
+			Weaken(3)
+			emote("collapse")
+
+		if(MSMALLSIZE in mutations)
+			if(!(pass_flags & PASSTABLE))
+				pass_flags |= PASSTABLE
+		else
+			if(pass_flags & PASSTABLE)
+				pass_flags &= ~PASSTABLE
+
+		if (MREGENERATE in mutations)
+			adjustBruteLoss(-0.5)
+			adjustToxLoss(-0.5)
+			adjustOxyLoss(-0.5)
+			adjustFireLoss(-0.5)
+			updatehealth()
+
+		if(!(/mob/living/carbon/human/proc/morph in src.verbs))
+			if(MMORPH in mutations)
+				src.verbs += /mob/living/carbon/human/proc/morph
+		else
+			if(!(MMORPH in mutations))
+				src.verbs -= /mob/living/carbon/human/proc/morph
+
+		if(!(/mob/living/carbon/human/proc/remoteobserve in src.verbs))
+			if(MREMOTEVIEW in mutations)
+				src.verbs += /mob/living/carbon/human/proc/remoteobserve
+		else
+			if(!(MREMOTEVIEW in mutations))
+				src.verbs -= /mob/living/carbon/human/proc/remoteobserve
+
+		if(!(/mob/living/carbon/human/proc/remotesay in src.verbs))
+			if(MREMOTETALK in mutations)
+				src.verbs += /mob/living/carbon/human/proc/remotesay
+		else
+			if(!(MREMOTETALK in mutations))
+				src.verbs -= /mob/living/carbon/human/proc/remotesay
 
 		if (radiation)
 			if (radiation > 100)
@@ -251,7 +277,7 @@
 					var/rads = radiation/25
 					radiation -= rads
 					nutrition += rads
-					adjustBruteLoss(-(rads))
+					heal_overall_damage(rads,rads)
 					adjustOxyLoss(-(rads))
 					adjustToxLoss(-(rads))
 					updatehealth()
@@ -295,7 +321,7 @@
 	proc/breathe()
 		if(reagents.has_reagent("lexorin")) return
 		if(istype(loc, /obj/machinery/atmospherics/unary/cryo_cell)) return
-		if(species && (species.flags & NO_BREATHE || species.flags & IS_SYNTHETIC)) return
+		if(species && species.flags & NO_BREATHE) return
 
 		var/datum/organ/internal/lungs/L = internal_organs["lungs"]
 		L.process()
@@ -303,7 +329,7 @@
 		var/datum/gas_mixture/environment = loc.return_air()
 		var/datum/gas_mixture/breath
 		// HACK NEED CHANGING LATER
-		if(health < config.health_threshold_crit)
+		if((health < config.health_threshold_crit)||(shock_stage > 80))
 			losebreath++
 		if(losebreath>0) //Suffocating so do not take a breath
 			losebreath--
@@ -333,7 +359,7 @@
 
 					breath = loc.remove_air(breath_moles)
 
-					if(istype(wear_mask, /obj/item/clothing/mask/gas) && breath)
+					if(istype(wear_mask, /obj/item/clothing/mask/gas))
 						var/obj/item/clothing/mask/gas/G = wear_mask
 						var/datum/gas_mixture/filtered = new
 
@@ -368,7 +394,7 @@
 
 					if(!block)
 
-						for(var/obj/effect/effect/smoke/chem/smoke in view(1, src))
+						for(var/obj/effect/effect/chem_smoke/smoke in view(1, src))
 							if(smoke.reagents.total_volume)
 								smoke.reagents.reaction(src, INGEST)
 								spawn(5)
@@ -387,11 +413,11 @@
 			loc.assume_air(breath)
 
 			//spread some viruses while we are at it
-			if (virus2.len > 0)
-				if (get_infection_chance(src) && prob(20))
-//					log_debug("[src] : Exhaling some viruses")
-					for(var/mob/living/carbon/M in view(1,src))
-						src.spread_disease_to(M)
+			/*if (virus2.len > 0)
+				if (get_infection_chance(src) && prob(10))
+				log_debug("[src] : Exhaling some viruses")
+					(/mob/living/carbon/) in view(1,src)
+						src.spread_disease*/
 
 
 	proc/get_breath_from_internal(volume_needed)
@@ -410,6 +436,10 @@
 	proc/handle_breath(datum/gas_mixture/breath)
 		if(status_flags & GODMODE)
 			return
+
+		if (MNOBREATH in mutations)
+			adjustOxyLoss(-5)
+			return 1
 
 		if(!breath || (breath.total_moles() == 0) || suiciding)
 			if(reagents.has_reagent("inaprovaline"))
@@ -574,7 +604,6 @@
 			if(istype(loc, /obj/mecha))
 				var/obj/mecha/M = loc
 				loc_temp =  M.return_temperature()
-			else if(istype(get_turf(src), /turf/space))
 			else if(istype(loc, /obj/machinery/atmospherics/unary/cryo_cell))
 				loc_temp = loc:air_contents.temperature
 			else
@@ -648,15 +677,7 @@
 			pressure_alert = 0
 		else if(adjusted_pressure >= species.hazard_low_pressure)
 			pressure_alert = -1
-
-			if(species && species.flags & IS_SYNTHETIC)
-				bodytemperature += 0.5 * TEMPERATURE_DAMAGE_COEFFICIENT //Synthetics suffer overheating in a vaccuum. ~Z
-
 		else
-
-			if(species && species.flags & IS_SYNTHETIC)
-				bodytemperature += 1 * TEMPERATURE_DAMAGE_COEFFICIENT
-
 			if( !(COLD_RESISTANCE in mutations))
 				adjustBruteLoss( LOW_PRESSURE_DAMAGE )
 				pressure_alert = -2
@@ -883,15 +904,7 @@
 	*/
 
 	proc/handle_chemicals_in_body()
-
-		if(reagents && !(species.flags & IS_SYNTHETIC)) //Synths don't process reagents.
-			var/alien = 0 //Not the best way to handle it, but neater than checking this for every single reagent proc.
-			if(species && species.name == "Diona")
-				alien = 1
-			else if(species && species.name == "Vox")
-				alien = 2
-			reagents.metabolize(src,alien)
-
+		if(reagents) reagents.metabolize(src)
 		var/total_plasmaloss = 0
 		for(var/obj/item/I in src)
 			if(I.contaminated)
@@ -910,15 +923,12 @@
 			nutrition += light_amount
 			traumatic_shock -= light_amount
 
-			if(species.flags & IS_PLANT)
-				if(nutrition > 500)
-					nutrition = 500
-				if(light_amount >= 3) //if there's enough light, heal
-					adjustBruteLoss(-(light_amount))
-					adjustToxLoss(-(light_amount))
-					adjustOxyLoss(-(light_amount))
-					//TODO: heal wounds, heal broken limbs.
-
+			if(nutrition > 500)
+				nutrition = 500
+			if(light_amount > 2) //if there's enough light, heal
+				heal_overall_damage(1,1)
+				adjustToxLoss(-1)
+				adjustOxyLoss(-1)
 		if(dna && dna.mutantrace == "shadow")
 			var/light_amount = 0
 			if(isturf(loc))
@@ -983,13 +993,10 @@
 			dizziness = max(0, dizziness - 3)
 			jitteriness = max(0, jitteriness - 3)
 
-		if(!(species.flags & IS_SYNTHETIC)) handle_trace_chems()
+		handle_trace_chems()
 
 		var/datum/organ/internal/liver/liver = internal_organs["liver"]
 		liver.process()
-
-		var/datum/organ/internal/eyes/eyes = internal_organs["eyes"]
-		eyes.process()
 
 		updatehealth()
 
@@ -1074,13 +1081,6 @@
 				stat = CONSCIOUS
 				if(halloss > 0)
 					adjustHalLoss(-1)
-
-			if(embedded_flag && !(life_tick % 10))
-				var/list/E
-				E = get_visible_implants(0)
-				if(!E.len)
-					embedded_flag = 0
-
 
 			//Eyes
 			if(sdisabilities & BLIND)	//disabled-blind, doesn't get better on its own
@@ -1216,17 +1216,8 @@
 			see_in_dark = 8
 			if(!druggy)		see_invisible = SEE_INVISIBLE_LEVEL_TWO
 			if(healths)		healths.icon_state = "health7"	//DEAD healthmeter
-			if(client)
-				if(client.view != world.view)
-					if(locate(/obj/item/weapon/gun/energy/sniperrifle, contents))
-						var/obj/item/weapon/gun/energy/sniperrifle/s = locate() in src
-						if(s.zoom)
-							s.zoom()
-
 		else
 			sight &= ~(SEE_TURFS|SEE_MOBS|SEE_OBJS)
-			see_in_dark = species.darksight
-			see_invisible = see_in_dark>2 ? SEE_INVISIBLE_LEVEL_ONE : SEE_INVISIBLE_LIVING
 			if(dna)
 				switch(dna.mutantrace)
 					if("slime")
@@ -1271,27 +1262,40 @@
 						if(!druggy)		see_invisible = SEE_INVISIBLE_LIVING
 
 			if(glasses)
-				var/obj/item/clothing/glasses/G = glasses
-				if(istype(G))
-					see_in_dark += G.darkness_view
-					if(G.vision_flags)
-						sight |= G.vision_flags
-						if(!druggy)
-							see_invisible = SEE_INVISIBLE_MINIMUM
+				if(istype(glasses, /obj/item/clothing/glasses/meson))
+					sight |= SEE_TURFS
+					if(!druggy)
+						see_invisible = SEE_INVISIBLE_MINIMUM
+				else if(istype(glasses, /obj/item/clothing/glasses/night))
+					see_in_dark = 5
+					if(!druggy)
+						see_invisible = SEE_INVISIBLE_MINIMUM
+				else if(istype(glasses, /obj/item/clothing/glasses/thermal))
+					sight |= SEE_MOBS
+					if(!druggy)
+						see_invisible = SEE_INVISIBLE_MINIMUM
+				else if(istype(glasses, /obj/item/clothing/glasses/material))
+					sight |= SEE_OBJS
+					if(!druggy)
+						see_invisible = SEE_INVISIBLE_MINIMUM
 
 	/* HUD shit goes here, as long as it doesn't modify sight flags */
 	// The purpose of this is to stop xray and w/e from preventing you from using huds -- Love, Doohl
 
-				if(istype(glasses, /obj/item/clothing/glasses/sunglasses/sechud))
-					var/obj/item/clothing/glasses/sunglasses/sechud/O = glasses
-					if(O.hud)		O.hud.process_hud(src)
-					if(!druggy)		see_invisible = SEE_INVISIBLE_LIVING
+				else if(istype(glasses, /obj/item/clothing/glasses/sunglasses))
+					see_in_dark = 1
+					if(istype(glasses, /obj/item/clothing/glasses/sunglasses/sechud))
+						var/obj/item/clothing/glasses/sunglasses/sechud/O = glasses
+						if(O.hud)		O.hud.process_hud(src)
+						if(!druggy)		see_invisible = SEE_INVISIBLE_LIVING
+
 				else if(istype(glasses, /obj/item/clothing/glasses/hud))
 					var/obj/item/clothing/glasses/hud/O = glasses
 					O.process_hud(src)
 					if(!druggy)
 						see_invisible = SEE_INVISIBLE_LIVING
-
+				else
+					see_invisible = SEE_INVISIBLE_LIVING
 			else if(!seer)
 				see_invisible = SEE_INVISIBLE_LIVING
 
@@ -1304,7 +1308,7 @@
 						if(2)	healths.icon_state = "health7"
 						else
 							//switch(health - halloss)
-							switch(100 - ((species && species.flags & NO_PAIN & !IS_SYNTHETIC) ? 0 : traumatic_shock))
+							switch(100 - traumatic_shock)
 								if(100 to INFINITY)		healths.icon_state = "health0"
 								if(80 to 100)			healths.icon_state = "health1"
 								if(60 to 80)			healths.icon_state = "health2"
@@ -1380,16 +1384,23 @@
 				if(!O.up && tinted_weldhelh)
 					client.screen += global_hud.darkMask
 
+			if(eye_stat > 20)
+				if(eye_stat > 30)	client.screen += global_hud.darkMask
+				else				client.screen += global_hud.vimpaired
+
 			if(machine)
 				if(!machine.check_eye(src))		reset_view(null)
 			else
 				var/isRemoteObserve = 0
-				if((mRemote in mutations) && remoteview_target)
+				if((MREMOTEVIEW in mutations) && remoteview_target)
 					if(remoteview_target.stat==CONSCIOUS)
 						isRemoteObserve = 1
 				if(!isRemoteObserve && client && !client.adminobs)
 					remoteview_target = null
 					reset_view(null)
+
+		if (src.usingcamerascreen == 1)
+			damageoverlay.overlays += image("icon" = 'icons/mob/screen1_full.dmi', "icon_state" = "cameraoverlay")
 		return 1
 
 	proc/handle_random_events()
@@ -1464,7 +1475,7 @@
 	handle_shock()
 		..()
 		if(status_flags & GODMODE)	return 0	//godmode
-		if(analgesic || (species && species.flags & NO_PAIN)) return // analgesic avoids all traumatic shock temporarily
+		if(analgesic) return // analgesic avoids all traumatic shock temporarily
 
 		if(health < config.health_threshold_softcrit)// health 0 makes you immediately collapse
 			shock_stage = max(shock_stage, 61)
@@ -1474,7 +1485,7 @@
 		else if(health < config.health_threshold_softcrit)
 			shock_stage = max(shock_stage, 61)
 		else
-			shock_stage = min(shock_stage, 160)
+			shock_stage = min(shock_stage, 100)
 			shock_stage = max(shock_stage-1, 0)
 			return
 
@@ -1491,32 +1502,18 @@
 
 		if (shock_stage >= 60)
 			if(shock_stage == 60) emote("me",1,"'s body becomes limp.")
-			if (prob(2))
-				src << "<font color='red'><b>"+pick("The pain is excrutiating!", "Please, just end the pain!", "Your whole body is going numb!")
-				Weaken(20)
-
-		if(shock_stage >= 80)
 			if (prob(5))
-				src << "<font color='red'><b>"+pick("The pain is excrutiating!", "Please, just end the pain!", "Your whole body is going numb!")
-				Weaken(20)
+				Stun(20)
+				lying = 1
 
-		if(shock_stage >= 120)
-			if (prob(2))
-				src << "<font color='red'><b>"+pick("You black out!", "You feel like you could die any moment now.", "You're about to lose consciousness.")
-				Paralyse(5)
+		if(shock_stage == 80)
+			src << "<font color='red'><b>"+pick("You see a light at the end of the tunnel!", "You feel like you could die any moment now.", "You're about to lose consciousness.")
 
-		if(shock_stage == 150)
-			emote("me",1,"can no longer stand, collapsing!")
-			Weaken(20)
-
-		if(shock_stage >= 150)
-			Weaken(20)
+		if(shock_stage > 80)
+			Paralyse(rand(15,28))
 
 	proc/handle_pulse()
-
 		if(life_tick % 5) return pulse	//update pulse every 5 life ticks (~1 tick/sec, depending on server load)
-
-		if(species && species.flags & NO_BLOOD) return PULSE_NONE //No blood, no pulse.
 
 		if(stat == DEAD)
 			return PULSE_NONE	//that's it, you're dead, nothing can influence your pulse
@@ -1539,15 +1536,6 @@
 			if(R.id in tachycardics)
 				if(temp <= PULSE_FAST && temp >= PULSE_NONE)
 					temp++
-					break
-		for(var/datum/reagent/R in reagents.reagent_list) //To avoid using fakedeath
-			if(R.id in heartstopper)
-				temp = PULSE_NONE
-				break
-		for(var/datum/reagent/R in reagents.reagent_list) //Conditional heart-stoppage
-			if(R.id in cheartstopper)
-				if(R.volume >= R.overdose)
-					temp = PULSE_NONE
 					break
 
 		return temp

@@ -54,8 +54,7 @@
 	src.botcard = new /obj/item/weapon/card/id(src)
 	var/datum/job/janitor/J = new/datum/job/janitor
 	src.botcard.access = J.get_access()
-	
-	src.locked = 0 // Start unlocked so roboticist can set them to patrol.	
+	src.locked = 0 // Start unlocked so roboticist can set them to patrol.
 
 	if(radio_controller)
 		radio_controller.add_object(src, beacon_freq, filter = RADIO_NAVBEACONS)
@@ -68,8 +67,6 @@
 
 /obj/machinery/bot/cleanbot/turn_off()
 	..()
-	if(!isnull(src.target))
-		target.targeted_by = null
 	src.target = null
 	src.oldtarget = null
 	src.oldloc = null
@@ -169,6 +166,7 @@ text("<A href='?src=\ref[src];operation=oddbutton'>[src.oddbutton ? "Yes" : "No"
 		return
 	if(src.cleaning)
 		return
+	var/list/cleanbottargets = list()
 
 	if(!src.screwloose && !src.oddbutton && prob(5))
 		visible_message("[src] makes an excited beeping booping sound!")
@@ -197,10 +195,9 @@ text("<A href='?src=\ref[src];operation=oddbutton'>[src.oddbutton ? "Yes" : "No"
 	if(!src.target || src.target == null)
 		for (var/obj/effect/decal/cleanable/D in view(7,src))
 			for(var/T in src.target_types)
-				if(isnull(D.targeted_by) && (D.type == T || D.parent_type == T) && D != src.oldtarget)   // If the mess isn't targeted
-					src.oldtarget = D								 // or if it is but the bot is gone.
-					src.target = D									 // and it's stuff we clean?  Clean it.
-					D.targeted_by = src	// Claim the mess we are targeting.
+				if(!(D in cleanbottargets) && (D.type == T || D.parent_type == T) && D != src.oldtarget)
+					src.oldtarget = D
+					src.target = D
 					return
 
 	if(!src.target || src.target == null)
@@ -241,7 +238,6 @@ text("<A href='?src=\ref[src];operation=oddbutton'>[src.oddbutton ? "Yes" : "No"
 			if (!path) path = list()
 			if(src.path.len == 0)
 				src.oldtarget = src.target
-				target.targeted_by = null
 				src.target = null
 		return
 	if(src.path.len > 0 && src.target && (src.target != null))
@@ -298,33 +294,30 @@ text("<A href='?src=\ref[src];operation=oddbutton'>[src.oddbutton ? "Yes" : "No"
 /obj/machinery/bot/cleanbot/proc/get_targets()
 	src.target_types = new/list()
 
-	target_types += /obj/effect/decal/cleanable/blood/oil
+	target_types += /obj/effect/decal/cleanable/oil
 	target_types += /obj/effect/decal/cleanable/vomit
+	target_types += /obj/effect/decal/cleanable/robot_debris
 	target_types += /obj/effect/decal/cleanable/crayon
 	target_types += /obj/effect/decal/cleanable/liquid_fuel
-	target_types += /obj/effect/decal/cleanable/mucus
-	target_types += /obj/effect/decal/cleanable/dirt
 
 	if(src.blood)
+		target_types += /obj/effect/decal/cleanable/xenoblood/
+		target_types += /obj/effect/decal/cleanable/xenoblood/xgibs
 		target_types += /obj/effect/decal/cleanable/blood/
+		target_types += /obj/effect/decal/cleanable/blood/gibs/
+		target_types += /obj/effect/decal/cleanable/dirt
 
 /obj/machinery/bot/cleanbot/proc/clean(var/obj/effect/decal/cleanable/target)
-	anchored = 1
-	icon_state = "cleanbot-c"
+	src.anchored = 1
+	src.icon_state = "cleanbot-c"
 	visible_message("\red [src] begins to clean up the [target]")
-	cleaning = 1
-	var/cleantime = 50
-	if(istype(target,/obj/effect/decal/cleanable/dirt))		// Clean Dirt much faster
-		cleantime = 10
-	spawn(cleantime)
-		if(istype(loc,/turf/simulated))
-			var/turf/simulated/f = loc
-			f.dirt = 0
-		cleaning = 0
+	src.cleaning = 1
+	spawn(50)
+		src.cleaning = 0
 		del(target)
-		icon_state = "cleanbot[on]"
-		anchored = 0
-		target = null
+		src.icon_state = "cleanbot[src.on]"
+		src.anchored = 0
+		src.target = null
 
 /obj/machinery/bot/cleanbot/explode()
 	src.on = 0

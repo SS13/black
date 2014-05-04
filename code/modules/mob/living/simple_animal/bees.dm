@@ -80,7 +80,7 @@
 
 		//smoke, water and steam calms us down
 		var/calming = 0
-		var/list/calmers = list(/obj/effect/effect/smoke/chem, \
+		var/list/calmers = list(/obj/effect/effect/chem_smoke, \
 		/obj/effect/effect/water, \
 		/obj/effect/effect/foam, \
 		/obj/effect/effect/steam, \
@@ -88,10 +88,9 @@
 
 		for(var/this_type in calmers)
 			var/mob/living/simple_animal/check_effect = locate() in src.loc
-			if(istype(check_effect))
-				if(check_effect.type == this_type)
-					calming = 1
-					break
+			if(check_effect.type == this_type)
+				calming = 1
+				break
 
 		if(calming)
 			if(feral > 0)

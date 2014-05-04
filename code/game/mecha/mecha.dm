@@ -115,7 +115,6 @@
 		cell = C
 		return
 	cell = new(src)
-	cell.name = "high-capacity power cell"
 	cell.charge = 15000
 	cell.maxcharge = 15000
 
@@ -237,7 +236,7 @@
 		target = safepick(view(3,target))
 		if(!target)
 			return
-	if(!target.Adjacent(src))
+	if(get_dist(src, target)>1)
 		if(selected && selected.is_ranged())
 			selected.action(target)
 	else if(selected && selected.is_melee())
@@ -311,12 +310,16 @@
 /obj/mecha/proc/mechturn(direction)
 	dir = direction
 	playsound(src,'sound/mecha/mechturn.ogg',40,1)
+	if (prob(1))
+		new /obj/effect/decal/cleanable/oil/drip(src.loc)
 	return 1
 
 /obj/mecha/proc/mechstep(direction)
 	var/result = step(src,direction)
 	if(result)
 		playsound(src,'sound/mecha/mechstep.ogg',40,1)
+		if (prob(2))
+			new /obj/effect/decal/cleanable/oil/drip(src.loc)
 	return result
 
 
@@ -418,6 +421,11 @@
 
 /obj/mecha/attack_hand(mob/user as mob)
 	src.log_message("Attack by hand/paw. Attacker - [user].",1)
+
+	if(ishuman(user))
+		if(istype(user:gloves, /obj/item/clothing/gloves/space_ninja)&&user:gloves:candrain&&!user:gloves:draining)
+			call(/obj/item/clothing/gloves/space_ninja/proc/drain)("MECHA",src,user:wear_suit)
+			return
 
 	if ((HULK in user.mutations) && !prob(src.deflect_chance))
 		src.take_damage(15)
@@ -973,14 +981,12 @@
 	if (usr.stat || !ishuman(usr))
 		return
 	src.log_message("[usr] tries to move in.")
-	if(iscarbon(usr))
-		var/mob/living/carbon/C = usr
-		if(C.handcuffed)
-			usr << "\red Kinda hard to climb in while handcuffed don't you think?"
-			return
 	if (src.occupant)
 		usr << "\blue <B>The [src.name] is already occupied!</B>"
 		src.log_append_to_last("Permission denied.")
+		return
+	if (usr:handcuffed)
+		usr << "\red You can`t do it when handcuffed!"
 		return
 /*
 	if (usr.abiotic())

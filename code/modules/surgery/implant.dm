@@ -106,6 +106,7 @@
 	max_duration = 100
 
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
+		if(!istype(target)) return
 		var/datum/organ/external/affected = target.get_organ(target_zone)
 		var/can_fit = !affected.hidden && affected.cavity && tool.w_class <= get_max_wclass(affected)
 		return ..() && can_fit
@@ -123,7 +124,7 @@
 		user.visible_message("\blue [user] puts \the [tool] inside [target]'s [get_cavity(affected)] cavity.", \
 		"\blue You put \the [tool] inside [target]'s [get_cavity(affected)] cavity." )
 		if (tool.w_class > get_max_wclass(affected)/2 && prob(50))
-			user << "\red You tear some blood vessels trying to fit such a big object in this cavity."
+			user << "\red You tear some vessels trying to fit such big object in this cavity."
 			var/datum/wound/internal_bleeding/I = new (15)
 			affected.wounds += I
 			affected.owner.custom_pain("You feel something rip in your [affected.display_name]!", 1)

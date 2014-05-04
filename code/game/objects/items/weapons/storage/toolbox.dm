@@ -2,7 +2,7 @@
 	name = "toolbox"
 	desc = "Danger. Very robust."
 	icon = 'icons/obj/storage.dmi'
-	icon_state = "red"
+	icon_state = "blue"
 	item_state = "toolbox_red"
 	flags = FPRINT | TABLEPASS| CONDUCT
 	force = 5.0
@@ -12,12 +12,6 @@
 	w_class = 4.0
 	origin_tech = "combat=1"
 	attack_verb = list("robusted")
-
-	New()
-		..()
-		if (src.type == /obj/item/weapon/storage/toolbox)
-			world << "BAD: [src] ([src.type]) spawned at [src.x] [src.y] [src.z]"
-			del(src)
 
 /obj/item/weapon/storage/toolbox/emergency
 	name = "emergency toolbox"
@@ -33,6 +27,11 @@
 		else
 			new /obj/item/device/flashlight/flare(src)
 		new /obj/item/device/radio(src)
+
+/obj/item/weapon/storage/toolbox/orange
+	name = "orange toolbox"
+	icon_state = "orange"
+	item_state = "toolbox_orange"
 
 /obj/item/weapon/storage/toolbox/mechanical
 	name = "mechanical toolbox"

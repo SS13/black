@@ -17,6 +17,11 @@
 	var/load_method = SPEEDLOADER //0 = Single shells or quick loader, 1 = box, 2 = magazine
 	var/obj/item/ammo_magazine/empty_mag = null
 
+/obj/item/weapon/gun/projectile/cobra
+	desc = "Colt King Cobra double-action revolver. When you want someone dead and you don`t take no for an answer. Uses .357 ammo."
+	name = "Colt King Cobra"
+	icon_state = "cobra"
+
 
 /obj/item/weapon/gun/projectile/New()
 	..()
@@ -51,9 +56,6 @@
 	if(istype(A, /obj/item/ammo_magazine))
 		if((load_method == MAGAZINE) && loaded.len)	return
 		var/obj/item/ammo_magazine/AM = A
-		if(AM.stored_ammo.len <= 0)
-			user << "<span class='warning'>The magazine is empty!</span>"
-			return
 		for(var/obj/item/ammo_casing/AC in AM.stored_ammo)
 			if(loaded.len >= max_shells)
 				break
@@ -96,7 +98,6 @@
 			AM.loc = get_turf(src)
 			empty_mag = null
 			update_icon()
-			AM.update_icon()
 			user << "\blue You unload magazine from \the [src]!"
 	else
 		user << "\red Nothing loaded in \the [src]!"

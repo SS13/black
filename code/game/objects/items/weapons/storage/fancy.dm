@@ -81,7 +81,7 @@
  */
 
 /obj/item/weapon/storage/fancy/candle_box
-	name = "candle pack"
+	name = "Candle pack"
 	desc = "A pack of red candles."
 	icon = 'icons/obj/candle.dmi'
 	icon_state = "candlebox5"
@@ -156,7 +156,7 @@
 	flags = TABLEPASS
 	slot_flags = SLOT_BELT
 	storage_slots = 6
-	can_hold = list("/obj/item/clothing/mask/cigarette")
+	can_hold = list("/obj/item/clothing/mask/cigarette", "/obj/item/weapon/lighter/")
 	icon_type = "cigarette"
 
 /obj/item/weapon/storage/fancy/cigarettes/New()
@@ -197,13 +197,17 @@
 	else
 		..()
 
-/obj/item/weapon/storage/fancy/cigarettes/dromedaryco
+/obj/item/weapon/storage/fancy/cigarettes/cigaretteslights
+	name = "\improper Lights cigarette packet"
+	desc = "The most popular brand of Space Cigarettes, sponsors of the Space Olympics. This one are Lights. A label on the packaging reads, \"For those who like to take it easy.\""
+	icon_state = "ciglights"
+	item_state = "ciglights"
+
+obj/item/weapon/storage/fancy/cigarettes/dromedaryco
 	name = "\improper DromedaryCo packet"
 	desc = "A packet of six imported DromedaryCo cancer sticks. A label on the packaging reads, \"Wouldn't a slow death make a change?\""
 	icon_state = "Dpacket"
 	item_state = "Dpacket"
-
-
 /*
  * Vial Box
  */

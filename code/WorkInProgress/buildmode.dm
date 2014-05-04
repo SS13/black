@@ -57,7 +57,7 @@
 				dir = NORTHWEST
 			if(NORTHWEST)
 				dir = NORTH
-		return 1
+		return
 
 /obj/effect/bmode/buildhelp
 	icon = 'icons/misc/buildmode.dmi'
@@ -95,7 +95,7 @@
 				usr << "\blue Left Mouse Button on turf/obj/mob      = Select"
 				usr << "\blue Right Mouse Button on turf/obj/mob     = Throw"
 				usr << "\blue ***********************************************************"
-		return 1
+		return
 
 /obj/effect/bmode/buildquit
 	icon_state = "buildquit"
@@ -103,7 +103,6 @@
 
 	Click()
 		togglebuildmode(master.cl.mob)
-		return 1
 
 /obj/effect/bmode/buildholder
 	density = 0
@@ -120,7 +119,7 @@
 	screen_loc = "NORTH,WEST+2"
 	var/varholder = "name"
 	var/valueholder = "derp"
-	var/objholder = /obj/structure/closet
+	var/objholder = "/obj/structure/closet"
 
 	Click(location, control, params)
 		var/list/pa = params2list(params)
@@ -143,23 +142,23 @@
 		else if(pa.Find("right"))
 			switch(master.cl.buildmode)
 				if(1)
-					return 1
+					return
 				if(2)
-					objholder = text2path(input(usr,"Enter typepath:" ,"Typepath","/obj/structure/closet"))
-					if(!ispath(objholder))
-						objholder = /obj/structure/closet
+					objholder = input(usr,"Enter typepath:" ,"Typepath","/obj/structure/closet")
+					var/list/removed_paths = list("/obj/effect/bhole")
+					if(objholder in removed_paths)
 						alert("That path is not allowed.")
-					else
-						if(ispath(objholder,/mob) && !check_rights(R_DEBUG,0))
-							objholder = /obj/structure/closet
+						objholder = "/obj/structure/closet"
+					else if (dd_hasprefix(objholder, "/mob") && !check_rights(R_DEBUG,0))
+						objholder = "/obj/structure/closet"
 				if(3)
 					var/list/locked = list("vars", "key", "ckey", "client", "firemut", "ishulk", "telekinesis", "xray", "virus", "viruses", "cuffed", "ka", "last_eaten", "urine")
 
 					master.buildmode.varholder = input(usr,"Enter variable name:" ,"Name", "name")
 					if(master.buildmode.varholder in locked && !check_rights(R_DEBUG,0))
-						return 1
+						return
 					var/thetype = input(usr,"Select variable type:" ,"Type") in list("text","number","mob-reference","obj-reference","turf-reference")
-					if(!thetype) return 1
+					if(!thetype) return
 					switch(thetype)
 						if("text")
 							master.buildmode.valueholder = input(usr,"Enter variable value:" ,"Value", "value") as text
@@ -171,9 +170,9 @@
 							master.buildmode.valueholder = input(usr,"Enter variable value:" ,"Value") as obj in world
 						if("turf-reference")
 							master.buildmode.valueholder = input(usr,"Enter variable value:" ,"Value") as turf in world
-    	return 1
 
-/proc/build_click(var/mob/user, buildmode, params, var/obj/object)
+
+/proc/build_click(var/mob/user, buildmode, location, control, params, var/obj/object)
 	var/obj/effect/bmode/buildholder/holder = null
 	for(var/obj/effect/bmode/buildholder/H)
 		if(H.cl == user.client)
@@ -234,12 +233,8 @@
 						WIN.dir = NORTHWEST
 		if(2)
 			if(pa.Find("left"))
-				if(ispath(holder.buildmode.objholder,/turf))
-					var/turf/T = get_turf(object)
-					T.ChangeTurf(holder.buildmode.objholder)
-				else
-					var/obj/A = new holder.buildmode.objholder (get_turf(object))
-					A.dir = holder.builddir.dir
+				var/obj/A = new holder.buildmode.objholder (get_turf(object))
+				A.dir = holder.builddir.dir
 			else if(pa.Find("right"))
 				if(isobj(object)) del(object)
 

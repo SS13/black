@@ -94,7 +94,7 @@
 				else if(istype(target, /turf/simulated/mineral))
 					for(var/turf/simulated/mineral/M in range(chassis,1))
 						if(get_dir(chassis,M)&chassis.dir)
-							M.GetDrilled()
+							M.gets_drilled()
 					log_message("Drilled through [target]")
 					if(locate(/obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp) in chassis.equipment)
 						var/obj/structure/ore_box/ore_box = locate(/obj/structure/ore_box) in chassis:cargo
@@ -153,7 +153,7 @@
 				else if(istype(target, /turf/simulated/mineral))
 					for(var/turf/simulated/mineral/M in range(chassis,1))
 						if(get_dir(chassis,M)&chassis.dir)
-							M.GetDrilled()
+							M.gets_drilled()
 					log_message("Drilled through [target]")
 					if(locate(/obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp) in chassis.equipment)
 						var/obj/structure/ore_box/ore_box = locate(/obj/structure/ore_box) in chassis:cargo
@@ -439,18 +439,8 @@
 	var/atom/movable/locked
 	var/mode = 1 //1 - gravsling 2 - gravpush
 
-	var/last_fired = 0  //Concept stolen from guns.
-	var/fire_delay = 10 //Used to prevent spam-brute against humans.
 
 	action(atom/movable/target)
-
-		if(world.time >= last_fired + fire_delay)
-			last_fired = world.time
-		else
-			if (world.time % 3)
-				occupant_message("<span class='warning'>[src] is not ready to fire again!")
-			return 0
-
 		switch(mode)
 			if(1)
 				if(!action_checks(target) && !locked) return

@@ -71,9 +71,18 @@
 	flags = FPRINT | TABLEPASS
 	siemens_coefficient = 0.9
 
-/obj/item/clothing/under/det/black
-	icon_state = "detective2"
-	item_color = "detective2"
+
+/obj/item/clothing/head/det_hat
+	name = "hat"
+	desc = "Someone who wears this will look very smart."
+	icon_state = "detective"
+	allowed = list(/obj/item/weapon/reagent_containers/food/snacks/candy_corn, /obj/item/weapon/pen)
+	armor = list(melee = 50, bullet = 5, laser = 25,energy = 10, bomb = 0, bio = 0, rad = 0)
+	siemens_coefficient = 0.9
+
+/obj/item/clothing/head/det_hat/black
+	name = "black hat"
+	icon_state = "detectiveblack"
 
 /obj/item/clothing/under/det/slob
 	icon_state = "polsuit"
@@ -87,18 +96,6 @@
 	if (ishuman(loc))
 		var/mob/living/carbon/human/H = loc
 		H.update_inv_w_uniform(1)
-
-/obj/item/clothing/head/det_hat
-	name = "hat"
-	desc = "Someone who wears this will look very smart."
-	icon_state = "detective"
-	allowed = list(/obj/item/weapon/reagent_containers/food/snacks/candy_corn, /obj/item/weapon/pen)
-	armor = list(melee = 50, bullet = 5, laser = 25,energy = 10, bomb = 0, bio = 0, rad = 0)
-	siemens_coefficient = 0.9
-
-/obj/item/clothing/head/det_hat/black
-	icon_state = "detective2"
-
 
 /*
  * Head of Security

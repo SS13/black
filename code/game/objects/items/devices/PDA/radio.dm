@@ -31,6 +31,15 @@
 
 		frequency.post_signal(src, signal, filter = s_filter)
 
+	proc/print_to_host(var/text)
+		if (isnull(src.hostpda))
+			return
+		src.hostpda.cart = text
+
+		for (var/mob/M in viewers(1, src.hostpda.loc))
+			if (M.client && M.machine == src.hostpda)
+				src.hostpda.cartridge.unlock()
+
 		return
 
 	proc/generate_menu()
@@ -98,6 +107,7 @@
 			if("summon")
 				post_signal(control_freq, "command", "summon", "active", active, "target", get_turf(PDA) , s_filter = RADIO_SECBOT)
 				post_signal(control_freq, "command", "bot_status", "active", active, s_filter = RADIO_SECBOT)
+		PDA.cartridge.unlock()
 
 /obj/item/radio/integrated/mule
 	var/list/botlist = null		// list of bots
@@ -153,6 +163,7 @@
 
 	Topic(href, href_list)
 		..()
+		var/obj/item/device/pda/PDA = src.hostpda
 		var/cmd = "command"
 		if(active) cmd = "command [active.suffix]"
 
@@ -197,6 +208,7 @@
 			if("stop", "go", "home")
 				post_signal(control_freq, cmd, href_list["op"], s_filter = RADIO_MULEBOT)
 				post_signal(control_freq, cmd, "bot_status", s_filter = RADIO_MULEBOT)
+		PDA.cartridge.unlock()
 
 
 

@@ -155,4 +155,3 @@
 			message_admins("[key_name_admin(usr)] teleported [key_name_admin(M)] to [A]", 1)
 		else
 			alert("Admin jumping disabled")
-

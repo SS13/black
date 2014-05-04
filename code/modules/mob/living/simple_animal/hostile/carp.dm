@@ -14,8 +14,8 @@
 	response_disarm = "gently pushes aside the"
 	response_harm = "hits the"
 	speed = 4
-	maxHealth = 25
-	health = 25
+	maxHealth = 35
+	health = 35
 
 	harm_intent_damage = 8
 	melee_damage_lower = 15
@@ -38,19 +38,6 @@
 
 	faction = "carp"
 
-/mob/living/simple_animal/hostile/carp/lizzy
-	name = "Lizzy"
-	desc = "A cute fish."
-	attacktext = "licked"
-	attack_sound = 'sound/weapons/lick.ogg'
-	maxHealth = 100
-	health = 100
-	speed = 2
-
-	harm_intent_damage = 0
-	melee_damage_lower = 0
-	melee_damage_upper = 0
-
 /mob/living/simple_animal/hostile/carp/Process_Spacemove(var/check_drift = 0)
 	return 1	//No drifting in space for space carp!	//original comments do not steal
 
@@ -66,3 +53,12 @@
 		if(prob(15))
 			L.Weaken(3)
 			L.visible_message("<span class='danger'>\the [src] knocks down \the [L]!</span>")
+
+
+/mob/living/simple_animal/hostile/carp/holocarp
+	icon_state = "holocarp"
+	icon_living = "holocarp"
+
+/mob/living/simple_animal/hostile/carp/holocarp/Die()
+	del(src)
+	return

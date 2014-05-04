@@ -73,7 +73,7 @@
 
 /turf/simulated/floor/engine/n20
 	New()
-		. = ..()
+		..()
 		var/datum/gas_mixture/adding = new
 		var/datum/gas/sleeping_agent/trace_gas = new
 
@@ -103,6 +103,12 @@
 	nitrogen = 0.01
 	temperature = TCMB
 
+	New()
+		..()
+		name = "plating"
+
+/turf/simulated/floor/plating/airless/asteroid
+	icon_state = "asteroidplating"
 	New()
 		..()
 		name = "plating"

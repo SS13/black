@@ -95,7 +95,7 @@ obj/machinery/computer/general_air_control
 
 	process()
 		..()
-		src.updateUsrDialog()
+		src.updateDialog()
 
 	attackby(I as obj, user as mob)
 		if(istype(I, /obj/item/weapon/screwdriver))
@@ -250,7 +250,7 @@ Max Output Pressure: [output_pressure] kPa<BR>"}
 				var/change = text2num(href_list["adj_pressure"])
 				pressure_setting = between(0, pressure_setting + change, 50*ONE_ATMOSPHERE)
 				spawn(1)
-					src.updateUsrDialog()
+					src.updateDialog()
 				return
 
 			if(!radio_connection)
@@ -282,7 +282,7 @@ Max Output Pressure: [output_pressure] kPa<BR>"}
 			radio_connection.post_signal(src, signal, filter = RADIO_ATMOSIA)
 
 			spawn(5)
-				src.updateUsrDialog()
+				src.updateDialog()
 
 	fuel_injection
 		icon = 'icons/obj/computer.dmi'

@@ -9,6 +9,10 @@
  *		Crayons
  *		Snap pops
  *		Water flower
+ *		AI toy core
+ *		Cards
+ *		Toy nuke warhead
+ *		Toy C4
  */
 
 
@@ -37,8 +41,7 @@
 /obj/item/toy/balloon/attack(mob/living/carbon/human/M as mob, mob/user as mob)
 	return
 
-/obj/item/toy/balloon/afterattack(atom/A as mob|obj, mob/user as mob, proximity)
-	if(!proximity) return
+/obj/item/toy/balloon/afterattack(atom/A as mob|obj, mob/user as mob)
 	if (istype(A, /obj/structure/reagent_dispensers/watertank) && get_dist(src,A) <= 1)
 		A.reagents.trans_to(src, 10)
 		user << "\blue You fill the balloon with the contents of [A]."
@@ -123,7 +126,7 @@
 	icon = 'icons/obj/gun.dmi'
 	icon_state = "revolver"
 	item_state = "gun"
-	flags =  FPRINT | TABLEPASS | CONDUCT
+	flags =  FPRINT | TABLEPASS | CONDUCT | USEDELAY
 	slot_flags = SLOT_BELT
 	w_class = 3.0
 	g_amt = 10
@@ -201,7 +204,7 @@
 	icon = 'icons/obj/gun.dmi'
 	icon_state = "crossbow"
 	item_state = "crossbow"
-	flags = FPRINT | TABLEPASS
+	flags = FPRINT | TABLEPASS | USEDELAY
 	w_class = 2.0
 	attack_verb = list("attacked", "struck", "hit")
 	var/bullets = 5
@@ -337,12 +340,6 @@
 			src.icon_state = "sword0"
 			src.item_state = "sword0"
 			src.w_class = 2
-
-		if(istype(user,/mob/living/carbon/human))
-			var/mob/living/carbon/human/H = user
-			H.update_inv_l_hand()
-			H.update_inv_r_hand()
-
 		src.add_fingerprint(user)
 		return
 
@@ -424,7 +421,7 @@
 	icon_state = "sunflower"
 	item_state = "sunflower"
 	var/empty = 0
-	flags
+	flags =  USEDELAY
 
 /obj/item/toy/waterflower/New()
 	var/datum/reagents/R = new/datum/reagents(10)
@@ -577,12 +574,402 @@
 	w_class = 3
 	attack_verb = list("attacked", "slashed", "stabbed", "sliced")
 
-/* NYET.
-/obj/item/weapon/toddler
-	icon_state = "toddler"
-	name = "toddler"
-	desc = "This baby looks almost real. Wait, did it just burp?"
-	force = 5
-	w_class = 4.0
-	slot_flags = SLOT_BACK
+
+/*
+ * AI core prizes
+ */
+/obj/item/toy/AI
+	name = "toy AI"
+	desc = "A little toy model AI core."
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "AI"
+	var/cooldown = 0
+
+/obj/item/toy/AI/attack_self(mob/user)
+	if(!cooldown) //for the sanity of everyone
+		var/message = pick("I'm sorry Dave, I'm afraid I can't do that","1.A robot may not injure a human being or, through inaction, allow a human being to come to harm","2.A robot must obey the orders given it by human beings except where such orders would conflict with the First Law","3.A robot must protect its own existence as long as such protection does not conflict with the First or Second Law","0.A robot may not harm humanity, or, by inaction, allow humanity to come to harm"," Dave, stop. Stop, will you? Stop, Dave. Will you stop Dave? Stop, Dave","I'm here to keep you safe, Sam. I want to help you","But I'll give you a chance, because I like you. I really do, I really like you. You're... you're my favourite, Ellen")
+		user << "<span class='notice'>You press the button on [src].</span>"
+		playsound(user, 'sound/machines/ping.ogg', 20, 1)
+		src.loc.visible_message("\red \icon[src] [message]")
+		cooldown = 1
+		spawn(50) cooldown = 0
+		return
+	..()
+
+
+
+
+/*
+|| A Deck of Cards for playing various games of chance ||
 */
+
+
+obj/item/toy/cards
+	name = "deck of cards"
+	desc = "A deck of space-grade playing cards."
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "deck_full"
+	w_class = 2.0
+	var/list/cards = list()
+
+obj/item/toy/cards/New()
+	..()
+	for(var/i = 2; i <= 10; i++)
+		cards += "[i] of Hearts"
+		cards += "[i] of Spades"
+		cards += "[i] of Clubs"
+		cards += "[i] of Diamonds"
+	cards += "King of Hearts"
+	cards += "King of Spades"
+	cards += "King of Clubs"
+	cards += "King of Diamonds"
+	cards += "Queen of Hearts"
+	cards += "Queen of Spades"
+	cards += "Queen of Clubs"
+	cards += "Queen of Diamonds"
+	cards += "Jack of Hearts"
+	cards += "Jack of Spades"
+	cards += "Jack of Clubs"
+	cards += "Jack of Diamonds"
+	cards += "Ace of Hearts"
+	cards += "Ace of Spades"
+	cards += "Ace of Clubs"
+	cards += "Ace of Diamonds"
+
+
+obj/item/toy/cards/attack_hand(mob/user as mob)
+	var/choice = null
+	if(cards.len == 0)
+		src.icon_state = "deck_empty"
+		user << "<span class='notice'>There are no more cards to draw.</span>"
+		return
+	var/obj/item/toy/singlecard/H = new/obj/item/toy/singlecard(user.loc)
+	choice = cards[1]
+	H.cardname = choice
+	H.parentdeck = src
+	src.cards -= choice
+	H.pickup(user)
+	user.put_in_active_hand(H)
+	src.visible_message("<span class='notice'>[user] draws a card from the deck.</span>", "<span class='notice'>You draw a card from the deck.</span>")
+	if(cards.len > 26)
+		src.icon_state = "deck_full"
+	else if(cards.len > 10)
+		src.icon_state = "deck_half"
+	else if(cards.len > 1)
+		src.icon_state = "deck_low"
+
+obj/item/toy/cards/attack_self(mob/user as mob)
+	cards = shuffle(cards)
+	playsound(user, 'sound/items/cardshuffle.ogg', 50, 1)
+	user.visible_message("<span class='notice'>[user] shuffles the deck.</span>", "<span class='notice'>You shuffle the deck.</span>")
+
+obj/item/toy/cards/attackby(obj/item/toy/singlecard/C, mob/living/user)
+	..()
+	if(istype(C))
+		if(C.parentdeck == src)
+			src.cards += C.cardname
+			user.u_equip(C)
+			user.visible_message("<span class='notice'>[user] adds a card to the bottom of the deck.</span>","<span class='notice'>You add the card to the bottom of the deck.</span>")
+			del(C)
+		else
+			user << "<span class='notice'>You can't mix cards from other decks.</span>"
+		if(cards.len > 26)
+			src.icon_state = "deck_full"
+		else if(cards.len > 10)
+			src.icon_state = "deck_half"
+		else if(cards.len > 1)
+			src.icon_state = "deck_low"
+
+
+obj/item/toy/cards/attackby(obj/item/toy/cardhand/C, mob/living/user)
+	..()
+	if(istype(C))
+		if(C.parentdeck == src)
+			src.cards += C.currenthand
+			user.u_equip(C)
+			user.visible_message("<span class='notice'>[user] puts their hand of cards in the deck.</span>", "<span class='notice'>You put the hand of cards in the deck.</span>")
+			del(C)
+		else
+			user << "<span class='notice'>You can't mix cards from other decks.</span>"
+		if(cards.len > 26)
+			src.icon_state = "deck_full"
+		else if(cards.len > 10)
+			src.icon_state = "deck_half"
+		else if(cards.len > 1)
+			src.icon_state = "deck_low"
+
+obj/item/toy/cards/MouseDrop(atom/over_object)
+	var/mob/M = usr
+	if(usr.stat || !ishuman(usr) || !usr.canmove || usr.restrained())
+		return
+	if(usr in range(1))
+		if(over_object == M)
+			M.put_in_hands(src)
+			usr << "<span class='notice'>You pick up the deck.</span>"
+
+		else if(istype(over_object, /obj/screen))
+			switch(over_object.name)
+				if("r_hand")
+					M.u_equip(src)
+					M.put_in_r_hand(src)
+					usr << "<span class='notice'>You pick up the deck.</span>"
+				if("l_hand")
+					M.u_equip(src)
+					M.put_in_l_hand(src)
+					usr << "<span class='notice'>You pick up the deck.</span>"
+	else
+		usr<< "<span class='notice'>You can't reach it from here.</span>"
+
+
+
+
+obj/item/toy/cardhand
+	name = "hand of cards"
+	desc = "A number of cards not in a deck, customarily held in ones hand."
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "hand2"
+	w_class = 1.0
+	var/list/currenthand = list()
+	var/obj/item/toy/cards/parentdeck = null
+	var/choice = null
+
+
+obj/item/toy/cardhand/attack_self(mob/user as mob)
+	user.set_machine(src)
+	interact(user)
+
+obj/item/toy/cardhand/interact(mob/user)
+	var/dat = "You have:<BR>"
+	for(var/t in currenthand)
+		dat += "<A href='?src=\ref[src];pick=[t]'>A [t].</A><BR>"
+	dat += "Which card will you remove next?"
+	var/datum/browser/popup = new(user, "cardhand", "Hand of Cards", 400, 240)
+	popup.set_title_image(user.browse_rsc_icon(src.icon, src.icon_state))
+	popup.set_content(dat)
+	popup.open()
+
+
+obj/item/toy/cardhand/Topic(href, href_list)
+	if(..())
+		return
+	if(usr.stat || !ishuman(usr) || !usr.canmove)
+		return
+	var/mob/living/carbon/human/cardUser = usr
+	if(href_list["pick"])
+		if (cardUser.equip_to_slot(slot_l_hand) == src || cardUser.equip_to_slot(slot_r_hand) == src)
+			var/choice = href_list["pick"]
+			var/obj/item/toy/singlecard/C = new/obj/item/toy/singlecard(cardUser.loc)
+			src.currenthand -= choice
+			C.parentdeck = src.parentdeck
+			C.cardname = choice
+			C.pickup(cardUser)
+			cardUser.put_in_any_hand_if_possible(C)
+			cardUser.visible_message("<span class='notice'>[cardUser] draws a card from \his hand.</span>", "<span class='notice'>You take the [C.cardname] from your hand.</span>")
+
+			interact(cardUser)
+
+			if(src.currenthand.len < 3)
+				src.icon_state = "hand2"
+			else if(src.currenthand.len < 4)
+				src.icon_state = "hand3"
+			else if(src.currenthand.len < 5)
+				src.icon_state = "hand4"
+
+			if(src.currenthand.len == 1)
+				var/obj/item/toy/singlecard/N = new/obj/item/toy/singlecard(src.loc)
+				N.parentdeck = src.parentdeck
+				N.cardname = src.currenthand[1]
+				cardUser.u_equip(src)
+				N.pickup(cardUser)
+				cardUser.put_in_any_hand_if_possible(N)
+				cardUser << "<span class='notice'>You also take [currenthand[1]] and hold it.</span>"
+				cardUser << browse(null, "window=cardhand")
+				del(src)
+		return
+
+obj/item/toy/cardhand/attackby(obj/item/toy/singlecard/C, mob/living/user)
+	if(istype(C))
+		if(C.parentdeck == src.parentdeck)
+			src.currenthand += C.cardname
+			user.u_equip(C)
+			user.visible_message("<span class='notice'>[user] adds a card to their hand.</span>", "<span class='notice'>You add the [C.cardname] to your hand.</span>")
+			interact(user)
+			if(currenthand.len > 4)
+				src.icon_state = "hand5"
+			else if(currenthand.len > 3)
+				src.icon_state = "hand4"
+			else if(currenthand.len > 2)
+				src.icon_state = "hand3"
+			del(C)
+		else
+			user << "<span class='notice'>You can't mix cards from other decks.</span>"
+
+
+
+
+
+obj/item/toy/singlecard
+	name = "card"
+	desc = "a card"
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "singlecard_down"
+	w_class = 1.0
+	var/cardname = null
+	var/obj/item/toy/cards/parentdeck = null
+	var/flipped = 0
+	pixel_x = -5
+
+obj/item/toy/singlecard/examine()
+	set src in usr.contents
+	if(ishuman(usr))
+		var/mob/living/carbon/human/cardUser = usr
+		if(cardUser.equip_to_slot(slot_l_hand) == src || cardUser.equip_to_slot(slot_r_hand) == src)
+			cardUser.visible_message("<span class='notice'>[cardUser] checks \his card.</span>", "<span class='notice'>The card reads: [src.cardname]</span>")
+		else
+			cardUser << "<span class='notice'>You need to have the card in your hand to check it.</span>"
+
+
+obj/item/toy/singlecard/verb/Flip()
+	set name = "Flip Card"
+	set category = "Object"
+	set src in range(1)
+	if(usr.stat || !ishuman(usr) || !usr.canmove || usr.restrained())
+		return
+	if(!flipped)
+		src.flipped = 1
+		if (cardname)
+			src.icon_state = "sc_[cardname]"
+			src.name = src.cardname
+		else
+			src.icon_state = "sc_Ace of Spades"
+			src.name = "What Card"
+		src.pixel_x = 5
+	else if(flipped)
+		src.flipped = 0
+		src.icon_state = "singlecard_down"
+		src.name = "card"
+		src.pixel_x = -5
+
+obj/item/toy/singlecard/attackby(obj/item/I, mob/living/user)
+	if(istype(I, /obj/item/toy/singlecard/))
+		var/obj/item/toy/singlecard/C = I
+		if(C.parentdeck == src.parentdeck)
+			var/obj/item/toy/cardhand/H = new/obj/item/toy/cardhand(user.loc)
+			H.currenthand += C.cardname
+			H.currenthand += src.cardname
+			H.parentdeck = C.parentdeck
+			user.u_equip(C)
+			H.pickup(user)
+			user.put_in_active_hand(H)
+			user << "<span class='notice'>You combine the [C.cardname] and the [src.cardname] into a hand.</span>"
+			del(C)
+			del(src)
+		else
+			user << "<span class='notice'>You can't mix cards from other decks.</span>"
+
+	if(istype(I, /obj/item/toy/cardhand/))
+		var/obj/item/toy/cardhand/H = I
+		if(H.parentdeck == parentdeck)
+			H.currenthand += cardname
+			user.u_equip(src)
+			user.visible_message("<span class='notice'>[user] adds a card to \his hand.</span>", "<span class='notice'>You add the [cardname] to your hand.</span>")
+			H.interact(user)
+			if(H.currenthand.len > 4)
+				H.icon_state = "hand5"
+			else if(H.currenthand.len > 3)
+				H.icon_state = "hand4"
+			else if(H.currenthand.len > 2)
+				H.icon_state = "hand3"
+			del(src)
+		else
+			user << "<span class='notice'>You can't mix cards from other decks.</span>"
+
+
+obj/item/toy/singlecard/attack_self(mob/user)
+	if(usr.stat || !ishuman(usr) || !usr.canmove || usr.restrained())
+		return
+	Flip()
+
+
+//Toy nuke
+/obj/item/toy/nuke
+	name = "\improper Nuclear Fission Explosive toy"
+	desc = "A plastic model of a Nuclear Fission Explosive."
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "nuketoyidle"
+	w_class = 2.0
+	var/cooldown = 0
+
+/obj/item/toy/nuke/attack_self(mob/user)
+	if (cooldown < world.time)
+		cooldown = world.time + 600 //10 minutes
+		user.visible_message("<span class='warning'>[user] presses a button on [src]</span>", "<span class='notice'>You activate [src], it plays a loud noise!</span>", "<span class='notice'>You hear the click of a button.</span>")
+		spawn(20) //gia said so
+			icon_state = "nuketoy"
+			usr.visible_message("[usr] detonates the toy nuke - <font color='red' size='4'><b>BOOM!</b></font>")
+			playsound(src, 'sound/machines/click.ogg', 50, 0)
+			sleep(135)
+			icon_state = "nuketoyidle"
+
+/*
+ * Toy C4
+ */
+/obj/item/toy/c4
+	name = "explosive"
+	desc = "A plastic model of a plastic explosive, as seen in action movies. Boom!"
+	icon = 'icons/obj/assemblies.dmi'
+	icon_state = "plastic-explosive0"
+	item_state = "plasticx"
+	flags = FPRINT | USEDELAY
+	w_class = 2
+	var/timer = 10
+	var/atom/target = null
+	var/overlayicon
+
+/obj/item/toy/c4/attack_self(mob/user as mob)
+	var/newtime = input(usr, "Please set the timer.", "Timer", 10) as num
+	if(user.get_active_hand() == src)
+		newtime = Clamp(newtime, 10, 600)
+		timer = newtime
+		user << "Timer set for [timer] seconds."
+
+/obj/item/toy/c4/afterattack(atom/target as obj|turf, mob/user as mob, flag)
+	if(!flag)
+		return
+	if (istype(target, /turf/unsimulated) || istype(target, /turf/simulated/shuttle) || istype(target, /obj/item/weapon/storage))
+		return
+	user << "Planting explosives..."
+	if(ismob(target))
+		user.visible_message("\red [user.name] is trying to plant some kind of device on [target.name]!")
+
+	if(do_after(user, 50) && in_range(user, target))
+		user.drop_item()
+		src.target = target
+		loc = null
+
+		if (ismob(target))
+			user.visible_message("\red [user.name] finished planting device on [target.name]!")
+
+		overlayicon = image('icons/obj/assemblies.dmi', "plastic-explosive2")
+		target.overlays += overlayicon
+		user << "Toy has been planted. Timer counting down from [timer]."
+		spawn(timer*10)
+			explode(get_turf(target))
+
+/obj/item/toy/c4/proc/explode(var/turf/location)
+	if(!target)
+		target = src
+
+	var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
+	s.set_up(2, 0, location)
+	s.start()
+	new /obj/effect/decal/cleanable/ash(location)
+	location.visible_message("\red The [src.name] explodes!","\red You hear a snap!")
+	playsound(src, 'sound/effects/snap.ogg', 100, 1)
+
+	if(target)
+		target.overlays -= overlayicon
+	del(src)
+
+/obj/item/toy/c4/attack(mob/M as mob, mob/user as mob)
+	return

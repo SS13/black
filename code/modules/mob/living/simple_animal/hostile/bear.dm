@@ -79,7 +79,7 @@
 					if(stance_step in list(1,4,7)) //every 3 ticks
 						var/action = pick( list( "growls at [target_mob]", "stares angrily at [target_mob]", "prepares to attack [target_mob]", "closely watches [target_mob]" ) )
 						if(action)
-							custom_emote(1,action)
+							emote(action)
 			if(!found_mob)
 				stance_step--
 
@@ -90,7 +90,7 @@
 
 		if(HOSTILE_STANCE_ATTACKING)
 			if(stance_step >= 20)	//attacks for 20 ticks, then it gets tired and needs to rest
-				custom_emote(1, "is worn out and needs to rest" )
+				emote( "is worn out and needs to rest" )
 				stance = HOSTILE_STANCE_TIRED
 				stance_step = 0
 				walk(src, 0) //This stops the bear's walking
@@ -118,16 +118,14 @@
 /mob/living/simple_animal/hostile/bear/FindTarget()
 	. = ..()
 	if(.)
-		custom_emote(1,"stares alertly at [.]")
+		emote("stares alertly at [.]")
 		stance = HOSTILE_STANCE_ALERT
 
 /mob/living/simple_animal/hostile/bear/LoseTarget()
 	..(5)
 
 /mob/living/simple_animal/hostile/bear/AttackingTarget()
-	if(!Adjacent(target_mob))
-		return
-	custom_emote(1, pick( list("slashes at [target_mob]", "bites [target_mob]") ) )
+	emote( pick( list("slashes at [target_mob]", "bites [target_mob]") ) )
 
 	var/damage = rand(20,30)
 
@@ -146,27 +144,21 @@
 		M.attack_animal(src)
 		return M
 
+// I really need it.
+/mob/living/simple_animal/hostile/bear/zombie
+	name = "Animated corpse"
+	desc = "A grotesque, shambling fleshy horror... was this once a... a person?"
+	icon_state = "husk_s"
+	icon_living = "husk_s"
+	icon_dead = "husk_l"
+	maxHealth = 150
+	health = 150
+	melee_damage_lower = 30
+	melee_damage_upper = 45
 
+/mob/living/simple_animal/hostile/bear/zombie/Life()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	if(loc && istype(loc,/turf/space))
+		icon_state = "husk_s"
+	else
+		icon_state = "husk_s"

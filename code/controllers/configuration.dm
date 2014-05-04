@@ -24,8 +24,6 @@
 	var/allow_admin_rev = 1				// allows admin revives
 	var/vote_delay = 22000				// minimum time between voting sessions (deciseconds, 10 minute default)
 	var/vote_period = 2200				// length of voting period (deciseconds, default 1 minute)
-	var/vote_autotransfer_initial = 308000 // Length of time before the first autotransfer vote is called
-	var/vote_autotransfer_interval = 66000 // length of time before next sequential autotransfer vote
 	var/vote_no_default = 0				// vote does not default to nochange/norestart (tbi)
 	var/vote_no_dead = 0				// dead people can't vote (tbi)
 //	var/enable_authentication = 0		// goon authentication
@@ -39,9 +37,6 @@
 	var/Ticklag = 0.4
 	var/Tickcomp = 0
 
-	var/list/resource_urls = null
-	var/antag_hud_allowed = 0			// Ghosts can turn on Antagovision to see a HUD of who is the bad guys this round.
-	var/antag_hud_restricted = 0                    // Ghosts that turn on Antagovision cannot rejoin the round.
 	var/list/mode_names = list()
 	var/list/modes = list()				// allowed modes
 	var/list/votable_modes = list()		// votable modes
@@ -59,11 +54,6 @@
 	var/automute_on = 0					//enables automuting/spam prevention
 	var/jobs_have_minimal_access = 0	//determines whether jobs use minimal access or expanded access.
 
-	var/cult_ghostwriter = 1               //Allows ghosts to write in blood in cult rounds...
-	var/cult_ghostwriter_req_cultists = 10 //...so long as this many cultists are active.
-
-	var/disable_player_mice = 0
-	var/uneducated_mice = 0 //Set to 1 to prevent newly-spawned mice from understanding human speech
 	var/usealienwhitelist = 0
 	var/limitalienplayers = 0
 	var/alien_to_human_ratio = 0.5
@@ -101,8 +91,8 @@
 
 	//Used for modifying movement speed for mobs.
 	//Unversal modifiers
-	var/run_speed = 3.5
-	var/walk_speed = 5
+	var/run_speed = 1.5
+	var/walk_speed = 0.7
 
 	//Mob specific modifiers. NOTE: These will affect different mob types in different ways
 	var/human_delay = 0
@@ -123,14 +113,7 @@
 	var/gateway_delay = 18000 //How long the gateway takes before it activates. Default is half an hour.
 	var/ghost_interaction = 1
 
-	var/comms_password = ""
-/*
-	var/use_irc_bot = 0
-	var/irc_bot_host = ""
-	var/main_irc = ""
-	var/admin_irc = ""
-	var/python_path = "" //Path to the python executable.  Defaults to "python" on windows and "/usr/bin/env python2" on unix
-*/
+
 /datum/configuration/New()
 	var/list/L = typesof(/datum/game_mode) - /datum/game_mode
 	for (var/T in L)
@@ -176,9 +159,6 @@
 
 		if(type == "config")
 			switch (name)
-				if ("resource_urls")
-					config.resource_urls = text2list(value, " ")
-
 				if ("admin_legacy_system")
 					config.admin_legacy_system = 1
 
@@ -232,10 +212,7 @@
 
 				if ("log_hrefs")
 					config.log_hrefs = 1
-/*
-				if ("log_runtime")
-					config.log_runtime = 1
-*/
+
 				if("allow_admin_ooccolor")
 					config.allow_admin_ooccolor = 1
 
@@ -266,12 +243,6 @@
 				if ("vote_period")
 					config.vote_period = text2num(value)
 
-				if ("vote_autotransfer_initial")
-					config.vote_autotransfer_initial = text2num(value)
-
-				if ("vote_autotransfer_interval")
-					config.vote_autotransfer_interval = text2num(value)
-
 				if ("allow_ai")
 					config.allow_ai = 1
 
@@ -286,10 +257,7 @@
 
 				if ("serversuffix")
 					config.server_suffix = 1
-/*
-				if ("nudge_script_path")
-					config.nudge_script_path = value
-*/
+
 				if ("hostedby")
 					config.hostedby = value
 
@@ -376,21 +344,10 @@
 
 				if("allow_holidays")
 					Holiday = 1
-/*
-				if("use_irc_bot")
-					use_irc_bot = 1
-*/
+
 				if("ticklag")
 					Ticklag = text2num(value)
 
-				if("allow_antag_hud")
-					config.antag_hud_allowed = 1
-				if("antag_hud_restricted")
-					config.antag_hud_restricted = 1
-/*
-				if("socket_talk")
-					socket_talk = text2num(value)
-*/
 				if("tickcomp")
 					Tickcomp = 1
 
@@ -421,39 +378,6 @@
 
 				if("ghost_interaction")
 					config.ghost_interaction = 1
-
-				if("disable_player_mice")
-					config.disable_player_mice = 1
-
-				if("uneducated_mice")
-					config.uneducated_mice = 1
-
-				if("comms_password")
-					config.comms_password = value
-/*
-				if("irc_bot_host")
-					config.irc_bot_host = value
-
-				if("main_irc")
-					config.main_irc = value
-
-				if("admin_irc")
-					config.admin_irc = value
-
-				if("python_path")
-					if(value)
-						config.python_path = value
-					else
-						if(world.system_type == UNIX)
-							config.python_path = "/usr/bin/env python2"
-						else //probably windows, if not this should work anyway
-							config.python_path = "python"
-*/
-				if("allow_cult_ghostwriter")
-					config.cult_ghostwriter = 1
-
-				if("req_cult_ghostwriter")
-					config.cult_ghostwriter_req_cultists = value
 
 				else
 					diary << "Unknown setting in configuration: '[name]'"
@@ -541,49 +465,7 @@
 				sqlpass = value
 			else
 				diary << "Unknown setting in configuration: '[name]'"
-/*
-/datum/configuration/proc/loadforumsql(filename)  // -- TLE
-	var/list/Lines = file2list(filename)
-	for(var/t in Lines)
-		if(!t)	continue
 
-		t = trim(t)
-		if (length(t) == 0)
-			continue
-		else if (copytext(t, 1, 2) == "#")
-			continue
-
-		var/pos = findtext(t, " ")
-		var/name = null
-		var/value = null
-
-		if (pos)
-			name = lowertext(copytext(t, 1, pos))
-			value = copytext(t, pos + 1)
-		else
-			name = lowertext(t)
-
-		if (!name)
-			continue
-
-		switch (name)
-			if ("address")
-				forumsqladdress = value
-			if ("port")
-				forumsqlport = value
-			if ("database")
-				forumsqldb = value
-			if ("login")
-				forumsqllogin = value
-			if ("password")
-				forumsqlpass = value
-			if ("activatedgroup")
-				forum_activated_group = value
-			if ("authenticatedgroup")
-				forum_authenticated_group = value
-			else
-				diary << "Unknown setting in configuration: '[name]'"
-*/
 /datum/configuration/proc/pick_mode(mode_name)
 	// I wish I didn't have to instance the game modes in order to look up
 	// their information, but it is the only way (at least that I know of).

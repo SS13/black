@@ -34,36 +34,37 @@ var/list/paper_blacklist = list("java","onblur","onchange","onclick","ondblclick
 	"onkeypress","onkeyup","onload","onmousedown","onmousemove","onmouseout","onmouseover",	\
 	"onmouseup","onreset","onselect","onsubmit","onunload")
 
-var/BLINDBLOCK = 0
-var/DEAFBLOCK = 0
 var/HULKBLOCK = 0
-var/TELEBLOCK = 0
-var/FIREBLOCK = 0
 var/XRAYBLOCK = 0
-var/CLUMSYBLOCK = 0
-var/FAKEBLOCK = 0
-var/COUGHBLOCK = 0
-var/GLASSESBLOCK = 0
-var/EPILEPSYBLOCK = 0
-var/TWITCHBLOCK = 0
-var/NERVOUSBLOCK = 0
-var/MONKEYBLOCK = 27
+var/FIREBLOCK = 0
+var/BLINDBLOCK = 0
+var/TELEBLOCK = 0
 
-var/BLOCKADD = 0
-var/DIFFMUT = 0
-
-var/HEADACHEBLOCK = 0
 var/NOBREATHBLOCK = 0
 var/REMOTEVIEWBLOCK = 0
 var/REGENERATEBLOCK = 0
 var/INCREASERUNBLOCK = 0
 var/REMOTETALKBLOCK = 0
 var/MORPHBLOCK = 0
-var/BLENDBLOCK = 0
-var/HALLUCINATIONBLOCK = 0
 var/NOPRINTSBLOCK = 0
 var/SHOCKIMMUNITYBLOCK = 0
 var/SMALLSIZEBLOCK = 0
+
+var/GLASSESBLOCK = 0
+var/EPILEPSYBLOCK = 0
+var/COUGHBLOCK = 0
+var/CLUMSYBLOCK = 0
+var/TWITCHBLOCK = 0
+var/NERVOUSBLOCK = 0
+var/BLENDBLOCK = 0
+var/DEAFBLOCK = 0
+var/HEADACHEBLOCK = 0
+var/HALLUCINATIONBLOCK = 0
+var/MONKEYBLOCK = 27
+
+var/FAKEBLOCK = 0
+var/DIFFMUT = 0
+var/BLOCKADD = 0
 
 var/skipupdate = 0
 	///////////////
@@ -110,8 +111,6 @@ var/list/lawchanges = list(  ) //Stores who uploaded laws to which silicon-based
 var/list/shuttles = list(  )
 var/list/reg_dna = list(  )
 //	list/traitobj = list(  )
-
-var/mouse_respawn_time = 5 //Amount of time that must pass between a player dying as a mouse and repawning as a mouse. In minutes.
 
 var/CELLRATE = 0.002  // multiplier for watts per tick <> cell storage (eg: .002 means if there is a load of 1000 watts, 20 units will be taken from a cell per second)
 var/CHARGELEVEL = 0.001 // Cap for how fast cells charge, as a percentage-per-tick (.001 means cellcharge is capped to 1% per second)
@@ -167,9 +166,6 @@ var/shuttlecoming = 0
 var/join_motd = null
 var/forceblob = 0
 
-// nanomanager, the manager for Nano UIs
-var/datum/nanomanager/nanomanager = new()
-
 	//airlockWireColorToIndex takes a number representing the wire color, e.g. the orange wire is always 1, the dark red wire is always 2, etc. It returns the index for whatever that wire does.
 	//airlockIndexToWireColor does the opposite thing - it takes the index for what the wire does, for example AIRLOCK_WIRE_IDSCAN is 1, AIRLOCK_WIRE_POWER1 is 2, etc. It returns the wire color number.
 	//airlockWireColorToFlag takes the wire color number and returns the flag for it (1, 2, 4, 8, 16, etc)
@@ -216,6 +212,11 @@ var/sqldb = "tgstation"
 var/sqllogin = "root"
 var/sqlpass = ""
 
+
+	// Variables which change is necessary for conducting's Event
+var/timetorespawn = 30
+var/mouse_respawn_time = 30 //Amount of time that must pass between a player dying as a mouse and repawning as a mouse. In minutes.
+
 	// For FTP requests. (i.e. downloading runtime logs.)
 	// However it'd be ok to use for accessing attack logs and such too, which are even laggier.
 var/fileaccess_timer = 0
@@ -224,4 +225,3 @@ var/custom_event_msg = null
 //Database connections
 //A connection is established on world creation. Ideally, the connection dies when the server restarts (After feedback logging.).
 var/DBConnection/dbcon = new()
-var/DBConnection/dbcon_old = new()

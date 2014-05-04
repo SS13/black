@@ -41,6 +41,7 @@ var/list/admin_ranks = list()								//list of all ranks with associated rights
 				if("sound","sounds")			rights |= R_SOUNDS
 				if("spawn","create")			rights |= R_SPAWN
 				if("mod")						rights |= R_MOD
+				if("events")						rights |= R_EVENTS
 
 		admin_ranks[rank] = rights
 		previous_rights = rights
@@ -53,9 +54,6 @@ var/list/admin_ranks = list()								//list of all ranks with associated rights
 	#endif
 
 
-/hook/startup/proc/loadAdmins()
-	load_admins()
-	return 1
 /proc/load_admins()
 	//clear the datums references
 	admin_datums.Cut()

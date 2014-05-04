@@ -33,6 +33,14 @@
 	item_color = "sl_suit"
 	flags = FPRINT | TABLEPASS
 
+/obj/item/clothing/under/roman
+	name = "roman armor"
+	desc = "An ancient Roman armor. Made of metallic strips and leather straps."
+	icon_state = "roman"
+	item_color = "roman"
+	item_state = "armor"
+	armor = list(melee = 25, bullet = 0, laser = 25, energy = 10, bomb = 10, bio = 0, rad = 0)
+
 /obj/item/clothing/under/waiter
 	name = "waiter's outfit"
 	desc = "It's a very smart uniform with a special pocket for tip."
@@ -112,12 +120,6 @@
 	item_color = "owl"
 	flags = FPRINT | TABLEPASS
 
-/obj/item/clothing/under/johnny
-	name = "johnny~~ jumpsuit"
-	desc = "Johnny~~"
-	icon_state = "johnny"
-	item_color = "johnny"
-
 /obj/item/clothing/under/rainbow
 	name = "rainbow"
 	desc = "rainbow"
@@ -137,13 +139,6 @@
 	icon_state = "psysuit"
 	item_state = "psysuit"
 	item_color = "psysuit"
-
-/obj/item/clothing/under/gentlesuit
-	name = "Gentlemans Suit"
-	desc = "A silk black shirt with a white tie and a matching gray vest and slacks. Feels proper."
-	icon_state = "gentlesuit"
-	item_state = "gentlesuit"
-	item_color = "gentlesuit"
 
 /obj/item/clothing/under/gimmick/rank/captain/suit
 	name = "captain's suit"
@@ -223,6 +218,20 @@
 	item_state = "soviet"
 	item_color = "soviet"
 
+/obj/item/clothing/under/soviet/ks13
+	name = "KS13 uniform"
+	desc = "Standart-issue uniform for tovarischi from KS13. It`s somewhat rugged and smells of potatoes and kerosine. "
+	icon_state = "ks13suit"
+	item_state = "ks13suit"
+	item_color = "ks13suit"
+
+/obj/item/clothing/under/soviet/ks13officer
+	name = "KS13 officer uniform"
+	desc = "Standart-issue uniform for tovarischi komandiri from KS13. It`s somewhat rugged and smells of beetroot and gasoline. "
+	icon_state = "ks13suitofficer"
+	item_state = "ks13suitofficer"
+	item_color = "ks13suitofficer"
+
 /obj/item/clothing/under/redcoat
 	name = "redcoat uniform"
 	desc = "Looks old."
@@ -253,6 +262,40 @@
 	item_state = "gladiator"
 	item_color = "gladiator"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|ARMS
+
+/obj/item/clothing/under/fancyvest
+	name = "fancy suit vest"
+	desc = "Sharp outfit for smart people. Now only missing a jacket."
+	icon_state = "fancyvest"
+	item_color = "fancyvest"
+
+//Von Karma costume
+/obj/item/clothing/under/prosecutor_suit
+	name = "prosecutor suit"
+	desc = "Don't be foolish, you foolish fool wearing the foolishly foolish clothes."
+	icon_state = "prosecutor_suit"
+	item_color = "prosecutor_suit"
+
+//Maid costume
+/obj/item/clothing/under/maid
+	name = "maid uniform"
+	desc = "Traditional French maid uniform."
+	icon_state = "meido"
+	item_color = "meido"
+
+//Track/cargo pants + white tank top
+/obj/item/clothing/under/tracktank
+	name = "track pants"
+	desc = "Track pants with tank top, huh? Better go get some semki."
+	icon_state = "trackpants"
+	item_color = "trackpants"
+
+/obj/item/clothing/under/cargotank
+	name = "cargo pants"
+	desc = "Cargo pants with tank top."
+	icon_state = "cargopants"
+	item_color = "cargopants"
+
 
 //dress
 
@@ -292,6 +335,11 @@
 	icon_state = "dress_saloon"
 	item_color = "dress_saloon"
 
+/obj/item/clothing/under/dress/dress_rd
+	name = "research director dress uniform"
+	desc = "Feminine fashion for the style concious RD."
+	icon_state = "dress_rd"
+	item_color = "dress_rd"
 
 /obj/item/clothing/under/dress/dress_cap
 	name = "captain dress uniform"
@@ -360,7 +408,7 @@
 	flags_inv = HIDESHOES
 
 /obj/item/clothing/under/wedding/bride_white
-	name = "silky wedding dress"
+	name = "orange wedding dress"
 	desc = "A white wedding gown made from the finest silk."
 	icon_state = "bride_white"
 	item_color = "bride_white"
@@ -373,3 +421,70 @@
 	item_state = "sundress"
 	item_color = "sundress"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+
+/obj/item/clothing/under/bluedress
+	name = "blue dress"
+	desc = "This light blue dress brings up your 'lady features' just perfect."
+	icon_state = "bluedress"
+	item_state = "bluedress"
+	item_color = "bluedress"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+
+/obj/item/clothing/under/suzumiyarabbit
+	name = "suzumiya rabbit dress"
+	icon_state = "suzumiyarabbit"
+	item_state = "suzumiyarabbit"
+	item_color = "suzumiyarabbit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+
+/obj/item/clothing/under/mikururabbit
+	name = "mikuru rabbit dress"
+	icon_state = "mikururabbit"
+	item_state = "mikururabbit"
+	item_color = "mikururabbit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+
+/obj/item/clothing/under/snmsuit
+	name = "S&M Suit"
+	desc = "This tight bondage of latex and leather makes for a fine ensemble of pain."
+	icon_state = "snmsuit"
+	item_state = "snmsuit"
+	item_color = "snmsuit"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO
+
+/obj/item/clothing/under/sheik
+	name = "sheikh suit"
+	icon_state = "sheik"
+	item_state = "sheik"
+	item_color = "sheik"
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+
+
+/obj/item/clothing/under/xenorobe
+	desc = "It's a strange old-looking alien robe decorated with intricate ornaments. This must have costed a fortune, and probably costs still."
+	name = "\improper alien robe"
+	icon_state = "xenorobe"
+	item_state = "w_suit"
+	item_color = "xenorobe"
+
+/*
+ *Star Wars
+ */
+
+/obj/item/clothing/under/rebel
+	name = "Rebel Jumpsuit"
+	icon_state = "rebel"
+	item_state = "rebel"
+	item_color = "rebel"
+
+/obj/item/clothing/under/rebel_pilot
+	name = "Rebel pilot Jumpsuit"
+	icon_state = "rebel_pilot"
+	item_state = "rebel_pilot"
+	item_color = "rebel_pilot"
+
+/obj/item/clothing/under/imperial_officer
+	name = "Imperial offiser Jumpsuit"
+	icon_state = "imp_officer"
+	item_state = "imp_officer"
+	item_color = "imp_officer"
