@@ -15,7 +15,6 @@
 	amount_per_transfer_from_this = 5
 	possible_transfer_amounts = null //list(5,10,15)
 	volume = 15
-	pass_flags = PASSTABLE
 	var/mode = SYRINGE_DRAW
 
 	on_reagent_change()
@@ -51,7 +50,8 @@
 
 		return
 
-	afterattack(obj/target, mob/user , flag)
+	afterattack(obj/target, mob/user, proximity)
+		if(!proximity) return
 		if(!target.reagents) return
 
 		if(mode == SYRINGE_BROKEN)
@@ -89,7 +89,15 @@
 							user << "\red You are unable to locate any blood."
 							return
 
-						var/datum/reagent/B = T.take_blood(src,amount)
+						var/datum/reagent/B
+						if(istype(T,/mob/living/carbon/human))
+							var/mob/living/carbon/human/H = T
+							if(H.species && H.species.flags & NO_BLOOD)
+								H.reagents.trans_to(src,amount)
+							else
+								B = T.take_blood(src,amount)
+						else
+							B = T.take_blood(src,amount)
 
 						if (B)
 							src.reagents.reagent_list += B

@@ -33,9 +33,6 @@
 	var/stat_msg1
 	var/stat_msg2
 
-	var/shuttle_availability_crew = 1
-	var/shuttle_availability_emergen = 1
-
 
 
 /obj/machinery/computer/communications/process()
@@ -105,7 +102,7 @@
 		if("announce")
 			if(src.authenticated==2)
 				if(message_cooldown)	return
-				var/input = sanitize_uni(stripped_input(usr, "Please choose a message to announce to the station crew.", "What?"))
+				var/input = stripped_input(usr, "Please choose a message to announce to the station crew.", "What?")
 				if(!input || !(usr in view(1,src)))
 					return
 				captain_announce(input)//This should really tell who is, IE HoP, CE, HoS, RD, Captain
@@ -125,15 +122,6 @@
 				if(emergency_shuttle.online)
 					post_status("shuttle")
 			src.state = STATE_DEFAULT
-		if("crewtransfer")
-			src.state= STATE_DEFAULT
-			if(src.authenticated)
-				src.state = STATE_CREWTRANSFER
-		if("crewtransfer2")
-			if(src.authenticated)
-				init_shift_change(usr) //key difference here
-				if(emergency_shuttle.online)
-					post_status("shuttle")
 		if("cancelshuttle")
 			src.state = STATE_DEFAULT
 			if(src.authenticated)
@@ -193,14 +181,14 @@
 				if(centcomm_message_cooldown)
 					usr << "\red Arrays recycling.  Please stand by."
 					return
-				var/input = sanitize_uni(stripped_input(usr, "Please choose a message to transmit to Centcomm via quantum entanglement.  Please be aware that this process is very expensive, and abuse will lead to... termination.  Transmission does not guarantee a response.", "To abort, send an empty message.", ""))
+				var/input = stripped_input(usr, "Please choose a message to transmit to Centcomm via quantum entanglement.  Please be aware that this process is very expensive, and abuse will lead to... termination.  Transmission does not guarantee a response. There is a 30 second delay before you may send another message, be clear, full and concise.", "To abort, send an empty message.", "")
 				if(!input || !(usr in view(1,src)))
 					return
 				Centcomm_announce(input, usr)
 				usr << "\blue Message transmitted."
 				log_say("[key_name(usr)] has made an IA Centcomm announcement: [input]")
 				centcomm_message_cooldown = 1
-				spawn(6000)//10 minute cooldown
+				spawn(300)//10 minute cooldown
 					centcomm_message_cooldown = 0
 
 
@@ -210,14 +198,14 @@
 				if(centcomm_message_cooldown)
 					usr << "\red Arrays recycling.  Please stand by."
 					return
-				var/input = sanitize_uni(stripped_input(usr, "Please choose a message to transmit to \[ABNORMAL ROUTING CORDINATES\] via quantum entanglement.  Please be aware that this process is very expensive, and abuse will lead to... termination. Transmission does not guarantee a response.", "To abort, send an empty message.", ""))
+				var/input = stripped_input(usr, "Please choose a message to transmit to \[ABNORMAL ROUTING CORDINATES\] via quantum entanglement.  Please be aware that this process is very expensive, and abuse will lead to... termination. Transmission does not guarantee a response. There is a 30 second delay before you may send another message, be clear, full and concise.", "To abort, send an empty message.", "")
 				if(!input || !(usr in view(1,src)))
 					return
 				Syndicate_announce(input, usr)
 				usr << "\blue Message transmitted."
 				log_say("[key_name(usr)] has made a Syndicate announcement: [input]")
 				centcomm_message_cooldown = 1
-				spawn(6000)//10 minute cooldown
+				spawn(300)//10 minute cooldown
 					centcomm_message_cooldown = 0
 
 		if("RestoreBackup")
@@ -320,13 +308,12 @@
 						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=MessageSyndicate'>Send an emergency message to \[UNKNOWN\]</A> \]"
 						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=RestoreBackup'>Restore Backup Routing Data</A> \]"
 
-					dat += "<BR>\[ <A HREF='?src=\ref[src];operation=changeseclevel'>Change alert level</A> \]"
+				dat += "<BR>\[ <A HREF='?src=\ref[src];operation=changeseclevel'>Change alert level</A> \]"
 				if(emergency_shuttle.location==0)
 					if (emergency_shuttle.online)
 						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=cancelshuttle'>Cancel Shuttle Call</A> \]"
 					else
 						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=callshuttle'>Call Emergency Shuttle</A> \]"
-						dat += "<BR>\[ <A HREF='?src=\ref[src];operation=crewtransfer'>Initiate Crew Transfer</A> \]"
 
 				dat += "<BR>\[ <A HREF='?src=\ref[src];operation=status'>Set Status Display</A> \]"
 			else
@@ -334,8 +321,6 @@
 			dat += "<BR>\[ <A HREF='?src=\ref[src];operation=messagelist'>Message List</A> \]"
 		if(STATE_CALLSHUTTLE)
 			dat += "Are you sure you want to call the shuttle? \[ <A HREF='?src=\ref[src];operation=callshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=main'>Cancel</A> \]"
-		if(STATE_CREWTRANSFER) // this is the shiftchage screen.
-			dat += "Are you sure you want to initiate a crew transfer? This will call the shuttle. \[ <a HREF='?src=\ref[src];operation=crewtransfer2'>OK</a> | <A HREF='?src=\ref[src];operation=main'>Cancel</A> \]"
 		if(STATE_CANCELSHUTTLE)
 			dat += "Are you sure you want to cancel the shuttle? \[ <A HREF='?src=\ref[src];operation=cancelshuttle2'>OK</A> | <A HREF='?src=\ref[src];operation=main'>Cancel</A> \]"
 		if(STATE_MESSAGELIST)

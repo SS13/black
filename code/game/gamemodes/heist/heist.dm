@@ -2,19 +2,14 @@
 VOX HEIST ROUNDTYPE
 */
 
-#define MAX_VOX_KILLS 10 //Number of kills during the round before the Inviolate is broken.
-						 //Would be nice to use vox-specific kills but is currently not feasible.
-
-var/global/vox_kills = 0 //Used to check the Inviolate.
-
 /datum/game_mode/
 	var/list/datum/mind/raiders = list()  //Antags.
 
 /datum/game_mode/heist
 	name = "heist"
 	config_tag = "heist"
-	required_players = 12
-	required_players_secret = 15
+	required_players = 15
+	required_players_secret = 25
 	required_enemies = 4
 	recommended_enemies = 6
 
@@ -38,9 +33,6 @@ var/global/vox_kills = 0 //Used to check the Inviolate.
 
 	var/list/candidates = get_players_for_role(BE_RAIDER)
 	var/raider_num = 0
-
-	for(var/datum/mind/M in candidates)
-		if (jobban_isbanned(M, "vox"))	candidates -= M
 
 	//Check that we have enough vox.
 	if(candidates.len < required_enemies)
@@ -102,6 +94,7 @@ var/global/vox_kills = 0 //Used to check the Inviolate.
 
 		vox.real_name = capitalize(newname)
 		vox.name = vox.real_name
+		raider.name = vox.name
 		vox.age = rand(12,20)
 		vox.dna.mutantrace = "vox"
 		vox.set_species("Vox")
@@ -141,10 +134,8 @@ var/global/vox_kills = 0 //Used to check the Inviolate.
 
 /datum/game_mode/heist/proc/forge_vox_objectives()
 
-
-	//Commented out for testing.
-	/* var/i = 1
-	var/max_objectives = pick(2,2,2,3,3)
+	var/i = 1
+	var/max_objectives = pick(2,2,2,2,3,3,3,4)
 	var/list/objs = list()
 	while(i<= max_objectives)
 		var/list/goals = list("kidnap","loot","salvage")
@@ -165,24 +156,16 @@ var/global/vox_kills = 0 //Used to check the Inviolate.
 
 	//-All- vox raids have these two objectives. Failing them loses the game.
 	objs += new /datum/objective/heist/inviolate_crew
-	objs += new /datum/objective/heist/inviolate_death */
+	objs += new /datum/objective/heist/inviolate_death
 
-	raid_objectives += new /datum/objective/heist/kidnap
-	raid_objectives += new /datum/objective/heist/loot
-	raid_objectives += new /datum/objective/heist/salvage
-	raid_objectives += new /datum/objective/heist/inviolate_crew
-	raid_objectives += new /datum/objective/heist/inviolate_death
-
-	for(var/datum/objective/heist/O in raid_objectives)
-		O.choose_target()
-
-	return raid_objectives
+	return objs
 
 /datum/game_mode/heist/proc/greet_vox(var/datum/mind/raider)
 	raider.current << "\blue <B>You are a Vox Raider, fresh from the Shoal!</b>"
 	raider.current << "\blue The Vox are a race of cunning, sharp-eyed nomadic raiders and traders endemic to Tau Ceti and much of the unexplored galaxy. You and the crew have come to the Exodus for plunder, trade or both."
 	raider.current << "\blue Vox are cowardly and will flee from larger groups, but corner one or find them en masse and they are vicious."
 	raider.current << "\blue Use :V to voxtalk, :H to talk on your encrypted channel, and don't forget to turn on your nitrogen internals!"
+	raider.current << "\red IF YOU HAVE NOT PLAYED A VOX BEFORE, REVIEW THIS THREAD: http://baystation12.net/forums/viewtopic.php?f=6&t=8657."
 	var/obj_count = 1
 	for(var/datum/objective/objective in raider.objectives)
 		raider.current << "<B>Objective #[obj_count]</B>: [objective.explanation_text]"
@@ -255,6 +238,34 @@ var/global/vox_kills = 0 //Used to check the Inviolate.
 		count++
 
 	..()
+
+datum/game_mode/proc/auto_declare_completion_heist()
+	if(raiders.len)
+		var/check_return = 0
+		if(ticker && istype(ticker.mode,/datum/game_mode/heist))
+			check_return = 1
+		var/text = "<FONT size = 2><B>The vox raiders were:</B></FONT>"
+
+		for(var/datum/mind/vox in raiders)
+			text += "<br>[vox.key] was [vox.name] ("
+			if(check_return)
+				var/obj/stack = raiders[vox]
+				if(get_area(stack) != locate(/area/shuttle/vox/station))
+					text += "left behind)"
+					continue
+			if(vox.current)
+				if(vox.current.stat == DEAD)
+					text += "died"
+				else
+					text += "survived"
+				if(vox.current.real_name != vox.name)
+					text += " as [vox.current.real_name]"
+			else
+				text += "body destroyed"
+			text += ")"
+
+		world << text
+	return 1
 
 /datum/game_mode/heist/check_finished()
 	if (!(is_raider_crew_alive()) || (vox_shuttle_location && (vox_shuttle_location == "start")))

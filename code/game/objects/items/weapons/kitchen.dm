@@ -1,7 +1,7 @@
 /* Kitchen tools
  * Contains:
  *		Utensils
- *		Spoons (Plates, bowl)
+ *		Spoons
  *		Forks
  *		Knives
  *		Kitchen knives
@@ -39,31 +39,12 @@
 	desc = "SPOON!"
 	icon_state = "spoon"
 	attack_verb = list("attacked", "poked")
-	m_amt = 20
 
 /obj/item/weapon/kitchen/utensil/pspoon
 	name = "plastic spoon"
 	desc = "Super dull action!"
 	icon_state = "pspoon"
 	attack_verb = list("attacked", "poked")
-
-/obj/item/weapon/kitchen/utensil/bowl
-	name = "bowl"
-	desc = "Generic kitchen stuff."
-	icon_state = "bowl"
-	g_amt = 20
-
-/obj/item/weapon/kitchen/utensil/plate
-	name = "plate"
-	desc = "You may want to put this underneath your food."
-	icon_state = "bigplate"
-	g_amt = 20
-
-/obj/item/weapon/kitchen/utensil/plate/New()
-	if (prob(50))
-		icon_state = "bigplate"
-	else
-		icon_state = "smallplate"
 
 /*
  * Forks
@@ -72,7 +53,6 @@
 	name = "fork"
 	desc = "Pointy."
 	icon_state = "fork"
-	m_amt = 30
 
 /obj/item/weapon/kitchen/utensil/fork/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
 	if(!istype(M))
@@ -199,7 +179,7 @@
  * Bucher's cleaver
  */
 /obj/item/weapon/butch
-	name = "butcher's Cleaver"
+	name = "butcher's cleaver"
 	icon = 'icons/obj/kitchen.dmi'
 	icon_state = "butch"
 	desc = "A huge thing used for chopping and chopping up meat. This includes clowns and clown-by-products."

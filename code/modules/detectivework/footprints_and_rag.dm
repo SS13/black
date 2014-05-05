@@ -4,6 +4,7 @@
 	var/track_blood = 0
 	var/list/feet_blood_DNA
 	var/track_blood_type
+	var/feet_blood_color
 
 /obj/item/clothing/gloves
 	var/transfer_blood = 0
@@ -35,13 +36,13 @@
 	else
 		..()
 
-/obj/item/weapon/reagent_containers/glass/rag/afterattack(atom/A as obj|turf|area, mob/user as mob)
+/obj/item/weapon/reagent_containers/glass/rag/afterattack(atom/A as obj|turf|area, mob/user as mob, proximity)
+	if(!proximity) return
 	if(istype(A) && src in user)
 		user.visible_message("[user] starts to wipe down [A] with [src]!")
 		if(do_after(user,30))
 			user.visible_message("[user] finishes wiping off the [A]!")
 			A.clean_blood()
-			del(A.fingerprints)
 	return
 
 /obj/item/weapon/reagent_containers/glass/rag/examine()

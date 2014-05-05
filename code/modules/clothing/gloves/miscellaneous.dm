@@ -1,14 +1,3 @@
-/obj/item/clothing/gloves/space_ninja
-	desc = "These nano-enhanced gloves insulate from electricity and provide fire resistance."
-	name = "ninja gloves"
-	icon_state = "s-ninja"
-	item_state = "s-ninja"
-	siemens_coefficient = 0.2
-	var/draining = 0
-	var/candrain = 0
-	var/mindrain = 200
-	var/maxdrain = 400
-
 /obj/item/clothing/gloves/captain
 	desc = "Regal blue gloves, with a nice gold trim. Swanky."
 	name = "captain's gloves"
@@ -64,15 +53,6 @@
 	cmo
 		item_color = "medical"		//Exists for washing machines. Is not different from latex gloves in any way.
 
-/obj/item/clothing/gloves/nylon
-	name = "nylon gloves"
-	desc = "A pair of elbow-long gloves made of silky nylon. Probably a part of some costume."
-	icon_state = "nylgloves"
-	item_state = "nylgloves"
-	siemens_coefficient = 0.30
-	permeability_coefficient = 0.01
-	item_color="white"
-
 /obj/item/clothing/gloves/botanic_leather
 	desc = "These leather gloves protect against thorns, barbs, prickles, spikes and other harmful objects of floral origin."
 	name = "botanist's leather gloves"
@@ -80,8 +60,3 @@
 	item_state = "ggloves"
 	permeability_coefficient = 0.9
 	siemens_coefficient = 0.9
-
-/obj/item/clothing/gloves/fingerless_gloves
-	name = "fingerless gloves"
-	icon_state = "fingerless_black"
-	item_state = "fingerless_black"

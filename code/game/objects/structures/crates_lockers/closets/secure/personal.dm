@@ -1,5 +1,5 @@
 /obj/structure/closet/secure_closet/personal
-	desc = "It's a secure locker for personell. The first card swiped gains control."
+	desc = "It's a secure locker for personnel. The first card swiped gains control."
 	name = "personal closet"
 	req_access = list(access_all_personal_lockers)
 	var/registered_name = null
@@ -26,23 +26,7 @@
 		new /obj/item/clothing/shoes/white( src )
 	return
 
-/obj/structure/closet/secure_closet/personal/patient/genetics
-	name = "genetics patient closet"
-	icon_state = "genepatient1"
-	icon_closed = "genepatient"
-	icon_locked = "genepatient1"
-	icon_opened = "genepatientopen"
-	icon_broken = "genepatientbroken"
-	icon_off = "genepatientoff"
 
-/obj/structure/closet/secure_closet/personal/patient/virology
-	name = "virology patient closet"
-	icon_state = "viropatient1"
-	icon_closed = "viropatient"
-	icon_locked = "viropatient1"
-	icon_opened = "viropatientopen"
-	icon_broken = "viropatientbroken"
-	icon_off = "viropatientoff"
 
 /obj/structure/closet/secure_closet/personal/cabinet
 	icon_state = "cabinetdetective_locked"
@@ -108,6 +92,59 @@
 			playsound(src.loc, "sparks", 50, 1)
 			for(var/mob/O in viewers(user, 3))
 				O.show_message("\blue The locker has been sliced open by [user] with an energy blade!", 1, "\red You hear metal being sliced and sparks flying.", 2)
+
+	else if(istype(W, /obj/item/device/multitool) && !src.broken)
+		var/obj/item/device/multitool/multi = W
+		if(multi.is_used)
+			user << "\red This multitool is already in use!"
+			return
+		multi.is_used = 1
+		user << "\red Resetting circuitry(0/6)..."
+		playsound(user, 'sound/machines/lockreset.ogg', 50, 1)
+		var/obj/structure/closet/secure_closet/crat = src
+		src = null
+		if(do_mob(user, crat, 200))
+			user << "\red Resetting circuitry(1/6)..."
+			for(var/mob/O in viewers(world.view, user))
+				if(O != user)
+					O.show_message(text("\red <B>[] picks in wires of the [] with a multitool.</B>", user, crat), 1)
+			if(do_mob(user, crat, 200))
+				user << "\red Resetting circuitry(2/6)..."
+				for(var/mob/O in viewers(world.view, user))
+					if(O != user)
+						O.show_message(text("\red <B>[] picks in wires of the [] with a multitool.</B>", user, crat), 1)
+				if(do_mob(user, crat, 200))
+					user << "\red Resetting circuitry(3/6)..."
+					for(var/mob/O in viewers(world.view, user))
+						if(O != user)
+							O.show_message(text("\red <B>[] picks in wires of the [] with a multitool.</B>", user, crat), 1)
+					if(do_mob(user, crat, 200))
+						user << "\red Resetting circuitry(4/6)..."
+						for(var/mob/O in viewers(world.view, user))
+							if(O != user)
+								O.show_message(text("\red <B>[] picks in wires of the [] with a multitool.</B>", user, crat), 1)
+						if(do_mob(user, crat, 200))
+							user << "\red Resetting circuitry(5/6)..."
+							for(var/mob/O in viewers(world.view, user))
+								if(O != user)
+									O.show_message(text("\red <B>[] picks in wires of the [] with a multitool.</B>", user, crat), 1)
+							if(do_mob(user, crat, 200))
+								crat.locked = !crat.locked
+								if(crat.locked)
+									crat.icon_state = crat.icon_locked
+									user << "\blue You enable the locking modules."
+									for(var/mob/O in viewers(world.view, user))
+										if(O != user)
+											O.show_message(text("\red <B>[] locks [] with a multitool.</B>", user, crat), 1)
+								else
+									crat.icon_state = crat.icon_closed
+									user << "\blue You disable the locking modules."
+									for(var/mob/O in viewers(world.view, user))
+										if(O != user)
+											O.show_message(text("\red <B>[] unlocks [] with a multitool.</B>", user, crat), 1)
+		multi.is_used = 0
+		return
+
 	else
 		user << "\red Access Denied"
 	return

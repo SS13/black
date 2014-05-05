@@ -58,12 +58,6 @@
 	idcheck = 0
 	auto_patrol = 1
 
-/obj/machinery/bot/secbot/gold
-	name = "Securitron"
-	desc = "A little security robot. This bot has a plating of solid gold."
-	icon = 'icons/obj/aibots.dmi'
-	icon_state = "goldsecbot0"
-
 /obj/item/weapon/secbot_assembly
 	name = "helmet/signaler assembly"
 	desc = "Some sort of bizarre assembly."
@@ -225,7 +219,7 @@ Auto Patrol: []"},
 				walk_to(src,0)
 
 			if(target)		// make sure target exists
-				if(get_dist(src, src.target) <= 1)		// if right next to perp
+				if(get_dist(src, src.target) <= 1 && isturf(src.target.loc))		// if right next to perp
 					if(istype(src.target,/mob/living/carbon))
 						playsound(src.loc, 'sound/weapons/Egloves.ogg', 50, 1, -1)
 						src.icon_state = "secbot-c"
@@ -732,7 +726,7 @@ Auto Patrol: []"},
 	s.set_up(3, 1, src)
 	s.start()
 
-	new /obj/effect/decal/cleanable/oil(src.loc)
+	new /obj/effect/decal/cleanable/blood/oil(src.loc)
 	del(src)
 
 /obj/machinery/bot/secbot/attack_alien(var/mob/living/carbon/alien/user as mob)
@@ -804,5 +798,3 @@ Auto Patrol: []"},
 		if(!in_range(src, usr) && src.loc != usr)
 			return
 		src.created_name = t
-
-

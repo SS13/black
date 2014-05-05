@@ -16,12 +16,9 @@
 							/obj/item/toy/blink								= 2,
 							/obj/item/clothing/under/syndicate/tacticool	= 2,
 							/obj/item/toy/sword								= 2,
-							/obj/item/toy/AI								= 2,
 							/obj/item/toy/gun								= 2,
 							/obj/item/toy/crossbow							= 2,
 							/obj/item/clothing/suit/syndicatefake			= 2,
-							/obj/item/clothing/suit/nerdshirt				= 2,
-							/obj/item/clothing/suit/ianshirt				= 2,
 							/obj/item/weapon/storage/fancy/crayons			= 2,
 							/obj/item/toy/spinningtoy						= 2,
 							/obj/item/toy/prize/ripley						= 1,
@@ -33,17 +30,8 @@
 							/obj/item/toy/prize/marauder					= 1,
 							/obj/item/toy/prize/seraph						= 1,
 							/obj/item/toy/prize/mauler						= 1,
-							/obj/item/weapon/reagent_containers/food/drinks/cup/nt	= 1,
-							/obj/item/weapon/reagent_containers/food/drinks/cup/pirate	= 1,
-							/obj/item/weapon/reagent_containers/food/snacks/singulolollipop	= 1,
 							/obj/item/toy/prize/odysseus					= 1,
-							/obj/item/clothing/tie/toothnecklace			= 1,
-							/obj/item/toy/prize/phazon						= 1,
-							/obj/item/clothing/tie/medal/toy				= 1,
-							/obj/item/toy/cards								= 1,
-							/obj/item/toy/c4								= 1,
-							/obj/item/weapon/storage/backpack/toy			= 1,
-							/obj/item/toy/nuke								= 1
+							/obj/item/toy/prize/phazon						= 1
 							)
 
 /obj/machinery/computer/arcade
@@ -55,10 +43,10 @@
 	var/name_part1
 	var/name_part2
 
-	name_action = pick("Defeat ", "Annihilate ", "Save ", "Strike ", "Stop ", "Destroy ", "Robust ", "Romance ", "Pwn ", "Own ", "Ban", "Grief", "Desintegrate")
+	name_action = pick("Defeat ", "Annihilate ", "Save ", "Strike ", "Stop ", "Destroy ", "Robust ", "Romance ", "Pwn ", "Own ")
 
-	name_part1 = pick("the Automatic ", "Farmer ", "Lord ", "Professor ", "the Cuban ", "the Evil ", "the Dread King ", "the Space ", "Lord ", "the Great ", "Duke ", "General ", "Malfunctioning", "Grieffing")
-	name_part2 = pick("Melonoid", "Murdertron", "Sorcerer", "Ruin", "Jeff", "Ectoplasm", "Crushulon", "Uhangoid", "Vhakoid", "Peteoid", "slime", "Griefer", "ERPer", "Lizard Man", "Unicorn", "Assistant", "Malf")
+	name_part1 = pick("the Automatic ", "Farmer ", "Lord ", "Professor ", "the Cuban ", "the Evil ", "the Dread King ", "the Space ", "Lord ", "the Great ", "Duke ", "General ")
+	name_part2 = pick("Melonoid", "Murdertron", "Sorcerer", "Ruin", "Jeff", "Ectoplasm", "Crushulon", "Uhangoid", "Vhakoid", "Peteoid", "slime", "Griefer", "ERPer", "Lizard Man", "Unicorn")
 
 	src.enemy_name = replacetext((name_part1 + name_part2), "the ", "")
 	src.name = (name_action + name_part1 + name_part2)

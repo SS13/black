@@ -35,10 +35,6 @@
 	name = "Isolation Cell"
 	icon_state = "iso3"
 
-/area/research_outpost/living
-	name = "Living Area"
-	icon_state = "livingarea"
-
 /area/research_outpost/harvesting
 	name = "Exotic Particles Collection"
 	icon_state = "anolab"

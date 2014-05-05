@@ -126,8 +126,10 @@
 	desc = "The height of fashion, and they're pre-polished!"
 	icon_state = "laceups"
 
-/obj/item/clothing/shoes/roman
-	name = "roman sandals"
-	desc = "Sandals with buckled leather straps on it."
-	icon_state = "roman"
-	item_state = "roman"
+/obj/item/clothing/shoes/swimmingfins
+	desc = "Help you swim good."
+	name = "swimming fins"
+	icon_state = "flipperfeet"
+	flags = NOSLIP
+	slowdown = SHOES_SLOWDOWN+1
+	species_restricted = null

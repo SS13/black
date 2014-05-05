@@ -25,6 +25,7 @@
 		/obj/structure/sink,
 		/obj/item/weapon/storage,
 		/obj/machinery/atmospherics/unary/cryo_cell,
+		/obj/machinery/dna_scannernew,
 		/obj/item/weapon/grenade/chem_grenade,
 		/obj/machinery/bot/medbot,
 		/obj/machinery/computer/pandemic,
@@ -36,8 +37,7 @@
 		/mob/living/simple_animal/cow,
 		/mob/living/simple_animal/hostile/retaliate/goat,
 		/obj/machinery/computer/centrifuge,
-		/obj/machinery/smartfridge/chemicals,
-		/obj/item/weapon/storage/pill_bottle	)
+		/obj/machinery/sleeper	)
 
 	New()
 		..()
@@ -49,15 +49,7 @@
 		if (!(usr in view(2)) && usr!=src.loc) return
 		usr << "\blue It contains:"
 		if(reagents && reagents.reagent_list.len)
-			if (ishuman(usr))
-				var/mob/living/carbon/human/H = usr
-				if(H.glasses && istype(H.glasses, /obj/item/clothing/glasses/science))
-					for(var/datum/reagent/R in reagents.reagent_list)
-						usr << "\blue [R.volume] units of [R.name]"
-				else
-					usr << "\blue [src.reagents.total_volume] units of something liquid."
-			else
-				usr << "\blue [src.reagents.total_volume] units of something liquid"
+			usr << "\blue [src.reagents.total_volume] units of liquid."
 		else
 			usr << "\blue Nothing."
 		if (!is_open_container())
@@ -74,7 +66,8 @@
 		update_icon()
 
 	afterattack(obj/target, mob/user , flag)
-		if (!is_open_container())
+
+		if (!is_open_container() || !flag)
 			return
 
 		for(var/type in src.can_be_placed_into)
@@ -130,7 +123,7 @@
 		else if(istype(target, /obj/machinery/bunsen_burner))
 			return
 
-		else if(istype(target, /obj/machinery/anomaly))
+		else if(istype(target, /obj/machinery/radiocarbon_spectrometer))
 			return
 
 		else if(reagents.total_volume)
@@ -211,6 +204,26 @@
 	amount_per_transfer_from_this = 10
 	possible_transfer_amounts = list(5,10,15,25,30,50,100)
 	flags = FPRINT | TABLEPASS | OPENCONTAINER
+
+/obj/item/weapon/reagent_containers/glass/beaker/noreact
+	name = "cryostasis beaker"
+	desc = "A cryostasis beaker that allows for chemical storage without reactions. Can hold up to 50 units."
+	icon_state = "beakernoreact"
+	g_amt = 500
+	volume = 50
+	amount_per_transfer_from_this = 10
+	flags = FPRINT | TABLEPASS | OPENCONTAINER | NOREACT
+
+/obj/item/weapon/reagent_containers/glass/beaker/bluespace
+	name = "bluespace beaker"
+	desc = "A bluespace beaker, powered by experimental bluespace technology and Element Cuban combined with the Compound Pete. Can hold up to 300 units."
+	icon_state = "beakerbluespace"
+	g_amt = 5000
+	volume = 300
+	amount_per_transfer_from_this = 10
+	possible_transfer_amounts = list(5,10,15,25,30,50,100,300)
+	flags = FPRINT | TABLEPASS | OPENCONTAINER
+
 
 /obj/item/weapon/reagent_containers/glass/beaker/vial
 	name = "vial"

@@ -29,7 +29,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_check_contents,	/*displays the contents of an instance*/
 	/datum/admins/proc/access_news_network,	/*allows access of newscasters*/
 	/client/proc/giveruntimelog,		/*allows us to give access to runtime logs to somebody*/
-	/client/proc/getruntimelog,			/*allows us to access runtime logs to somebody*/
 	/client/proc/getserverlog,			/*allows us to fetch server logs (diary) for other days*/
 	/client/proc/jumptocoord,			/*we ghost and jump to a coordinate*/
 	/client/proc/Getmob,				/*teleports a mob to our location*/
@@ -66,18 +65,21 @@ var/list/admin_verbs_admin = list(
 	/client/proc/cmd_admin_rejuvenate,
 	/client/proc/toggleattacklogs,
 	/client/proc/toggledebuglogs,
+	/client/proc/toggleghostwriters,
 	/datum/admins/proc/show_skills,
 	/client/proc/check_customitem_activity,
 	/client/proc/man_up,
 	/client/proc/global_man_up,
 	/client/proc/response_team, // Response Teams admin verb
-	/client/proc/delbook
+	/client/proc/toggle_antagHUD_use,
+	/client/proc/toggle_antagHUD_restrictions,
+	/client/proc/allow_character_respawn    /* Allows a ghost to respawn */
 )
 var/list/admin_verbs_ban = list(
 	/client/proc/unban_panel,
 	/client/proc/jobbans,
 	/client/proc/unjobban_panel,
-	/client/proc/late_ban,
+	// /client/proc/late_ban,
 	// /client/proc/DB_ban_panel
 	)
 var/list/admin_verbs_sounds = list(
@@ -89,6 +91,7 @@ var/list/admin_verbs_fun = list(
 	/client/proc/cmd_admin_dress,
 	/client/proc/cmd_admin_gib_self,
 	/client/proc/drop_bomb,
+	/client/proc/everyone_random,
 	/client/proc/cinematic,
 	/client/proc/one_click_antag,
 	/datum/admins/proc/toggle_aliens,
@@ -125,12 +128,13 @@ var/list/admin_verbs_server = list(
 	/datum/admins/proc/toggle_space_ninja,
 	/client/proc/toggle_random_events,
 	/client/proc/check_customitem_activity,
-	/client/proc/delbook
 	)
 var/list/admin_verbs_debug = list(
+	/client/proc/getruntimelog,                     /*allows us to access runtime logs to somebody*/
 	/client/proc/cmd_admin_list_open_jobs,
 	/client/proc/Debug2,
 	/client/proc/kill_air,
+	/client/proc/ZASSettings,
 	/client/proc/cmd_debug_make_powernets,
 	/client/proc/kill_airgroup,
 	/client/proc/debug_controller,
@@ -239,7 +243,8 @@ var/list/admin_verbs_mod = list(
 	/datum/admins/proc/show_player_info,
 	/client/proc/player_panel_new,
 	/datum/admins/proc/show_skills,
-	/client/proc/dsay
+	/client/proc/dsay,
+	/client/proc/cmd_admin_subtle_message 	/*send an message to somebody as a 'voice in their head'*/
 )
 /client/proc/add_admin_verbs()
 	if(holder)
@@ -257,13 +262,11 @@ var/list/admin_verbs_mod = list(
 		if(holder.rights & R_SOUNDS)		verbs += admin_verbs_sounds
 		if(holder.rights & R_SPAWN)			verbs += admin_verbs_spawn
 		if(holder.rights & R_MOD)			verbs += admin_verbs_mod
-		if(holder.rights & R_EVENTS)		verbs += admin_verbs_events
 
 /client/proc/remove_admin_verbs()
 	verbs.Remove(
 		admin_verbs_default,
 		/client/proc/togglebuildmodeself,
-		admin_verbs_events,
 		admin_verbs_admin,
 		admin_verbs_ban,
 		admin_verbs_fun,
@@ -295,9 +298,6 @@ var/list/admin_verbs_mod = list(
 		/client/proc/splash,
 		/client/proc/cmd_admin_areatest,
 		/client/proc/late_ban
-		)
-var/list/admin_verbs_events = list(
-		/client/proc/time_to_respawn
 		)
 
 /client/proc/late_ban()
@@ -346,36 +346,12 @@ var/list/admin_verbs_events = list(
 		if("Cancel")
 			return
 
-/client/proc/time_to_respawn()
-	set category = "Server"
-	set name = "Edit time to respawn"
-
-	if(!holder) return
-	if(!check_rights(R_EVENTS))	return
-
-	var/temp = 0
-	switch(alert("Which type of respawn we going to edit?","Edit time to respawn","Human","Mouse","Concel"))
-		if ("Human")
-			temp = input(usr,"Set time (in minutes)","Time to respawn",30) as num|null
-			if (!(temp < 0))
-				timetorespawn = temp
-				log_admin("[key_name(usr)] edit humans respawn time to [timetorespawn]")
-				message_admins("[key_name(usr)] edit humans respawn time to [timetorespawn]", 1)
-		if ("Mouse")
-			temp = input(usr,"Set time (in minutes)?","Time to respawn",30) as num|null
-			if (!(temp < 0))
-				mouse_respawn_time = temp
-				log_admin("[key_name(usr)] edit mice respawn time to [mouse_respawn_time]")
-				message_admins("[key_name(usr)] edit mice respawn time to [mouse_respawn_time]", 1)
-		if ("Concel")
-			return
-
 /client/proc/shuttle_availability()
 	set category = "Events"
 	set name = "Edit shuttle availability"
 
 	if(!holder) return
-	if(!check_rights(R_EVENTS))	return
+	if(!check_rights(R_SERVER))	return
 
 
 /client/proc/hide_most_verbs()//Allows you to keep some functionality while hiding some verbs
@@ -443,14 +419,11 @@ var/list/admin_verbs_events = list(
 		if(mob.invisibility == INVISIBILITY_OBSERVER)
 			mob.invisibility = initial(mob.invisibility)
 			mob << "\red <b>Invisimin off. Invisibility reset.</b>"
-			mob.icon_state = "ghost"
-			mob.icon = 'icons/mob/human.dmi'
-			mob.update_icons()
+			mob.alpha = max(mob.alpha + 100, 255)
 		else
 			mob.invisibility = INVISIBILITY_OBSERVER
 			mob << "\blue <b>Invisimin on. You are now as invisible as a ghost.</b>"
-			mob.icon_state = "ghost"
-			mob.icon = 'icons/mob/mob.dmi'
+			mob.alpha = max(mob.alpha - 100, 0)
 
 
 /client/proc/player_panel()
@@ -538,7 +511,7 @@ var/list/admin_verbs_events = list(
 	feedback_add_details("admin_verb","SM") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
 #define MAX_WARNS 3
-#define AUTOBANTIME 25
+#define AUTOBANTIME 30
 
 /client/proc/warn(warned_ckey)
 	if(!check_rights(R_MOD))	return
@@ -674,15 +647,6 @@ var/list/admin_verbs_events = list(
 	log_admin("[key_name(usr)] used 'kill air'.")
 	message_admins("\blue [key_name_admin(usr)] used 'kill air'.", 1)
 
-/client/proc/toggle_clickproc() //TODO ERRORAGE (This is a temporary verb here while I test the new clicking proc)
-	set name = "Toggle NewClickProc"
-	set category = "Debug"
-
-	if(!holder) return
-	using_new_click_proc = !using_new_click_proc
-	world << "Testing of new click proc [using_new_click_proc ? "enabled" : "disabled"]"
-	feedback_add_details("admin_verb","TNCP") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
-
 /client/proc/deadmin_self()
 	set name = "De-admin self"
 	set category = "Admin"
@@ -813,6 +777,20 @@ var/list/admin_verbs_events = list(
 	else
 		usr << "You now won't get attack log messages"
 
+
+/client/proc/toggleghostwriters()
+	set name = "Toggle ghost writers"
+	set category = "Server"
+	if(!holder)	return
+	if(config)
+		if(config.cult_ghostwriter)
+			config.cult_ghostwriter = 0
+			src << "<b>Disallowed ghost writers.</b>"
+			message_admins("Admin [key_name_admin(usr)] has disabled ghost writers.", 1)
+		else
+			config.cult_ghostwriter = 1
+			src << "<b>Enabled ghost writers.</b>"
+			message_admins("Admin [key_name_admin(usr)] has enabled ghost writers.", 1)
 
 /client/proc/toggledebuglogs()
 	set name = "Toggle Debug Log Messages"

@@ -44,7 +44,6 @@
 	throwforce = 5.0
 	throw_speed = 3
 	throw_range = 5
-	health = 20
 	g_amt = 0
 	m_amt = 75
 	attack_verb = list("stabbed")
@@ -83,15 +82,6 @@
 	return
 
 /obj/item/weapon/screwdriver/attack(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
-	health -= force
-	..()
-	if(health <= 0)
-		user.drop_item()
-		user.visible_message("\red [user] just broke [src]r hitting [M]!",\
-			"\red The screwdriver breaks!",\
-			"You hear metal cracking!")
-		new /obj/item/weapon/brokenscrewdriwer(src.loc)
-		del(src)
 	if(!istype(M))	return ..()
 	if(user.zone_sel.selecting != "eyes" && user.zone_sel.selecting != "head")
 		return ..()
@@ -118,19 +108,9 @@
 	attack_verb = list("pinched", "nipped")
 
 /obj/item/weapon/wirecutters/New()
-	if(prob(25))
+	if(prob(50))
 		icon_state = "cutters-y"
 		item_state = "cutters_yellow"
-
-/obj/item/weapon/wirecutters/New()
-	if(prob(25))
-		icon_state = "cutters-g"
-		item_state = "cutters_green"
-
-/obj/item/weapon/wirecutters/New()
-	if(prob(25))
-		icon_state = "cutters-b"
-		item_state = "cutters_blue"
 
 /obj/item/weapon/wirecutters/attack(mob/living/carbon/C as mob, mob/user as mob)
 	if((C.handcuffed) && (istype(C.handcuffed, /obj/item/weapon/handcuffs/cable)))
@@ -263,7 +243,8 @@
 		location.hotspot_expose(700, 5)
 
 
-/obj/item/weapon/weldingtool/afterattack(obj/O as obj, mob/user as mob)
+/obj/item/weapon/weldingtool/afterattack(obj/O as obj, mob/user as mob, proximity)
+	if(!proximity) return
 	if (istype(O, /obj/structure/reagent_dispensers/fueltank) && get_dist(src,O) <= 1 && !src.welding)
 		O.reagents.trans_to(src, max_fuel)
 		user << "\blue Welder refueled"
@@ -373,33 +354,39 @@
 /obj/item/weapon/weldingtool/proc/eyecheck(mob/user as mob)
 	if(!iscarbon(user))	return 1
 	var/safety = user:eyecheck()
-	switch(safety)
-		if(1)
-			usr << "\red Your eyes sting a little."
-			user.eye_stat += rand(1, 2)
-			if(user.eye_stat > 12)
-				user.eye_blurry += rand(3,6)
-		if(0)
-			usr << "\red Your eyes burn."
-			user.eye_stat += rand(2, 4)
-			if(user.eye_stat > 10)
-				user.eye_blurry += rand(4,10)
-		if(-1)
-			usr << "\red Your thermals intensify the welder's glow. Your eyes itch and burn severely."
-			user.eye_blurry += rand(12,20)
-			user.eye_stat += rand(12, 16)
-	if(user.eye_stat > 10 && safety < 2)
-		user << "\red Your eyes are really starting to hurt. This can't be good for you!"
-	if (prob(user.eye_stat - 25 + 1))
-		user << "\red You go blind!"
-		user.sdisabilities |= BLIND
-	else if (prob(user.eye_stat - 15 + 1))
-		user << "\red You go blind!"
-		user.eye_blind = 5
-		user.eye_blurry = 5
-		user.disabilities |= NEARSIGHTED
-		spawn(100)
-			user.disabilities &= ~NEARSIGHTED
+	if(istype(user, /mob/living/carbon/human))
+		var/mob/living/carbon/human/H = user
+		var/datum/organ/internal/eyes/E = H.internal_organs["eyes"]
+		switch(safety)
+			if(1)
+				usr << "\red Your eyes sting a little."
+				E.damage += rand(1, 2)
+				if(E.damage > 12)
+					user.eye_blurry += rand(3,6)
+			if(0)
+				usr << "\red Your eyes burn."
+				E.damage += rand(2, 4)
+				if(E.damage > 10)
+					E.damage += rand(4,10)
+			if(-1)
+				usr << "\red Your thermals intensify the welder's glow. Your eyes itch and burn severely."
+				user.eye_blurry += rand(12,20)
+				E.damage += rand(12, 16)
+		if(safety<2)
+
+			if(E.damage > 10)
+				user << "\red Your eyes are really starting to hurt. This can't be good for you!"
+
+			if (E.damage >= E.min_broken_damage)
+				user << "\red You go blind!"
+				user.sdisabilities |= BLIND
+			else if (E.damage >= E.min_bruised_damage)
+				user << "\red You go blind!"
+				user.eye_blind = 5
+				user.eye_blurry = 5
+				user.disabilities |= NEARSIGHTED
+				spawn(100)
+					user.disabilities &= ~NEARSIGHTED
 	return
 
 
@@ -425,24 +412,15 @@
 	m_amt = 70
 	g_amt = 120
 	origin_tech = "engineering=4;plasma=3"
-	icon_state = "ewelder"
 	var/last_gen = 0
 
-/obj/item/weapon/weldingtool/experimental/process()
-	fuel_gen()
-	..()
+
 
 /obj/item/weapon/weldingtool/experimental/proc/fuel_gen()//Proc to make the experimental welder generate fuel, optimized as fuck -Sieve
-	var/gen_amount = (world.time-last_gen)/25
-	var/free_space = max_fuel - get_fuel()
-	if (free_space <= 0)
-		return
-	if (free_space > gen_amount)
-		reagents.add_reagent("fuel",gen_amount)
-	else
-		reagents.add_reagent("fuel",free_space)
-	last_gen = world.time
-	return
+	var/gen_amount = ((world.time-last_gen)/25)
+	reagents += (gen_amount)
+	if(reagents > max_fuel)
+		reagents = max_fuel
 
 /*
  * Crowbar
@@ -459,7 +437,6 @@
 	throwforce = 7.0
 	item_state = "crowbar"
 	w_class = 2.0
-	health = 35
 	m_amt = 50
 	origin_tech = "engineering=1"
 	attack_verb = list("attacked", "bashed", "battered", "bludgeoned", "whacked")
@@ -468,18 +445,6 @@
 	icon = 'icons/obj/items.dmi'
 	icon_state = "red_crowbar"
 	item_state = "crowbar_red"
-
-
-/obj/item/weapon/crowbar/attack(mob/M as mob, mob/user as mob)
-	health -= force
-	..()
-	if(health <= 0)
-		user.drop_item()
-		user.visible_message("\red [user] just broke a crowbar hitting [M]!",\
-			"\red The crowbrar breaks!",\
-			"You hear loud metallic noise!")
-		new /obj/item/weapon/brokencrowbar(src.loc)
-		del(src)
 
 /obj/item/weapon/weldingtool/attack(mob/M as mob, mob/user as mob)
 	if(hasorgans(M))

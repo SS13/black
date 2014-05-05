@@ -1,5 +1,5 @@
 ./sound/turntable/test
-	file = 'TestLoop1.ogg'
+	file = 'sound/turntable/TestLoop1.ogg'
 	falloff = 2
 	repeat = 1
 
@@ -8,37 +8,37 @@
 /obj/machinery/party/turntable
 	name = "Jukebox"
 	desc = "A jukebox is a partially automated music-playing device, usually a coin-operated machine, that will play a patron's selection from self-contained media."
-	icon = 'lasers2.dmi'
+	icon = 'icons/effects/lasers2.dmi'
 	icon_state = "Jukeboxalt"
 	var/playing = 0
 	anchored = 1
 	density = 1
-	var/list/songs = list ("Jawa Bar"='Cantina.ogg',
-		"Lonely Assistant Blues"='AGrainOfSandInSandwich.ogg',
-		"Chinatown"='chinatown.ogg',
-		"Wade In The Water"='WadeInTheWater.ogg',
-		"Blue Theme"='BlueTheme.ogg',
-		"Beyond The Sea"='BeyondTheSea.ogg',
-		"The Assassination of Jesse James"='TheAssassinationOfJesseJames.ogg',
-		"Everyone Has Their Vices"='EveryoneHasTheirVices.ogg',
-		"The Way You Look Tonight"='TheWayYouLookTonight.ogg',
-		"They Were All Dead"='TheyWereAllDead.ogg',
-		"Onizukas Blues"='OnizukasBlues.ogg',
-		"Ragtime Piano"='TheEntertainer.ogg',
-		"It Had To Be You"='ItHadToBeYou.ogg',
-		"Janitorial Blues"='KyouWaYuuhiYarou.ogg',
-		"Lujon"='Lujon.ogg',
-		"Mute Beat"='MuteBeat.ogg',
-		"Groovy Times"='GroovyTime.ogg',
-		"Under My Skin"='IveGotYouUnderMySkin.ogg',
-		"That`s All"='ThatsAll.ogg',
-		"The Folks On The Hill"='TheFolksWhoLiveOnTheHill.ogg')
+	var/list/songs = list ("Jawa Bar"='sound/turntable/Cantina.ogg',
+		"Lonely Assistant Blues"='sound/turntable/AGrainOfSandInSandwich.ogg',
+		"Chinatown"='sound/turntable/chinatown.ogg',
+		"Wade In The Water"='sound/turntable/WadeInTheWater.ogg',
+		"Blue Theme"='sound/turntable/BlueTheme.ogg',
+		"Beyond The Sea"='sound/turntable/BeyondTheSea.ogg',
+		"The Assassination of Jesse James"='sound/turntable/TheAssassinationOfJesseJames.ogg',
+		"Everyone Has Their Vices"='sound/turntable/EveryoneHasTheirVices.ogg',
+		"The Way You Look Tonight"='sound/turntable/TheWayYouLookTonight.ogg',
+		"They Were All Dead"='sound/turntable/TheyWereAllDead.ogg',
+		"Onizukas Blues"='sound/turntable/OnizukasBlues.ogg',
+		"Ragtime Piano"='sound/turntable/TheEntertainer.ogg',
+		"It Had To Be You"='sound/turntable/ItHadToBeYou.ogg',
+		"Janitorial Blues"='sound/turntable/KyouWaYuuhiYarou.ogg',
+		"Lujon"='sound/turntable/Lujon.ogg',
+		"Mute Beat"='sound/turntable/MuteBeat.ogg',
+		"Groovy Times"='sound/turntable/GroovyTime.ogg',
+		"Under My Skin"='sound/turntable/IveGotYouUnderMySkin.ogg',
+		"That`s All"='sound/turntable/ThatsAll.ogg',
+		"The Folks On The Hill"='sound/turntable/TheFolksWhoLiveOnTheHill.ogg')
 
 
 /obj/machinery/party/mixer
 	name = "mixer"
 	desc = "A mixing board for mixing music"
-	icon = 'lasers2.dmi'
+	icon = 'icons/effects/lasers2.dmi'
 	icon_state = "mixer"
 	density = 0
 	anchored = 1
@@ -70,7 +70,7 @@
 
 	t += "</tr></table></div></body>"
 	user << browse(t, "window=turntable;size=500x636;can_resize=0")
-	onclose(user, "urntable")
+	onclose(user, "turntable")
 	return
 
 /obj/machinery/party/turntable/Topic(href, href_list)
@@ -125,7 +125,7 @@
 /obj/machinery/party/lasermachine
 	name = "laser machine"
 	desc = "A laser machine that shoots lasers."
-	icon = 'lasers2.dmi'
+	icon = 'icons/effects/lasers2.dmi'
 	icon_state = "lasermachine"
 	anchored = 1
 	var/mirrored = 0
@@ -133,7 +133,7 @@
 /obj/effects/laser
 	name = "laser"
 	desc = "A laser..."
-	icon = 'lasers2.dmi'
+	icon = 'icons/effects/lasers2.dmi'
 	icon_state = "laserred1"
 	anchored = 1
 	layer = 4

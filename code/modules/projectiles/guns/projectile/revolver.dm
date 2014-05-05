@@ -26,7 +26,7 @@
 
 		var/mob/M = usr
 		if(!M.mind)	return 0
-		if(!M.job == "Detective")
+		if(!M.mind.assigned_role == "Detective")
 			M << "<span class='notice'>You don't feel cool enough to name this gun, chump.</span>"
 			return 0
 
@@ -35,33 +35,6 @@
 		if(src && input && !M.stat && in_range(M,src))
 			name = input
 			M << "You name the gun [input]. Say hello to your new friend."
-			return 1
-
-	verb/reskin_gun()
-		set name = "Reskin gun"
-		set category = "Object"
-		set desc = "Click to reskin your gun. If you`re the detective."
-
-		var/mob/M = usr
-		if(!M.mind)	return 0
-		if(!M.mind.assigned_role == "Detective")
-			M << "<span class='notice'>You don't feel cool enough to name this gun, chump.</span>"
-			return 0
-		var/list/options = list()
-		options["The Original"] = "detective"
-		options["Leopard Spots"] = "detective_leopard"
-		options["Black Panther"] = "detective_panther"
-		options["Gold Trim"] = "detective_gold"
-		options["Rookie"] = "detective_rookie"
-		options["Callahan"] = "detective_callahan"
-		options["Deckard"] = "detective_deckard"
-		options["General Patton"] = "detective_patton"
-		options["The Peacemaker"] = "detective_peacemaker"
-		var/choice = input(M,"What do you want to skin the gun to?","Reskin Gun") in options
-
-		if(src && choice && !M.stat && in_range(M,src))
-			icon_state = options[choice]
-			M << "Your gun is now skinned as [choice], suits your style well. Say hello to your new friend, detective."
 			return 1
 
 	attackby(var/obj/item/A as obj, mob/user as mob)
@@ -81,7 +54,7 @@
 					caliber = "357"
 					desc = "The barrel and chamber assembly seems to have been modified."
 					user << "<span class='warning'>You reinforce the barrel of [src]! Now it will fire .357 rounds.</span>"
-			else
+			else if (caliber == "357")
 				user << "<span class='notice'>You begin to revert the modifications to [src].</span>"
 				if(loaded.len)
 					afterattack(user, user)	//and again
@@ -97,6 +70,27 @@
 					user << "<span class='warning'>You remove the modifications on [src]! Now it will fire .38 rounds.</span>"
 
 
+/obj/item/weapon/gun/projectile/detective/semiauto
+	desc = "A cheap Martian knock-off of a Colt M1911. Uses less-than-lethal .45 rounds."
+	name = "\improper Colt M1911"
+	icon_state = "colt"
+	max_shells = 7
+	caliber = ".45"
+	ammo_type = "/obj/item/ammo_casing/c45r"
+	load_method = 2
+
+/obj/item/weapon/gun/projectile/detective/semiauto/New()
+	..()
+	empty_mag = new /obj/item/ammo_magazine/c45r/empty(src)
+	return
+
+/obj/item/weapon/gun/projectile/detective/semiauto/afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, flag)
+	..()
+	if(!loaded.len && empty_mag)
+		empty_mag.loc = get_turf(src.loc)
+		empty_mag = null
+		user << "<span class='notice'>The Magazine falls out and clatters on the floor!</span>"
+	return
 
 
 /obj/item/weapon/gun/projectile/mateba

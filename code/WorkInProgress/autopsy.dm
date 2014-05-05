@@ -10,7 +10,6 @@
 	flags = FPRINT | TABLEPASS | CONDUCT
 	w_class = 1.0
 	origin_tech = "materials=1;biotech=1"
-	var/busy = 0
 	var/list/datum/autopsy_data_scanner/wdata = list()
 	var/list/datum/autopsy_data_scanner/chemtraces = list()
 	var/target_name = null
@@ -83,11 +82,6 @@
 	if(usr.stat || !(istype(usr,/mob/living/carbon/human)))
 		usr << "No."
 		return
-
-	if (busy)
-		usr << "Wait a minute. Printing in progress..."
-
-	busy = 1
 
 	var/scan_data = ""
 
@@ -179,9 +173,6 @@
 	if(istype(usr,/mob/living/carbon/human))
 		usr:update_inv_l_hand()
 		usr:update_inv_r_hand()
-
-	sleep (50)
-	busy = 0
 
 /obj/item/weapon/autopsy_scanner/attack(mob/living/carbon/human/M as mob, mob/living/carbon/user as mob)
 	if(!istype(M))

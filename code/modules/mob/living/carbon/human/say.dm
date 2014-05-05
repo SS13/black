@@ -1,13 +1,24 @@
-/mob/living/carbon/human/say(var/message, var/meme_say = 0)
-
-	if(silent && !meme_say)
-		return
+/mob/living/carbon/human/say(var/message)
 
 	if(wear_mask)
-		if(istype(wear_mask, /obj/item/clothing/mask/luchador))
+		if(istype(wear_mask, /obj/item/clothing/mask/gas/voice/space_ninja) && wear_mask:voice == "Unknown")
 			if(copytext(message, 1, 2) != "*")
-				if(prob(25))
-					message += " OLE!"
+				var/list/temp_message = text2list(message, " ")
+				var/list/pick_list = list()
+				for(var/i = 1, i <= temp_message.len, i++)
+					pick_list += i
+				for(var/i=1, i <= abs(temp_message.len/3), i++)
+					var/H = pick(pick_list)
+					if(findtext(temp_message[H], "*") || findtext(temp_message[H], ";") || findtext(temp_message[H], ":")) continue
+					temp_message[H] = ninjaspeak(temp_message[H])
+					pick_list -= H
+				message = list2text(temp_message, " ")
+				message = replacetext(message, "o", "¤")
+				message = replacetext(message, "p", "þ")
+				message = replacetext(message, "l", "£")
+				message = replacetext(message, "s", "§")
+				message = replacetext(message, "u", "µ")
+				message = replacetext(message, "b", "ß")
 
 		else if(istype(wear_mask, /obj/item/clothing/mask/horsehead))
 			var/obj/item/clothing/mask/horsehead/hoers = wear_mask
@@ -60,4 +71,3 @@
 
 /mob/living/carbon/human/proc/GetSpecialVoice()
 	return special_voice
-

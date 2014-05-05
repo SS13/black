@@ -17,10 +17,10 @@
 	anchored = 1
 
 /obj/effect/decal/cleanable/ash/attack_hand(mob/user as mob)
-	user << "<span class='notice'>[src] sift through your fingers.</span>"
+	user << "<span class='notice'>[src] sifts through your fingers.</span>"
 	var/turf/simulated/floor/F = get_turf(src)
 	if (istype(F))
-		new /obj/effect/decal/cleanable/dirt(src.loc)
+		F.dirt += 4
 	del(src)
 
 /obj/effect/decal/cleanable/greenglow
@@ -39,6 +39,7 @@
 	layer = 2
 	icon = 'icons/effects/effects.dmi'
 	icon_state = "dirt"
+	mouse_opacity = 0
 
 /obj/effect/decal/cleanable/flour
 	name = "flour"
@@ -98,22 +99,13 @@
 	layer = 2
 	icon = 'icons/effects/blood.dmi'
 	icon_state = "vomit_1"
-	random_icon_states = list("vomit_1", "vomit_2", "vomit_3", "vomit_4", "vomit_5", "vomit_6", "vomit_7", "vomit_8", "vomit_9", "vomit_10", "vomit_11", "vomit_12")
+	random_icon_states = list("vomit_1", "vomit_2", "vomit_3", "vomit_4")
 	var/list/viruses = list()
 
 	Del()
 		for(var/datum/disease/D in viruses)
 			D.cure(0)
 		..()
-
-/obj/effect/decal/cleanable/vomit/Crossed(var/mob/living/carbon/human/H)
-	if(istype(H))
-		if (prob (20))
-			H << "<span class='userdanger'>You slip on the puddle of vomit and fall down!</span>"
-			playsound(src.loc, 'sound/misc/slip.ogg', 50, 1)
-			H.apply_damage(4,BRUTE,(pick("l_leg", "r_leg", "chest", "groin", "head")))
-			H.Weaken(1)
-
 
 /obj/effect/decal/cleanable/tomato_smudge
 	name = "tomato smudge"

@@ -15,9 +15,7 @@
 
 /datum/disease2/effectholder/proc/getrandomeffect(var/badness = 1)
 	var/list/datum/disease2/effect/list = list()
-	var/list/datum/disease2/effect/not_allowed = list(/datum/disease2/effect)
-	if (!aliens_allowed) not_allowed += /datum/disease2/effect/alien
-	for(var/e in (typesof(/datum/disease2/effect) - not_allowed))
+	for(var/e in (typesof(/datum/disease2/effect) - /datum/disease2/effect))
 		var/datum/disease2/effect/f = new e
 		if (f.badness > badness)	//we don't want such strong effects
 			continue
@@ -50,7 +48,7 @@
 	proc/deactivate(var/mob/living/carbon/mob)
 
 ////////////////////////SPECIAL/////////////////////////////////
-/datum/disease2/effect/alien
+/*/datum/disease2/effect/alien
 	name = "Unidentified Foreign Body"
 	stage = 4
 	activate(var/mob/living/carbon/mob,var/multiplier)
@@ -64,7 +62,7 @@
 				new/mob/living/carbon/alien/larva(mob.loc)
 			var/datum/disease2/disease/D = mob:virus2
 			mob:gib()
-			del D
+			del D*/
 
 /datum/disease2/effect/invisible
 	name = "Waiting Syndrome"
@@ -73,36 +71,6 @@
 		return
 
 ////////////////////////STAGE 4/////////////////////////////////
-/datum/disease2/effect/bones
-	name = "Fragile Bones Syndrome"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		if(istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
-			for (var/datum/organ/external/E in H.organs)
-				E.min_broken_damage = max(5, E.min_broken_damage - 30)
-
-	deactivate(var/mob/living/carbon/mob,var/multiplier)
-		if(istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
-			for (var/datum/organ/external/E in H.organs)
-				E.min_broken_damage = initial(E.min_broken_damage)
-
-/datum/disease2/effect/liver
-	name = "Liver Failure"
-	stage = 4
-	activate(var/mob/living/carbon/mob,var/multiplier)
-		if(istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
-			for (var/datum/organ/internal/liver/E in H.organs)
-				E.min_bruised_damage = max(1, E.min_broken_damage - 10)
-
-	deactivate(var/mob/living/carbon/mob,var/multiplier)
-		if(istype(mob, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = mob
-			for (var/datum/organ/internal/liver/E in H.organs)
-				E.min_bruised_damage = initial(E.min_broken_damage)
-
 
 /datum/disease2/effect/gibbingtons
 	name = "Gibbingtons Syndrome"
@@ -166,10 +134,13 @@
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		if(istype(mob, /mob/living/carbon/human))
 			var/mob/living/carbon/human/H = mob
-			var/datum/organ/external/E = pick(H.organs)
+			var/organ = pick(list("r_arm","l_arm","r_leg","r_leg"))
+			var/datum/organ/external/E = H.organs_by_name[organ]
 			if (!(E.status & ORGAN_DEAD))
 				E.status |= ORGAN_DEAD
 				H << "<span class='notice'>You can't feel your [E.display_name] anymore...</span>"
+				for (var/datum/organ/external/C in E.children)
+					C.status |= ORGAN_DEAD
 			H.update_body(1)
 		mob.adjustToxLoss(15*multiplier)
 
@@ -178,6 +149,8 @@
 			var/mob/living/carbon/human/H = mob
 			for (var/datum/organ/external/E in H.organs)
 				E.status &= ~ORGAN_DEAD
+				for (var/datum/organ/external/C in E.children)
+					C.status &= ~ORGAN_DEAD
 			H.update_body(1)
 
 /datum/disease2/effect/immortal
@@ -202,14 +175,20 @@
 
 ////////////////////////STAGE 3/////////////////////////////////
 
-/datum/disease2/effect/tourette
-	name = "Tourette Syndrome"
-	stage = 3
+/datum/disease2/effect/bones
+	name = "Fragile Bones Syndrome"
+	stage = 4
 	activate(var/mob/living/carbon/mob,var/multiplier)
-		mob.dna.check_integrity()
-		var/newdna = setblock(mob.dna.struc_enzymes,TWITCHBLOCK,toggledblock(getblock(mob.dna.struc_enzymes,TWITCHBLOCK,3)),3)
-		mob.dna.struc_enzymes = newdna
-		domutcheck(mob, null)
+		if(istype(mob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = mob
+			for (var/datum/organ/external/E in H.organs)
+				E.min_broken_damage = max(5, E.min_broken_damage - 30)
+
+	deactivate(var/mob/living/carbon/mob,var/multiplier)
+		if(istype(mob, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = mob
+			for (var/datum/organ/external/E in H.organs)
+				E.min_broken_damage = initial(E.min_broken_damage)
 
 /datum/disease2/effect/toxins
 	name = "Hyperacidity"
@@ -230,8 +209,7 @@
 	stage = 3
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		mob.dna.check_integrity()
-		var/newdna = setblock(mob.dna.struc_enzymes,REMOTETALKBLOCK,toggledblock(getblock(mob.dna.struc_enzymes,REMOTETALKBLOCK,3)),3)
-		mob.dna.struc_enzymes = newdna
+		mob.dna.SetSEState(REMOTETALKBLOCK,1)
 		domutcheck(mob, null)
 
 /datum/disease2/effect/mind
@@ -313,11 +291,8 @@
 	stage = 2
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		mob.say("*cough")
-		for(var/mob/living/carbon/M in view(1,mob))
-			if(airborne_can_reach(get_turf(mob), get_turf(M)))
-				for (var/datum/disease2/disease/V in mob.virus2)
-					if(V.spreadtype == "Airborne")
-						infect_virus2(M,V)
+		for(var/mob/living/carbon/M in oview(2,mob))
+			mob.spread_disease_to(M)
 
 /datum/disease2/effect/hungry
 	name = "Appetiser Effect"
@@ -348,8 +323,8 @@
 	stage = 2
 	activate(var/mob/living/carbon/mob,var/multiplier)
 		mob << "<span class='notice'>You feel a rush of energy inside you!</span>"
-		if (mob.reagents.get_reagent_amount("hyperzine") < 30)
-			mob.reagents.add_reagent("hyperzine", 10)
+		if (mob.reagents.get_reagent_amount("hyperzine") < 10)
+			mob.reagents.add_reagent("hyperzine", 4)
 		if (prob(30))
 			mob.jitteriness += 10
 

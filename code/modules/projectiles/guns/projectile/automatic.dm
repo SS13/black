@@ -28,43 +28,6 @@
 	isHandgun()
 		return 1
 
-/obj/item/weapon/gun/projectile/automatic/pp90
-	name = "PP90"
-	desc = "A lightweight folding Russian SMG used in special operations. Uses 9mm rounds."
-	icon_state = "pp90"
-	w_class = 3.0
-	max_shells = 16
-	caliber = "9mm"
-	origin_tech = "combat=5;materials=3;syndicate=6"
-	ammo_type = "/obj/item/ammo_casing/c9mm"
-
-	isHandgun()
-		return 1
-
-	New()
-		..()
-		empty_mag = new /obj/item/ammo_magazine/pp90/empty(src)
-		update_icon()
-		return
-
-	afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, flag)
-		..()
-		if(!loaded.len && empty_mag)
-			empty_mag.loc = get_turf(src.loc)
-			empty_mag = null
-			playsound(user, 'sound/weapons/bulletinchamber.ogg', 40, 1)
-			update_icon()
-		return
-
-
-	update_icon()
-		..()
-		if(empty_mag)
-			icon_state = "pp90-empty"
-		else
-			icon_state = "pp90"
-		return
-
 
 /obj/item/weapon/gun/projectile/automatic/c20r
 	name = "\improper C-20r SMG"
@@ -104,56 +67,6 @@
 		else
 			icon_state = "c20r"
 		return
-
-
-/obj/item/weapon/gun/projectile/automatic/c20r/orange
-	name = "C-20r SMG"
-	desc = "This C-20r has funky orange striped camo. Only the maddest insane nut-crazy cold-blooded maniac who enjoys killing things could paint a gun orange. Uses 12mm rounds."
-	icon_state = "c20rorange"
-	item_state = "c20rorange"
-	w_class = 3.0
-	max_shells = 20
-	caliber = "12mm"
-	origin_tech = "combat=5;materials=2;syndicate=8"
-	ammo_type = "/obj/item/ammo_casing/a12mm"
-	fire_sound = 'sound/weapons/Gunshot_smg.ogg'
-	load_method = 2
-
-
-	New()
-		..()
-		empty_mag = new /obj/item/ammo_magazine/a12mm/empty(src)
-		update_icon()
-		return
-
-
-	afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, flag)
-		..()
-		if(!loaded.len && empty_mag)
-			empty_mag.loc = get_turf(src.loc)
-			empty_mag = null
-			playsound(user, 'sound/weapons/smg_empty_alarm.ogg', 40, 1)
-			update_icon()
-		return
-
-
-	update_icon()
-		..()
-		if(empty_mag)
-			icon_state = "c20rorange-[round(loaded.len,4)]"
-		else
-			icon_state = "c20rorange "
-		return
-
-/obj/item/weapon/gun/projectile/automatic/c05r
-	name = "C-05r SMG"
-	desc = "Though being C20r`s little brother, this little guy packs a punch nonetheless. Uses 12mm rounds. Has a 'Scarborough Arms - Mortificatur quam assistentes, robustiores quam securitas' buttstamp"
-	icon_state = "c05r"
-	item_state = "c05r"
-	max_shells = 12
-
-	isHandgun()
-		return 1
 
 /obj/item/weapon/gun/projectile/automatic/l6_saw
 	name = "\improper L6 SAW"

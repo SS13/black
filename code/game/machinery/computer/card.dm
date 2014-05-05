@@ -152,7 +152,7 @@
 			carddesc += "<input type='hidden' name='src' value='\ref[src]'>"
 			carddesc += "<input type='hidden' name='choice' value='account'>"
 			carddesc += "<b>Stored account number:</b> <input type='text' id='accountfield' name='account' value='[modify.associated_account_number]' style='width:250px; background-color:white;' onchange='markAccountRed()'>"
-			carddesc += "<input type='submit' value='Rename' onclick='markAccountGreen()'>"
+			carddesc += "<input type='submit' value='Modify' onclick='markAccountGreen()'>"
 			carddesc += "</form>"
 
 			carddesc += "<b>Assignment:</b> "
@@ -255,7 +255,7 @@
 			if (authenticated)
 				var/t1 = href_list["assign_target"]
 				if(t1 == "Custom")
-					var/temp_t = copytext(sanitize(input("Enter a custom job assignment.","Assignment")),1,MAX_MESSAGE_LEN)
+					var/temp_t = copytext(sanitize_multi(input("Enter a custom job assignment.","Assignment")),1,MAX_MESSAGE_LEN)
 					//let custom jobs function as an impromptu alt title, mainly for sechuds
 					if(temp_t && modify)
 						modify.assignment = temp_t

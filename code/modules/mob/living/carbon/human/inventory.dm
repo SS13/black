@@ -1,3 +1,21 @@
+/mob/living/carbon/human/verb/quick_equip()
+	set name = "quick-equip"
+	set hidden = 1
+
+	if(ishuman(src))
+		var/mob/living/carbon/human/H = src
+		var/obj/item/I = H.get_active_hand()
+		if(!I)
+			H << "<span class='notice'>You are not holding anything to equip.</span>"
+			return
+		if(H.equip_to_appropriate_slot(I))
+			if(hand)
+				update_inv_l_hand(0)
+			else
+				update_inv_r_hand(0)
+		else
+			H << "\red You are unable to equip that."
+
 /mob/living/carbon/human/proc/equip_in_one_of_slots(obj/item/W, list/slots, del_on_fail = 1)
 	for (var/slot in slots)
 		if (equip_to_slot_if_possible(W, slots[slot], del_on_fail = 0))
@@ -63,20 +81,20 @@
 
 	if (W == wear_suit)
 		if(s_store)
-			u_equip(s_store)
+			drop_from_inventory(s_store)
 		if(W)
 			success = 1
 		wear_suit = null
 		update_inv_wear_suit()
 	else if (W == w_uniform)
 		if (r_store)
-			u_equip(r_store)
+			drop_from_inventory(r_store)
 		if (l_store)
-			u_equip(l_store)
+			drop_from_inventory(l_store)
 		if (wear_id)
-			u_equip(wear_id)
+			drop_from_inventory(wear_id)
 		if (belt)
-			u_equip(belt)
+			drop_from_inventory(belt)
 		w_uniform = null
 		success = 1
 		update_inv_w_uniform()
@@ -371,7 +389,7 @@
 					del(src)
 					return
 			if("internal")
-				if (!(istype(target.wear_mask, /obj/item/clothing/mask) && (istype(target.back, /obj/item/weapon/tank)||istype(target.l_hand, /obj/item/weapon/tank)||istype(target.r_hand, /obj/item/weapon/tank)||istype(target.belt, /obj/item/weapon/tank))) || target.internal)
+				if ((!( (istype(target.wear_mask, /obj/item/clothing/mask) && istype(target.back, /obj/item/weapon/tank) && !( target.internal )) ) && !( target.internal )))
 					del(src)
 
 	var/list/L = list( "syringe", "pill", "drink", "dnainjector", "fuel")
@@ -666,7 +684,7 @@ It can still be worn/put on as normal.
 				if (target.internals)
 					target.internals.icon_state = "internal0"
 			else
-				if (!( istype(target.wear_mask, /obj/item/clothing/mask) || ! (target.wear_mask.can_breath) ))
+				if (!( istype(target.wear_mask, /obj/item/clothing/mask) ))
 					return
 				else
 					if (istype(target.back, /obj/item/weapon/tank))
@@ -675,11 +693,6 @@ It can still be worn/put on as normal.
 						target.internal = target.s_store
 					else if (istype(target.belt, /obj/item/weapon/tank))
 						target.internal = target.belt
-					else if (istype(target.l_hand, /obj/item/weapon/tank))
-						target.internal = target.l_hand
-					else if (istype(target.r_hand, /obj/item/weapon/tank))
-						target.internal = target.r_hand
-
 					if (target.internal)
 						for(var/mob/M in viewers(target, 1))
 							M.show_message("[target] is now running on internals.", 1)

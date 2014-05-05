@@ -8,7 +8,7 @@
 
 
 	bullet_act(var/obj/item/projectile/Proj)
-		if(istype(Proj, /obj/item/projectile/beam/pulse))
+		if(istype(Proj, /obj/item/projectile/beam))
 			health -= Proj.damage
 			..()
 			if(health <= 0)
@@ -200,7 +200,7 @@
 /obj/structure/girder/reinforced
 	icon_state = "reinforced"
 	state = 2
-	health = 400
+	health = 500
 
 /obj/structure/cultgirder
 	icon= 'icons/obj/cult.dmi'
@@ -208,6 +208,7 @@
 	anchored = 1
 	density = 1
 	layer = 2
+	var/health = 250
 
 	attackby(obj/item/W as obj, mob/user as mob)
 		if(istype(W, /obj/item/weapon/wrench))
@@ -234,6 +235,14 @@
 		if(prob(40))
 			del(src)
 
+	bullet_act(var/obj/item/projectile/Proj) //No beam check- How else will you destroy the cult girder with silver bullets?????
+		health -= Proj.damage
+		..()
+		if(health <= 0)
+			new /obj/item/stack/sheet/metal(get_turf(src))
+			del(src)
+
+		return
 
 	ex_act(severity)
 		switch(severity)

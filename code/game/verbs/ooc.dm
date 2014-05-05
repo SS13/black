@@ -14,7 +14,7 @@ var/global/normal_ooc_colour = "#002eb8"
 		src << "Guests may not use OOC."
 		return
 
-	msg = copytext(sanitize(msg), 1, MAX_MESSAGE_LEN)
+	msg = copytext(sanitize_multi(msg), 1, MAX_MESSAGE_LEN)
 	if(!msg)	return
 
 	if(!(prefs.toggles & CHAT_OOC))
@@ -46,6 +46,8 @@ var/global/normal_ooc_colour = "#002eb8"
 		display_colour = "#0099cc"	//light blue
 		if(holder.rights & R_MOD && !(holder.rights & R_ADMIN))
 			display_colour = "#184880"	//dark blue
+		if(holder.rights & R_DEBUG && !(holder.rights & R_ADMIN))
+			display_colour = "#1b521f"	//dark green
 		else if(holder.rights & R_ADMIN)
 			if(config.allow_admin_ooccolor)
 				display_colour = src.prefs.ooccolor
@@ -100,7 +102,7 @@ var/global/normal_ooc_colour = "#002eb8"
 		src << "Guests may not use OOC."
 		return
 
-	msg = copytext(sanitize(msg), 1, MAX_MESSAGE_LEN)
+	msg = copytext(sanitize_multi(msg), 1, MAX_MESSAGE_LEN)
 	if(!msg)	return
 
 	if(!(prefs.toggles & CHAT_LOOC))
@@ -136,11 +138,14 @@ var/global/normal_ooc_colour = "#002eb8"
 			continue //they are handled after that
 
 		if(C.prefs.toggles & CHAT_LOOC)
-			var/display_name = "ghost"
-			if(istype(src.mob,/mob/living/carbon/human) || istype(M,/mob/dead/observer) || src==M)
-				display_name = src.mob.name
+			var/display_name = src.key
+			if(holder)
+				if(holder.fakekey)
+					if(C.holder)
+						display_name = "[holder.fakekey]/([src.key])"
+					else
+						display_name = holder.fakekey
 			C << "<font color='#6699CC'><span class='ooc'><span class='prefix'>LOOC:</span> <EM>[display_name]:</EM> <span class='message'>[msg]</span></span></font>"
-
 	for(var/client/C in admins)
 		if(C.prefs.toggles & CHAT_LOOC)
 			var/prefix = "(R)LOOC"

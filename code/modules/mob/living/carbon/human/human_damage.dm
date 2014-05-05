@@ -32,19 +32,25 @@
 		amount += O.brute_dam
 	return amount
 
+/mob/living/carbon/human/adjustBruteLoss(var/amount)
+	if(species && species.brute_mod)
+		amount = amount*species.brute_mod
+
+	if(amount > 0)
+		take_overall_damage(amount, 0)
+	else
+		heal_overall_damage(-amount, 0)
+
 /mob/living/carbon/human/getFireLoss()
 	var/amount = 0
 	for(var/datum/organ/external/O in organs)
 		amount += O.burn_dam
 	return amount
 
-/mob/living/carbon/human/adjustBruteLoss(var/amount)
-	if(amount > 0)
-		take_overall_damage(amount, 0)
-	else
-		heal_overall_damage(-amount, 0)
-
 /mob/living/carbon/human/adjustFireLoss(var/amount)
+	if(species && species.burn_mod)
+		amount = amount*species.burn_mod
+
 	if(amount > 0)
 		take_overall_damage(0, amount)
 	else
@@ -90,12 +96,6 @@
 			if (O.status & ORGAN_MUTATED)
 				O.unmutate()
 				src << "<span class = 'notice'>Your [O.display_name] is shaped normally again.</span>"
-
-/mob/living/carbon/human/update_canmove()
-	var/old_lying = lying
-	. = ..()
-	if(lying && !old_lying && !resting && !buckled) // fell down
-		playsound(loc, "bodyfall", 50, 1, -1)
 ////////////////////////////////////////////
 
 //Returns a list of damaged organs
@@ -250,20 +250,12 @@ This function restores all organs.
 		if( (damage > (10*W.w_class)) && ( (sharp && !ismob(W.loc)) || prob(damage/W.w_class) ) )
 			organ.implants += W
 			visible_message("<span class='danger'>\The [W] sticks in the wound!</span>")
+			embedded_flag = 1
+			src.verbs += /mob/proc/yank_out_object
 			W.add_blood(src)
 			if(ismob(W.loc))
 				var/mob/living/H = W.loc
 				H.drop_item()
 			W.loc = src
 
-	else if(istype(used_weapon,/obj/item/projectile)) //We don't want to use the actual projectile item, so we spawn some shrapnel.
-		if(damagetype == BRUTE && prob(75))
-			var/obj/item/projectile/P = used_weapon
-			var/obj/item/weapon/shard/shrapnel/S = new()
-			S.name = "[P.name] shrapnel"
-			S.desc = "[S.desc] It looks like it was fired from [P.shot_from]."
-			S.loc = src
-			organ.implants += S
-			visible_message("<span class='danger'>The projectile sticks in the wound!</span>")
-			S.add_blood(src)
 	return 1

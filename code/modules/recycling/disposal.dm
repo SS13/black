@@ -456,7 +456,7 @@
 	CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 		if (istype(mover,/obj/item) && mover.throwing)
 			var/obj/item/I = mover
-			if(istype(I, /obj/item/weapon/dummy) || istype(I, /obj/item/projectile))
+			if(istype(I, /obj/item/projectile))
 				return
 			if(prob(75))
 				I.loc = src
@@ -720,12 +720,13 @@
 			H.active = 0
 			H.loc = src
 			return
-		if(istype(T,/turf/simulated/floor)) //intact floor, pop the tile
+		if(T.intact && istype(T,/turf/simulated/floor)) //intact floor, pop the tile
 			var/turf/simulated/floor/F = T
 			//F.health	= 100
-			F.break_tile()
+			F.burnt	= 1
+			F.intact	= 0
 			F.levelupdate()
-			new /obj/item/stack/tile/plasteel(H)  // add to holder so it will be thrown with other stuff
+			new /obj/item/stack/tile(H)	// add to holder so it will be thrown with other stuff
 			F.icon_state = "Floor[F.burnt ? "1" : ""]"
 
 		if(direction)		// direction is specified
@@ -872,6 +873,12 @@
 				C.ptype = 9
 			if("pipe-j2s")
 				C.ptype = 10
+///// Z-Level stuff
+			if("pipe-u")
+				C.ptype = 11
+			if("pipe-d")
+				C.ptype = 12
+///// Z-Level stuff
 		src.transfer_fingerprints_to(C)
 		C.dir = dir
 		C.density = 0
@@ -899,8 +906,113 @@
 		update()
 		return
 
+///// Z-Level stuff
+/obj/structure/disposalpipe/up
+	icon_state = "pipe-u"
 
+	New()
+		..()
+		dpdir = dir
+		update()
+		return
 
+	nextdir(var/fromdir)
+		var/nextdir
+		if(fromdir == 11)
+			nextdir = dir
+		else
+			nextdir = 12
+		return nextdir
+
+	transfer(var/obj/structure/disposalholder/H)
+		var/nextdir = nextdir(H.dir)
+		H.dir = nextdir
+
+		var/turf/T
+		var/obj/structure/disposalpipe/P
+
+		if(nextdir == 12)
+			var/turf/controllerlocation = locate(1, 1, src.z)
+			for(var/obj/effect/landmark/zcontroller/controller in controllerlocation)
+				if(controller.up)
+					T = locate(src.x, src.y, controller.up_target)
+			if(!T)
+				H.loc = src.loc
+				return
+			else
+				for(var/obj/structure/disposalpipe/down/F in T)
+					P = F
+
+		else
+			T = get_step(src.loc, H.dir)
+			P = H.findpipe(T)
+
+		if(P)
+			// find other holder in next loc, if inactive merge it with current
+			var/obj/structure/disposalholder/H2 = locate() in P
+			if(H2 && !H2.active)
+				H.merge(H2)
+
+			H.loc = P
+		else			// if wasn't a pipe, then set loc to turf
+			H.loc = T
+			return null
+
+		return P
+
+/obj/structure/disposalpipe/down
+	icon_state = "pipe-d"
+
+	New()
+		..()
+		dpdir = dir
+		update()
+		return
+
+	nextdir(var/fromdir)
+		var/nextdir
+		if(fromdir == 12)
+			nextdir = dir
+		else
+			nextdir = 11
+		return nextdir
+
+	transfer(var/obj/structure/disposalholder/H)
+		var/nextdir = nextdir(H.dir)
+		H.dir = nextdir
+
+		var/turf/T
+		var/obj/structure/disposalpipe/P
+
+		if(nextdir == 11)
+			var/turf/controllerlocation = locate(1, 1, src.z)
+			for(var/obj/effect/landmark/zcontroller/controller in controllerlocation)
+				if(controller.down)
+					T = locate(src.x, src.y, controller.down_target)
+			if(!T)
+				H.loc = src.loc
+				return
+			else
+				for(var/obj/structure/disposalpipe/up/F in T)
+					P = F
+
+		else
+			T = get_step(src.loc, H.dir)
+			P = H.findpipe(T)
+
+		if(P)
+			// find other holder in next loc, if inactive merge it with current
+			var/obj/structure/disposalholder/H2 = locate() in P
+			if(H2 && !H2.active)
+				H.merge(H2)
+
+			H.loc = P
+		else			// if wasn't a pipe, then set loc to turf
+			H.loc = T
+			return null
+
+		return P
+///// Z-Level stuff
 
 //a three-way junction with dir being the dominant direction
 /obj/structure/disposalpipe/junction
@@ -1324,7 +1436,7 @@
 
 	src.streak(dirs)
 
-/obj/effect/decal/cleanable/robot_debris/gib/pipe_eject(var/direction)
+/obj/effect/decal/cleanable/blood/gibs/robot/pipe_eject(var/direction)
 	var/list/dirs
 	if(direction)
 		dirs = list( direction, turn(direction, -45), turn(direction, 45))

@@ -38,14 +38,16 @@ var/global/datum/controller/gameticker/ticker
 
 /datum/controller/gameticker/proc/pregame()
 	login_music = pick(\
+	/*'sound/music/halloween/skeletons.ogg',\
+	'sound/music/halloween/halloween.ogg',\
+	'sound/music/halloween/ghosts.ogg'*/
 	'sound/music/space.ogg',\
 	'sound/music/traitor.ogg',\
-	'sound/music/title1.ogg',\
 	'sound/music/title2.ogg',\
-	'sound/ambience/title2.ogg',\
+	'sound/music/clouds.s3m',\
 	'sound/music/space_oddity.ogg') //Ground Control to Major Tom, this song is cool, what's going on?
 	do
-		pregame_timeleft = 240
+		pregame_timeleft = 280
 		world << "<B><FONT color='blue'>Welcome to the pre-game lobby!</FONT></B>"
 		world << "Please, setup your character and select ready. Game will start in [pregame_timeleft] seconds"
 		while(current_state == GAME_STATE_PREGAME)
@@ -58,6 +60,7 @@ var/global/datum/controller/gameticker/ticker
 			if(pregame_timeleft <= 0)
 				current_state = GAME_STATE_SETTING_UP
 	while (!setup())
+
 
 /datum/controller/gameticker/proc/setup()
 	//Create and announce mode
@@ -109,18 +112,13 @@ var/global/datum/controller/gameticker/ticker
 	else
 		src.mode.announce()
 
-	//setup the money accounts
-	if(!centcomm_account_db)
-		for(var/obj/machinery/account_database/check_db in machines)
-			if(check_db.z == 2)
-				centcomm_account_db = check_db
-				break
-
 	create_characters() //Create player characters and transfer them
 	collect_minds()
 	equip_characters()
 	data_core.manifest()
 	current_state = GAME_STATE_PLAYING
+
+	callHook("roundstart")
 
 	//here to initialize the random events nicely at round start
 	setup_economy()
@@ -140,10 +138,22 @@ var/global/datum/controller/gameticker/ticker
 	//start_events() //handles random events and space dust.
 	//new random event system is handled from the MC.
 
+//	var/admins_number = 0
+//	for(var/client/C)
+//		if(C.holder)
+//			admins_number++
+//	if(admins_number == 0)
+//		send2adminirc("Round has started with no admins online.")
+
 	supply_shuttle.process() 		//Start the supply shuttle regenerating points -- TLE
 	master_controller.process()		//Start master_controller.process()
 	lighting_controller.process()	//Start processing DynamicAreaLighting updates
 
+/*
+	if(config.sql_enabled)
+		spawn(3000)
+		statistic_cycle() // Polls population totals regularly and stores them in an SQL DB -- TLE
+*/
 	return 1
 
 /datum/controller/gameticker
@@ -300,6 +310,8 @@ var/global/datum/controller/gameticker/ticker
 				declare_completion()
 
 			spawn(50)
+				callHook("roundend")
+
 				if (mode.station_was_nuked)
 					feedback_set_details("end_proper","nuke")
 					if(!delay_end)

@@ -17,30 +17,27 @@ var/global/list/autolathe_recipes = list( \
 		new /obj/item/weapon/airlock_electronics(), \
 		new /obj/item/weapon/airalarm_electronics(), \
 		new /obj/item/weapon/firealarm_electronics(), \
+		new /obj/item/weapon/module/power_control(), \
 		new /obj/item/stack/sheet/metal(), \
 		new /obj/item/stack/sheet/glass(), \
 		new /obj/item/stack/sheet/rglass(), \
 		new /obj/item/stack/rods(), \
 		new /obj/item/weapon/rcd_ammo(), \
 		new /obj/item/weapon/kitchenknife(), \
-		new /obj/item/weapon/kitchen/utensil/spoon(), \
-		new /obj/item/weapon/kitchen/utensil/fork(), \
 		new /obj/item/weapon/scalpel(), \
 		new /obj/item/weapon/circular_saw(), \
 		new /obj/item/weapon/surgicaldrill(),\
 		new /obj/item/weapon/retractor(),\
 		new /obj/item/weapon/cautery(),\
+		new /obj/item/weapon/hemostat(),\
 		new /obj/item/weapon/reagent_containers/glass/beaker(), \
 		new /obj/item/weapon/reagent_containers/glass/beaker/large(), \
 		new /obj/item/weapon/reagent_containers/glass/beaker/vial(), \
 		new /obj/item/weapon/reagent_containers/syringe(), \
 		new /obj/item/ammo_casing/shotgun/blank(), \
 		new /obj/item/ammo_casing/shotgun/beanbag(), \
-		new /obj/item/ammo_magazine/c38(), \
-		new /obj/item/device/taperecorder/empty(), \
-		new /obj/item/device/tape(), \
-		new /obj/item/hand_labeler_refill(), \
-		new /obj/item/weapon/hand_labeler(), \
+		new /obj/item/ammo_magazine/c45r(), \
+		new /obj/item/device/taperecorder(), \
 		new /obj/item/device/assembly/igniter(), \
 		new /obj/item/device/assembly/signaler(), \
 		new /obj/item/device/radio/headset(), \
@@ -61,6 +58,7 @@ var/global/list/autolathe_recipes_hidden = list( \
 		new /obj/item/weapon/weldingtool/largetank(), \
 		new /obj/item/weapon/handcuffs(), \
 		new /obj/item/ammo_magazine/a357(), \
+		new /obj/item/ammo_magazine/c45m(), \
 		new /obj/item/ammo_casing/shotgun(), \
 		new /obj/item/ammo_casing/shotgun/dart(), \
 		/* new /obj/item/weapon/shield/riot(), */ \

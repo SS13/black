@@ -1,9 +1,9 @@
-<h1>Welcome to Baystation 12!</h1>
+<h1>Добро пожаловать на Animus Black!</h1>
 
--<i>This server is running <a href="http://baystation12.net/">Baystation 12's</a> modification of the <a href="http://nanotrasen.com/">/tg/station13</a> SS13 code.</i>
-<br><br>
-<strong>Bugtracker:</strong> <a href="http://forum.ss13.ru/index.php?showtopic=4081">http://forum.ss13.ru/index.php?showtopic=4081</a>
+-<i>Сервер работает на модифицированной сборке <a href="http://baystation12.net/">Baystation 12's</a>.</i>
 <br>
-<strong>Rules and roleplaying tips:</strong> <a href="http://baystation12.net/wiki/index.php/Rules">http://baystation12.net/wiki/index.php/Rules</a> or the Rules command.
-<br><br>
-This is a roleplaying server, so don't forget to remain in character while playing. Make sure to read and abide by the rules and if you have any questions, feel free to adminhelp! Remember that even when there are no admins on, adminhelps are being sent to IRC and it is possible for an administrator to see it and respond.
+<br><a href="http://wiki.ss13.ru/index.php?title=Rules">Правила игры.</a><br>
+<a href="http://forum.ss13.ru/index.php?showforum=18">Подфорум сервера.</a>
+<br>
+<br>Это ролевой сервер. Правила игры обязательны к соблюдению всеми игроками, при нарушении правил игрок получает дисциплинарное взыскание от Администрации.<br>
+Если у вас возникли вопросы, не стесняйтесь задавать их Администратору, воспользовавшись функцией "adminhelp" или отправив сообщение на форуме.

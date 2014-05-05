@@ -181,14 +181,6 @@
 	mineralType = "sandstone"
 	hardness = 0.5
 
-/obj/structure/mineral_door/cult
-	mineralType = "adamantine" //Yeah, why not?
-	hardness = 0.5
-
-/obj/structure/mineral_door/cultnorune
-	mineralType = "adamantine" //Yeah, why not?
-	hardness = 0.5
-
 /obj/structure/mineral_door/transparent
 	opacity = 0
 
@@ -259,7 +251,7 @@
 	Dismantle(devastated = 0)
 		if(!devastated)
 			for(var/i = 1, i <= oreAmount, i++)
-				new/obj/item/stack/sheet/mineral/wood(get_turf(src))
+				new/obj/item/stack/sheet/wood(get_turf(src))
 		del(src)
 
 /obj/structure/mineral_door/resin

@@ -1,7 +1,7 @@
 var/global/vs_control/vsc = new
 
 /vs_control
-/*	var/fire_consuption_rate = 0.25
+	var/fire_consuption_rate = 0.25
 	var/fire_consuption_rate_NAME = "Fire - Air Consumption Ratio"
 	var/fire_consuption_rate_DESC = "Ratio of air removed and combusted per tick."
 
@@ -12,7 +12,7 @@ var/global/vs_control/vsc = new
 	var/fire_fuel_energy_release = 397000
 	var/fire_fuel_energy_release_NAME = "Fire - Fuel energy release"
 	var/fire_fuel_energy_release_DESC = "The energy in joule released when burning one mol of a burnable substance"
-*/
+
 
 	var/IgnitionLevel = 0.5
 	var/IgnitionLevel_DESC = "Determines point at which fire can ignite"
@@ -67,7 +67,7 @@ var/global/vs_control/vsc = new
 
 	var/connection_insulation = 1
 	var/connection_insulation_NAME = "Connections - Insulation"
-	var/connection_insulation_DESC = "How insulative a connection is, in terms of heat transfer.  1 is perfectly insulative, and 0 is perfectly conductive."
+	var/connection_insulation_DESC = "Boolean, should doors forbid heat transfer?"
 
 	var/connection_temperature_delta = 10
 	var/connection_temperature_delta_NAME = "Connections - Temperature Difference"
@@ -288,6 +288,7 @@ var/global/vs_control/vsc = new
 			airflow_speed_decay = 1
 			airflow_delay = 20
 			airflow_mob_slowdown = 3
+			connection_insulation = 0
 
 
 	world << "\blue <b>[key_name(user)] changed the global plasma/ZAS settings to \"[def]\"</b>"

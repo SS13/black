@@ -12,7 +12,7 @@
 
 /obj/structure/morgue
 	name = "morgue"
-	desc = "Used to keep bodies in until someone fetches them."
+	desc = "Used to keep bodies in untill someone fetches them."
 	icon = 'icons/obj/stationobjs.dmi'
 	icon_state = "morgue1"
 	dir = EAST
@@ -24,25 +24,11 @@
 	if (src.connected)
 		src.icon_state = "morgue0"
 	else
-		if(!src.contents.len)
-			src.icon_state = "morgue1"
+		if (src.contents.len)
+			src.icon_state = "morgue2"
 		else
-
-			src.icon_state = "morgue2"//default dead no-client mob
-
-			var/list/compiled = recursive_mob_check(src)//run through contents
-
-			if(!length(compiled))//no mobs at all, but objects inside
-				src.icon_state = "morgue3"
-				return
-
-			for(var/mob/living/M in compiled)
-				if(M.client)
-					src.icon_state = "morgue4"//clone that mofo
-					break
-
+			src.icon_state = "morgue1"
 	return
-
 
 /obj/structure/morgue/ex_act(severity)
 	switch(severity)
@@ -148,13 +134,8 @@
 	density = 1
 	layer = 2.0
 	var/obj/structure/morgue/connected = null
-	anchored = 1.0
-
-/obj/structure/m_tray/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (istype(mover, /obj/item/weapon/dummy))
-		return 1
-	else
-		return ..()
+	anchored = 1
+	throwpass = 1
 
 /obj/structure/m_tray/attack_paw(mob/user as mob)
 	return src.attack_hand(user)
@@ -177,6 +158,8 @@
 	if ((!( istype(O, /atom/movable) ) || O.anchored || get_dist(user, src) > 1 || get_dist(user, O) > 1 || user.contents.Find(src) || user.contents.Find(O)))
 		return
 	if (!ismob(O) && !istype(O, /obj/structure/closet/body_bag))
+		return
+	if (!ismob(user) || user.stat || user.lying || user.stunned)
 		return
 	O.loc = src.loc
 	if (user != O)
@@ -205,16 +188,11 @@
 /obj/structure/crematorium/proc/update()
 	if (src.connected)
 		src.icon_state = "crema0"
-
-	if (src.cremating)
-		src.icon_state = "crema_active"
-
 	else
 		if (src.contents.len)
 			src.icon_state = "crema2"
 		else
 			src.icon_state = "crema1"
-
 	return
 
 /obj/structure/crematorium/ex_act(severity)
@@ -372,13 +350,8 @@
 	density = 1
 	layer = 2.0
 	var/obj/structure/crematorium/connected = null
-	anchored = 1.0
-
-/obj/structure/c_tray/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
-	if (istype(mover, /obj/item/weapon/dummy))
-		return 1
-	else
-		return ..()
+	anchored = 1
+	throwpass = 1
 
 /obj/structure/c_tray/attack_paw(mob/user as mob)
 	return src.attack_hand(user)
@@ -401,6 +374,8 @@
 	if ((!( istype(O, /atom/movable) ) || O.anchored || get_dist(user, src) > 1 || get_dist(user, O) > 1 || user.contents.Find(src) || user.contents.Find(O)))
 		return
 	if (!ismob(O) && !istype(O, /obj/structure/closet/body_bag))
+		return
+	if (!ismob(user) || user.stat || user.lying || user.stunned)
 		return
 	O.loc = src.loc
 	if (user != O)

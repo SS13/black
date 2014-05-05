@@ -29,11 +29,6 @@
 	icon_state = "stamp-hos"
 	item_color = "hosred"
 
-/obj/item/weapon/stamp/hos/warden
-	name = "warden's rubber stamp"
-	icon_state = "stamp-hos"
-	item_color = "hosred"
-
 /obj/item/weapon/stamp/ce
 	name = "chief engineer's rubber stamp"
 	icon_state = "stamp-ce"
@@ -59,20 +54,15 @@
 	icon_state = "stamp-clown"
 	item_color = "clown"
 
-/obj/item/weapon/stamp/centcom
-	name = "centcom rubber stamp"
-	icon_state = "stamp-cent"
-	item_color = "cent"
-
-/obj/item/weapon/stamp/internal
-	name = "internal and legal affairs rubber stamp"
+/obj/item/weapon/stamp/internalaffairs
+	name = "internal affairs rubber stamp"
 	icon_state = "stamp-intaff"
 	item_color = "intaff"
 
-/obj/item/weapon/stamp/approved
-	name = "\improper GRANTED rubber stamp"
-	icon_state = "stamp-ok"
-	item_color = "ok"
+/obj/item/weapon/stamp/centcomm
+	name = "centcomm rubber stamp"
+	icon_state = "stamp-cent"
+	item_color = "centcomm"
 
 
 /obj/item/weapon/stamp/attack_paw(mob/user as mob)

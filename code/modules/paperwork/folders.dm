@@ -14,10 +14,6 @@
 	desc = "A red folder."
 	icon_state = "folder_red"
 
-obj/item/weapon/folder/green
-	desc = "A green folder."
-	icon_state = "folder_green"
-
 /obj/item/weapon/folder/yellow
 	desc = "A yellow folder."
 	icon_state = "folder_yellow"

@@ -23,10 +23,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(H), slot_shoes)
 		if(H.backbag == 1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_l_hand)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
 		spawn(0)
 			var/religion_name = "Christianity"
 			var/new_religion = copytext(sanitize(input(H, "You are the crew services officer. Would you like to change your religion? Default is Christianity, in SPACE.", "Name change", religion_name)),1,MAX_NAME_LEN)
@@ -53,9 +51,9 @@
 					B.name = "Toolbox Manifesto"
 				if("homosexuality")
 					B.name = "Guys Gone Wild"
-				if("lol", "wtf", "gay", "penis", "ass", "poo", "badmin", "shitmin", "deadmin", "cock", "cocks")
-					B.name = pick("Woodys Got Wood: The Aftermath", "War of the Cocks", "Sweet Bro and Hella Jef: Expanded Edition")
-					H.setBrainLoss(100) // starts off retarded as fuck
+				//if("lol", "wtf", "gay", "penis", "ass", "poo", "badmin", "shitmin", "deadmin", "cock", "cocks")
+				//	B.name = pick("Woodys Got Wood: The Aftermath", "War of the Cocks", "Sweet Bro and Hella Jef: Expanded Edition")
+				//	H.setBrainLoss(100) // starts off retarded as fuck
 				if("science")
 					B.name = pick("Principle of Relativity", "Quantum Enigma: Physics Encounters Consciousness", "Programming the Universe", "Quantum Physics and Theology", "String Theory for Dummies", "How To: Build Your Own Warp Drive", "The Mysteries of Bluespace", "Playing God: Collector's Edition")
 				else

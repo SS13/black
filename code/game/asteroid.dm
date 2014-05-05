@@ -1,21 +1,15 @@
 
-var/global/list/space_surprises = list(		/obj/item/clothing/mask/facehugger				=2,
+var/global/list/space_surprises = list(		/obj/item/clothing/mask/facehugger				=4,
 											/obj/item/weapon/pickaxe/silver					=4,
 											/obj/item/weapon/pickaxe/drill					=4,
 											/obj/item/weapon/pickaxe/jackhammer				=4,
-											/mob/living/simple_animal/hostile/carp			=2,
+											//mob/living/simple_animal/hostile/carp			=3,
 											/obj/item/weapon/pickaxe/diamond				=3,
 											/obj/item/weapon/pickaxe/diamonddrill			=3,
 											/obj/item/weapon/pickaxe/gold					=3,
 											/obj/item/weapon/pickaxe/plasmacutter			=2,
 											/obj/structure/closet/syndicate/resources		=2,
 											/obj/item/weapon/melee/energy/sword/pirate		=1,
-											/obj/item/device/violin							=2,
-											/obj/structure/device/piano						=1,
-											/obj/effect/decal/remains/human					=2,
-											/obj/structure/reagent_dispensers/hooch			=1,
-											/obj/effect/decal/cleanable/vomit				=1,
-											/obj/item/clothing/under/xenorobe				=1,
 											/obj/mecha/working/ripley/mining				=1
 											)
 
@@ -28,9 +22,9 @@ proc/spawn_room(var/atom/start_loc,var/x_size,var/y_size,var/wall,var/floor , va
 
 	//world << "Room spawned at [start_loc.x],[start_loc.y],[start_loc.z]"
 	if(!wall)
-		wall = pick(/turf/simulated/wall/r_wall,/turf/simulated/wall,/obj/effect/alien/resin,/turf/simulated/wall/mineral/sandstone,/turf/simulated/wall/mineral/wood)
+		wall = pick(/turf/simulated/wall/r_wall,/turf/simulated/wall,/obj/effect/alien/resin)
 	if(!floor)
-		floor = pick(/turf/simulated/floor,/turf/simulated/floor/engine,/turf/simulated/floor/plating/airless/asteroid,/turf/simulated/floor/plating/airless/asteroid)
+		floor = pick(/turf/simulated/floor,/turf/simulated/floor/engine)
 
 	for(var/x = 0,x<x_size,x++)
 		for(var/y = 0,y<y_size,y++)

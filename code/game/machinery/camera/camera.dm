@@ -34,10 +34,6 @@
 	var/alarm_on = 0
 	var/busy = 0
 
-	blob_act()
-		if(prob(80))
-			del(src)
-
 /obj/machinery/camera/New()
 	WireColorToFlag = randomCameraWires()
 	assembly = new(src)

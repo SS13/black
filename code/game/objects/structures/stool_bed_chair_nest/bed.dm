@@ -13,11 +13,10 @@
 	icon_state = "bed"
 	var/mob/living/buckled_mob
 
-/obj/structure/stool/psychbed
+/obj/structure/stool/bed/psych
 	name = "psych bed"
 	desc = "For prime comfort during psychiatric evaluations."
 	icon_state = "psychbed"
-	var/mob/living/buckled_mob
 
 /obj/structure/stool/bed/alien
 	name = "resting contraption"
@@ -73,15 +72,11 @@
 /obj/structure/stool/bed/proc/buckle_mob(mob/M as mob, mob/user as mob)
 	if (!ticker)
 		user << "You can't buckle anyone in before the game starts."
-	if ( !ismob(M) || (get_dist(src, user) > 1) || (M.loc != src.loc) || user.restrained() || user.lying || user.stat || M.buckled || istype(M, /mob/living/silicon) )
+	if ( !ismob(M) || (get_dist(src, user) > 1) || (M.loc != src.loc) || user.restrained() || user.lying || user.stat || M.buckled || istype(user, /mob/living/silicon/pai) )
 		return
 
 	if (istype(M, /mob/living/carbon/slime))
 		user << "The [M] is too squishy to buckle in."
-		return
-
-	if (istype(M, /mob/living/simple_animal))
-		user << "You can't buckle [M] to [src]."
 		return
 
 	unbuckle()

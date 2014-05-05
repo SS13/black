@@ -3,7 +3,34 @@
 #define APC_WIRE_MAIN_POWER2 3
 #define APC_WIRE_AI_CONTROL 4
 
-#define APC_UPDATE_ICON_COOLDOWN 200 // 20 seconds
+//update_state
+#define UPSTATE_CELL_IN 1
+#define UPSTATE_OPENED1 2
+#define UPSTATE_OPENED2 4
+#define UPSTATE_MAINT 8
+#define UPSTATE_BROKE 16
+#define UPSTATE_BLUESCREEN 32
+#define UPSTATE_WIREEXP 64
+#define UPSTATE_ALLGOOD 128
+
+//update_overlay
+#define APC_UPOVERLAY_CHARGEING0 1
+#define APC_UPOVERLAY_CHARGEING1 2
+#define APC_UPOVERLAY_CHARGEING2 4
+#define APC_UPOVERLAY_EQUIPMENT0 8
+#define APC_UPOVERLAY_EQUIPMENT1 16
+#define APC_UPOVERLAY_EQUIPMENT2 32
+#define APC_UPOVERLAY_LIGHTING0 64
+#define APC_UPOVERLAY_LIGHTING1 128
+#define APC_UPOVERLAY_LIGHTING2 256
+#define APC_UPOVERLAY_ENVIRON0 512
+#define APC_UPOVERLAY_ENVIRON1 1024
+#define APC_UPOVERLAY_ENVIRON2 2048
+#define APC_UPOVERLAY_LOCKED 4096
+#define APC_UPOVERLAY_OPERATING 8192
+
+#define APC_UPDATE_ICON_COOLDOWN 100 // 10 seconds
+
 
 // the Area Power Controller (APC), formerly Power Distribution Unit (PDU)
 // one per area, needs wire conection to power network
@@ -18,7 +45,6 @@
 
 /obj/machinery/power/apc
 	name = "area power controller"
-
 	icon_state = "apc0"
 	anchored = 1
 	use_power = 0
@@ -64,8 +90,16 @@
 		"Yellow" = 4,
 	)
 	var/longtermpower = 10
+	var/update_state = -1
+	var/update_overlay = -1
+	var/global/status_overlays = 0
 	var/updating_icon = 0
-	//var/debug = 0
+	var/global/list/status_overlays_lock
+	var/global/list/status_overlays_charging
+	var/global/list/status_overlays_equipment
+	var/global/list/status_overlays_lighting
+	var/global/list/status_overlays_environ
+
 
 /proc/RandomAPCWires()
 	//to make this not randomize the wires, just set index to 1 and increment it in the flag for loop (after doing everything else).
@@ -138,8 +172,10 @@
 	//if area isn't specified use current
 	if(isarea(A) && src.areastring == null)
 		src.area = A
+		name = "\improper [area.name] APC"
 	else
 		src.area = get_area_name(areastring)
+		name = "\improper [area.name] APC"
 	update_icon()
 
 	make_terminal()
@@ -173,36 +209,165 @@
 			else
 				usr << "The cover is closed."
 
-
 // update the APC icon to show the three base states
 // also add overlays for indicator lights
 /obj/machinery/power/apc/update_icon()
 
-	overlays.Cut()
-	if(opened)
-		var/basestate = "apc[ cell ? "2" : "1" ]"	// if opened, show cell if it's inserted
-		if (opened==1)
-			if (stat & (MAINT|BROKEN))
-				icon_state = "apcmaint" //disassembled APC cannot hold cell
-			else
-				icon_state = basestate
-		else if (opened == 2)
-			icon_state = "[basestate]-nocover"
-	else if (stat & BROKEN)
-		icon_state = "apc-b"
-	else if(emagged || malfai)
-		icon_state = "apcemag"
-	else if(wiresexposed)
-		icon_state = "apcewires"
-	else
-		icon_state = "apc0"
-		// if closed, update overlays for channel status
-		if(!(stat & (BROKEN|MAINT)))
-			overlays.Add("apcox-[locked]","apco3-[charging]")	// 0=blue 1=red // 0=red, 1=yellow/black 2=green
-			if(operating)
-				overlays.Add("apco0-[equipment]","apco1-[lighting]","apco2-[environ]")	// 0=red, 1=green, 2=blue
+	if (!status_overlays)
+		status_overlays = 1
+		status_overlays_lock = new
+		status_overlays_charging = new
+		status_overlays_equipment = new
+		status_overlays_lighting = new
+		status_overlays_environ = new
 
-// Used in process so it doesn't update the icon too much
+		status_overlays_lock.len = 2
+		status_overlays_charging.len = 3
+		status_overlays_equipment.len = 4
+		status_overlays_lighting.len = 4
+		status_overlays_environ.len = 4
+
+		status_overlays_lock[1] = image(icon, "apcox-0")    // 0=blue 1=red
+		status_overlays_lock[2] = image(icon, "apcox-1")
+
+		status_overlays_charging[1] = image(icon, "apco3-0")
+		status_overlays_charging[2] = image(icon, "apco3-1")
+		status_overlays_charging[3] = image(icon, "apco3-2")
+
+		status_overlays_equipment[1] = image(icon, "apco0-0") // 0=red, 1=green, 2=blue
+		status_overlays_equipment[2] = image(icon, "apco0-1")
+		status_overlays_equipment[3] = image(icon, "apco0-2")
+		status_overlays_equipment[4] = image(icon, "apco0-3")
+
+		status_overlays_lighting[1] = image(icon, "apco1-0")
+		status_overlays_lighting[2] = image(icon, "apco1-1")
+		status_overlays_lighting[3] = image(icon, "apco1-2")
+		status_overlays_lighting[4] = image(icon, "apco1-3")
+
+		status_overlays_environ[1] = image(icon, "apco2-0")
+		status_overlays_environ[2] = image(icon, "apco2-1")
+		status_overlays_environ[3] = image(icon, "apco2-2")
+		status_overlays_environ[4] = image(icon, "apco2-3")
+
+
+
+	var/update = check_updates() 		//returns 0 if no need to update icons.
+						// 1 if we need to update the icon_state
+						// 2 if we need to update the overlays
+	if(!update)
+		return
+
+	if(update & 1) // Updating the icon state
+		if(update_state & UPSTATE_ALLGOOD)
+			icon_state = "apc0"
+		else if(update_state & (UPSTATE_OPENED1|UPSTATE_OPENED2))
+			var/basestate = "apc[ cell ? "2" : "1" ]"
+			if(update_state & UPSTATE_OPENED1)
+				if(update_state & (UPSTATE_MAINT|UPSTATE_BROKE))
+					icon_state = "apcmaint" //disabled APC cannot hold cell
+				else
+					icon_state = basestate
+			else if(update_state & UPSTATE_OPENED2)
+				icon_state = "[basestate]-nocover"
+		else if(update_state & UPSTATE_BROKE)
+			icon_state = "apc-b"
+		else if(update_state & UPSTATE_BLUESCREEN)
+			icon_state = "apcemag"
+		else if(update_state & UPSTATE_WIREEXP)
+			icon_state = "apcewires"
+
+
+
+	if(!(update_state & UPSTATE_ALLGOOD))
+		if(overlays.len)
+			overlays = 0
+			return
+
+
+
+	if(update & 2)
+
+		if(overlays.len)
+			overlays = 0
+
+		if(!(stat & (BROKEN|MAINT)) && update_state & UPSTATE_ALLGOOD)
+			overlays += status_overlays_lock[locked+1]
+			overlays += status_overlays_charging[charging+1]
+			if(operating)
+				overlays += status_overlays_equipment[equipment+1]
+				overlays += status_overlays_lighting[lighting+1]
+				overlays += status_overlays_environ[environ+1]
+
+
+/obj/machinery/power/apc/proc/check_updates()
+
+	var/last_update_state = update_state
+	var/last_update_overlay = update_overlay
+	update_state = 0
+	update_overlay = 0
+
+	if(cell)
+		update_state |= UPSTATE_CELL_IN
+	if(stat & BROKEN)
+		update_state |= UPSTATE_BROKE
+	if(stat & MAINT)
+		update_state |= UPSTATE_MAINT
+	if(opened)
+		if(opened==1)
+			update_state |= UPSTATE_OPENED1
+		if(opened==2)
+			update_state |= UPSTATE_OPENED2
+	else if(emagged || malfai)
+		update_state |= UPSTATE_BLUESCREEN
+	else if(wiresexposed)
+		update_state |= UPSTATE_WIREEXP
+	if(update_state <= 1)
+		update_state |= UPSTATE_ALLGOOD
+
+	if(operating)
+		update_overlay |= APC_UPOVERLAY_OPERATING
+
+	if(update_state & UPSTATE_ALLGOOD)
+		if(locked)
+			update_overlay |= APC_UPOVERLAY_LOCKED
+
+		if(!charging)
+			update_overlay |= APC_UPOVERLAY_CHARGEING0
+		else if(charging == 1)
+			update_overlay |= APC_UPOVERLAY_CHARGEING1
+		else if(charging == 2)
+			update_overlay |= APC_UPOVERLAY_CHARGEING2
+
+		if (!equipment)
+			update_overlay |= APC_UPOVERLAY_EQUIPMENT0
+		else if(equipment == 1)
+			update_overlay |= APC_UPOVERLAY_EQUIPMENT1
+		else if(equipment == 2)
+			update_overlay |= APC_UPOVERLAY_EQUIPMENT2
+
+		if(!lighting)
+			update_overlay |= APC_UPOVERLAY_LIGHTING0
+		else if(lighting == 1)
+			update_overlay |= APC_UPOVERLAY_LIGHTING1
+		else if(lighting == 2)
+			update_overlay |= APC_UPOVERLAY_LIGHTING2
+
+		if(!environ)
+			update_overlay |= APC_UPOVERLAY_ENVIRON0
+		else if(environ==1)
+			update_overlay |= APC_UPOVERLAY_ENVIRON1
+		else if(environ==2)
+			update_overlay |= APC_UPOVERLAY_ENVIRON2
+
+	var/results = 0
+	if(last_update_state == update_state && last_update_overlay == update_overlay)
+		return 0
+	if(last_update_state != update_state)
+		results += 1
+	if(last_update_overlay != update_overlay && update_overlay != 0)
+		results += 2
+	return results
+
 /obj/machinery/power/apc/proc/queue_icon_update()
 
 	if(!updating_icon)
@@ -211,6 +376,7 @@
 		spawn(APC_UPDATE_ICON_COOLDOWN)
 			update_icon()
 			updating_icon = 0
+
 
 //attack with an item - open/close cover, insert cell, or (un)lock interface
 
@@ -454,6 +620,37 @@
 	if(!user)
 		return
 	src.add_fingerprint(user)
+
+	//Synthetic human mob goes here.
+	if(istype(user,/mob/living/carbon/human))
+		var/mob/living/carbon/human/H = user
+		if(H.species.flags & IS_SYNTHETIC && H.a_intent == "grab")
+			if(emagged || stat & BROKEN)
+				var/datum/effect/effect/system/spark_spread/s = new /datum/effect/effect/system/spark_spread
+				s.set_up(3, 1, src)
+				s.start()
+				H << "\red The APC power currents surge eratically, damaging your chassis!"
+				H.adjustFireLoss(10,0)
+			else if(src.cell && src.cell.charge > 0)
+				if(H.nutrition < 450)
+
+					if(src.cell.charge >= 500)
+						H.nutrition += 50
+						src.cell.charge -= 500
+					else
+						H.nutrition += src.cell.charge/10
+						src.cell.charge = 0
+
+					user << "\blue You slot your fingers into the APC interface and siphon off some of the stored charge for your own use."
+					if(src.cell.charge < 0) src.cell.charge = 0
+					if(H.nutrition > 500) H.nutrition = 500
+
+				else
+					user << "\blue You are already fully charged."
+			else
+				user << "There is no charge to draw from that APC."
+			return
+
 	if(usr == user && opened && (!issilicon(user)))
 		if(cell)
 			user.put_in_hands(cell)
@@ -469,10 +666,6 @@
 	if(stat & (BROKEN|MAINT))
 		return
 
-	if(ishuman(user))
-		if(istype(user:gloves, /obj/item/clothing/gloves/space_ninja)&&user:gloves:candrain&&!user:gloves:draining)
-			call(/obj/item/clothing/gloves/space_ninja/proc/drain)("APC",src,user:wear_suit)
-			return
 	// do APC interaction
 	user.set_machine(src)
 	src.interact(user)
@@ -524,128 +717,86 @@
 		user << browse(t1, "window=apcwires")
 		onclose(user, "apcwires")
 
-	user.set_machine(src)
-	var/t = "<html><head><title>[area.name] APC</title></head><body><TT><B>Area Power Controller</B> ([area.name])<HR>"
-
-	//This goes after the wire stuff. They should be able to fix a physical problem when a wire is cut
-	if ( (get_dist(src, user) > 1 ))
-		if (!istype(user, /mob/living/silicon))
-			user.unset_machine()
-			user << browse(null, "window=apc")
-			return
-		else if (istype(user, /mob/living/silicon) && src.aidisabled && !src.malfhack)
-			user << "AI control for this APC interface has been disabled."
-			user.unset_machine()
-			user << browse(null, "window=apc")
-			return
-		else if (src.malfai)
-			if ((src.malfai != user && src.malfai != user:parent) && !islinked(user, malfai))
-				user << "AI control for this APC interface has been disabled."
-				user.unset_machine()
-				user << browse(null, "window=apc")
-				return
-
-
-	if(locked && (!istype(user, /mob/living/silicon)))
-		t += "<I>(Swipe ID card to unlock inteface.)</I><BR>"
-		t += "Main breaker : <B>[operating ? "On" : "Off"]</B><BR>"
-		t += "External power : <B>[ main_status ? (main_status ==2 ? "<FONT COLOR=#004000>Good</FONT>" : "<FONT COLOR=#D09000>Low</FONT>") : "<FONT COLOR=#F00000>None</FONT>"]</B><BR>"
-		t += "Power cell: <B>[cell ? "[round(cell.percent())]%" : "<FONT COLOR=red>Not connected.</FONT>"]</B>"
-		if(cell)
-			t += " ([charging ? ( charging == 1 ? "Charging" : "Fully charged" ) : "Not charging"])"
-			t += " ([chargemode ? "Auto" : "Off"])"
-
-		t += "<BR><HR>Power channels<BR><PRE>"
-
-		var/list/L = list ("Off","Off (Auto)", "On", "On (Auto)")
-
-		t += "Equipment:    [add_lspace(lastused_equip, 6)] W : <B>[L[equipment+1]]</B><BR>"
-		t += "Lighting:     [add_lspace(lastused_light, 6)] W : <B>[L[lighting+1]]</B><BR>"
-		t += "Environmental:[add_lspace(lastused_environ, 6)] W : <B>[L[environ+1]]</B><BR>"
-
-		t += "<BR>Total load: [lastused_light + lastused_equip + lastused_environ] W</PRE>"
-		t += "<HR>Cover lock: <B>[coverlocked ? "Engaged" : "Disengaged"]</B>"
-
-	else
-		if (!istype(user, /mob/living/silicon))
-			t += "<I>(Swipe ID card to lock interface.)</I><BR>"
-		t += "Main breaker: [operating ? "<B>On</B> <A href='?src=\ref[src];breaker=1'>Off</A>" : "<A href='?src=\ref[src];breaker=1'>On</A> <B>Off</B>" ]<BR>"
-		t += "External power : <B>[ main_status ? (main_status ==2 ? "<FONT COLOR=#004000>Good</FONT>" : "<FONT COLOR=#D09000>Low</FONT>") : "<FONT COLOR=#F00000>None</FONT>"]</B><BR>"
-		if(cell)
-			t += "Power cell: <B>[round(cell.percent())]%</B>"
-			t += " ([charging ? ( charging == 1 ? "Charging" : "Fully charged" ) : "Not charging"])"
-			t += " ([chargemode ? "<A href='?src=\ref[src];cmode=1'>Off</A> <B>Auto</B>" : "<B>Off</B> <A href='?src=\ref[src];cmode=1'>Auto</A>"])"
-
-		else
-			t += "Power cell: <B><FONT COLOR=red>Not connected.</FONT></B>"
-
-		t += "<BR><HR>Power channels<BR><PRE>"
-
-
-		t += "Equipment:    [add_lspace(lastused_equip, 6)] W : "
-		switch(equipment)
-			if(0)
-				t += "<B>Off</B> <A href='?src=\ref[src];eqp=2'>On</A> <A href='?src=\ref[src];eqp=3'>Auto</A>"
-			if(1)
-				t += "<A href='?src=\ref[src];eqp=1'>Off</A> <A href='?src=\ref[src];eqp=2'>On</A> <B>Auto (Off)</B>"
-			if(2)
-				t += "<A href='?src=\ref[src];eqp=1'>Off</A> <B>On</B> <A href='?src=\ref[src];eqp=3'>Auto</A>"
-			if(3)
-				t += "<A href='?src=\ref[src];eqp=1'>Off</A> <A href='?src=\ref[src];eqp=2'>On</A> <B>Auto (On)</B>"
-		t +="<BR>"
-
-		t += "Lighting:     [add_lspace(lastused_light, 6)] W : "
-
-		switch(lighting)
-			if(0)
-				t += "<B>Off</B> <A href='?src=\ref[src];lgt=2'>On</A> <A href='?src=\ref[src];lgt=3'>Auto</A>"
-			if(1)
-				t += "<A href='?src=\ref[src];lgt=1'>Off</A> <A href='?src=\ref[src];lgt=2'>On</A> <B>Auto (Off)</B>"
-			if(2)
-				t += "<A href='?src=\ref[src];lgt=1'>Off</A> <B>On</B> <A href='?src=\ref[src];lgt=3'>Auto</A>"
-			if(3)
-				t += "<A href='?src=\ref[src];lgt=1'>Off</A> <A href='?src=\ref[src];lgt=2'>On</A> <B>Auto (On)</B>"
-		t +="<BR>"
-
-
-		t += "Environmental:[add_lspace(lastused_environ, 6)] W : "
-		switch(environ)
-			if(0)
-				t += "<B>Off</B> <A href='?src=\ref[src];env=2'>On</A> <A href='?src=\ref[src];env=3'>Auto</A>"
-			if(1)
-				t += "<A href='?src=\ref[src];env=1'>Off</A> <A href='?src=\ref[src];env=2'>On</A> <B>Auto (Off)</B>"
-			if(2)
-				t += "<A href='?src=\ref[src];env=1'>Off</A> <B>On</B> <A href='?src=\ref[src];env=3'>Auto</A>"
-			if(3)
-				t += "<A href='?src=\ref[src];env=1'>Off</A> <A href='?src=\ref[src];env=2'>On</A> <B>Auto (On)</B>"
-
-
-
-		t += "<BR>Total load: [lastused_light + lastused_equip + lastused_environ] W</PRE>"
-		t += "<HR>Cover lock: [coverlocked ? "<B><A href='?src=\ref[src];lock=1'>Engaged</A></B>" : "<B><A href='?src=\ref[src];lock=1'>Disengaged</A></B>"]"
-
-
-		if (istype(user, /mob/living/silicon))
-			t += "<BR><HR><A href='?src=\ref[src];overload=1'><I>Overload lighting circuit</I></A><BR>"
-		if (ticker && ticker.mode)
-//		 world << "there's a ticker"
-			if(user.mind in ticker.mode.malf_ai)
-//				world << "ticker says its malf"
-				if (!src.malfai)
-					t += "<BR><HR><A href='?src=\ref[src];malfhack=1'><I>Override Programming</I></A><BR>"
-				else
-					t += "<BR><HR><I>APC Hacked</I><BR>"
-					/*if(!src.occupant)
-						t += "<A href='?src=\ref[src];occupyapc=1'><I>Shunt Core Processes</I></A><BR>"
-					else
-						t += "<I>Core Processes Uploaded</I><BR>"*/
-
-	t += "<BR><HR><A href='?src=\ref[src];close=1'>Close</A>"
-
-	t += "</TT></body></html>"
-	user << browse(t, "window=apc")
-	onclose(user, "apc")
+	// Open the APC NanoUI
+	ui_interact(user)
 	return
+
+/obj/machinery/power/apc/proc/get_malf_status(mob/user)
+	if (ticker && ticker.mode && (user.mind in ticker.mode.malf_ai) && istype(user, /mob/living/silicon/ai))
+		if (src.malfai == (user:parent ? user:parent : user))
+			if (src.occupant == user)
+				return 3 // 3 = User is shunted in this APC
+			else if (istype(user.loc, /obj/machinery/power/apc))
+				return 4 // 4 = User is shunted in another APC
+			else
+				return 2 // 2 = APC hacked by user, and user is in its core.
+		else
+			return 1 // 1 = APC not hacked.
+	else
+		return 0 // 0 = User is not a Malf AI
+
+/obj/machinery/power/apc/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null)
+	if(!user)
+		return
+
+	var/list/data = list(
+		"locked" = locked,
+		"isOperating" = operating,
+		"externalPower" = main_status,
+		"powerCellStatus" = cell ? cell.percent() : null,
+		"chargeMode" = chargemode,
+		"chargingStatus" = charging,
+		"totalLoad" = lastused_equip + lastused_light + lastused_environ,
+		"coverLocked" = coverlocked,
+		"siliconUser" = istype(user, /mob/living/silicon),
+		"malfStatus" = get_malf_status(user),
+
+		"powerChannels" = list(
+			list(
+				"title" = "Equipment",
+				"powerLoad" = lastused_equip,
+				"status" = equipment,
+				"topicParams" = list(
+					"auto" = list("eqp" = 3),
+					"on"   = list("eqp" = 2),
+					"off"  = list("eqp" = 1)
+				)
+			),
+			list(
+				"title" = "Lighting",
+				"powerLoad" = lastused_light,
+				"status" = lighting,
+				"topicParams" = list(
+					"auto" = list("lgt" = 3),
+					"on"   = list("lgt" = 2),
+					"off"  = list("lgt" = 1)
+				)
+			),
+			list(
+				"title" = "Environment",
+				"powerLoad" = lastused_environ,
+				"status" = environ,
+				"topicParams" = list(
+					"auto" = list("env" = 3),
+					"on"   = list("env" = 2),
+					"off"  = list("env" = 1)
+				)
+			)
+		)
+	)
+
+	// update the ui if it exists, returns null if no ui is passed/found
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data)
+	if (!ui)
+		// the ui does not exist, so we'll create a new() one
+        // for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
+		ui = new(user, src, ui_key, "apc.tmpl", "[area.name] - APC", 520, data["siliconUser"] ? 465 : 440)
+		// when the ui is first opened this is the data it will use
+		ui.set_initial_data(data)
+		// open the new ui window
+		ui.open()
+		// auto update every Master Controller tick
+		ui.set_auto_update(1)
 
 /obj/machinery/power/apc/proc/report()
 	return "[area.name] : [equipment]/[lighting]/[environ] ([lastused_equip+lastused_light+lastused_environ]) : [cell? cell.percent() : "N/C"] ([charging])"
@@ -758,8 +909,8 @@
 			istype(user, /mob/living/silicon) || \
 			istype(user, /mob/living/carbon/monkey) /*&& ticker && ticker.mode.name == "monkey"*/) )
 		user << "\red You don't have the dexterity to use this [src]!"
-		user << browse(null, "window=apc")
-		user.unset_machine()
+		nanomanager.close_user_uis(user, src)
+
 		return 0
 	if(user.restrained())
 		user << "\red You must have free hands to use this [src]"
@@ -780,13 +931,13 @@
 		)
 			if(!loud)
 				user << "\red \The [src] have AI control disabled!"
-				user << browse(null, "window=apc")
-				user.unset_machine()
+				nanomanager.close_user_uis(user, src)
+
 			return 0
 	else
 		if ((!in_range(src, user) || !istype(src.loc, /turf)))
-			user << browse(null, "window=apc")
-			user.unset_machine()
+			nanomanager.close_user_uis(user, src)
+
 			return 0
 
 	var/mob/living/carbon/human/H = user
@@ -805,7 +956,7 @@
 		if(!can_use(usr, 1))
 			return
 	src.add_fingerprint(usr)
-	usr.set_machine(src)
+
 	if (href_list["apcwires"])
 		var/t1 = text2num(href_list["apcwires"])
 		if (!( istype(usr.get_active_hand(), /obj/item/weapon/wirecutters) ))
@@ -867,12 +1018,12 @@
 		update_icon()
 		update()
 	else if( href_list["close"] )
-		usr << browse(null, "window=apc")
-		usr.unset_machine()
+		nanomanager.close_user_uis(usr, src)
+
 		return
 	else if (href_list["close2"])
 		usr << browse(null, "window=apcwires")
-		usr.unset_machine()
+
 		return
 
 	else if (href_list["overload"])
@@ -967,7 +1118,7 @@
 				cell.corrupt()
 				src.malfhack = 1
 				update_icon()
-				var/datum/effect/effect/system/harmless_smoke_spread/smoke = new /datum/effect/effect/system/harmless_smoke_spread()
+				var/datum/effect/effect/system/smoke_spread/smoke = new /datum/effect/effect/system/smoke_spread()
 				smoke.set_up(3, 0, src.loc)
 				smoke.attach(src)
 				smoke.start()
@@ -1156,8 +1307,6 @@
 		update()
 	else if (last_ch != charging)
 		queue_icon_update()
-
-	//src.updateDialog()
 	src.updateDialog()
 
 // val 0=off, 1=off(auto) 2=on 3=on(auto)

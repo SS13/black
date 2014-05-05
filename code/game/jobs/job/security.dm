@@ -36,11 +36,9 @@
 		if(H.backbag == 1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
 			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_l_store)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_r_store)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
 			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
 		var/obj/item/weapon/implant/loyalty/L = new/obj/item/weapon/implant/loyalty(H)
 		L.imp_in = H
 		L.implanted = 1
@@ -62,7 +60,7 @@
 	selection_color = "#ffeeee"
 	access = list(access_security, access_sec_doors, access_brig, access_armory, access_court, access_maint_tunnels, access_morgue)
 	minimal_access = list(access_security, access_sec_doors, access_brig, access_armory, access_court, access_maint_tunnels)
-	minimal_player_age = 7
+	minimal_player_age = 5
 
 	equip(var/mob/living/carbon/human/H)
 		if(!H)	return 0
@@ -81,11 +79,9 @@
 		if(H.backbag == 1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
 			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_l_hand)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_r_store)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
 			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
 		return 1
 
 
@@ -104,7 +100,7 @@
 	access = list(access_security, access_sec_doors, access_forensics_lockers, access_morgue, access_maint_tunnels, access_court)
 	minimal_access = list(access_security, access_sec_doors, access_forensics_lockers, access_morgue, access_maint_tunnels, access_court)
 	alt_titles = list("Forensic Technician")
-	minimal_player_age = 7
+	minimal_player_age = 3
 	equip(var/mob/living/carbon/human/H)
 		if(!H)	return 0
 		H.equip_to_slot_or_del(new /obj/item/device/radio/headset/headset_sec(H), slot_l_ear)
@@ -115,27 +111,26 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/under/det(H), slot_w_uniform)
 		H.equip_to_slot_or_del(new /obj/item/clothing/shoes/brown(H), slot_shoes)
 		H.equip_to_slot_or_del(new /obj/item/device/pda/detective(H), slot_belt)
+/*		var/obj/item/clothing/mask/cigarette/CIG = new /obj/item/clothing/mask/cigarette(H)
+		CIG.light("")
+		H.equip_to_slot_or_del(CIG, slot_wear_mask)	*/
 		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/black(H), slot_gloves)
-/*		if(H.mind.role_alt_title && H.mind.role_alt_title == "Forensic Technician")
+		if(H.mind.role_alt_title && H.mind.role_alt_title == "Forensic Technician")
 			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/forensics/blue(H), slot_wear_suit)
-		else*/
-		/*H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/det_suit(H), slot_wear_suit)
-		H.equip_to_slot_or_del(new /obj/item/clothing/head/det_hat(H), slot_head)*/
+		else
+			H.equip_to_slot_or_del(new /obj/item/clothing/suit/storage/det_suit(H), slot_wear_suit)
+			H.equip_to_slot_or_del(new /obj/item/clothing/head/det_hat(H), slot_head)
+		H.equip_to_slot_or_del(new /obj/item/weapon/lighter/zippo(H), slot_l_store)
 
-		if(H.backbag == 1)
+		if(H.backbag == 1)//Why cant some of these things spawn in his office?
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/evidence(H), slot_l_hand)
 			H.equip_to_slot_or_del(new /obj/item/device/detective_scanner(H), slot_r_store)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_l_store)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/evidence(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/device/detective_scanner(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
-			if(H.mind.role_alt_title && H.mind.role_alt_title == "Forensic Technician")
-				H.equip_to_slot_or_del(new /obj/item/clothing/tie/holobadge/forensic(H.back), slot_in_backpack)
-			else
-				H.equip_to_slot_or_del(new /obj/item/clothing/tie/holobadge/detective(H.back), slot_in_backpack)
+			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/evidence(H), slot_in_backpack)
+			H.equip_to_slot_or_del(new /obj/item/device/detective_scanner(H), slot_in_backpack)
+
 		return 1
 
 
@@ -151,7 +146,7 @@
 	selection_color = "#ffeeee"
 	access = list(access_security, access_sec_doors, access_brig, access_court, access_maint_tunnels, access_morgue)
 	minimal_access = list(access_security, access_sec_doors, access_brig, access_court, access_maint_tunnels)
-	minimal_player_age = 7
+	minimal_player_age = 3
 	equip(var/mob/living/carbon/human/H)
 		if(!H)	return 0
 		H.equip_to_slot_or_del(new /obj/item/device/radio/headset/headset_sec(H), slot_l_ear)
@@ -167,9 +162,7 @@
 		if(H.backbag == 1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H), slot_r_hand)
 			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_l_hand)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_r_store)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
+			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_in_backpack)
 		return 1

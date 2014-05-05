@@ -6,25 +6,17 @@
 	icon_state = "console"
 	density = 1
 	anchored = 1
-	var/stage = 0
-	/*
-		0 - main
-		1 - connect
-	*/
 	var/obj/machinery/mineral/processing_unit/machine = null
-	var/id = 0
+	var/machinedir = EAST
 
-/obj/machinery/mineral/stacking_unit_console/New()
+/obj/machinery/mineral/processing_unit_console/New()
 	..()
 	spawn(7)
-		src.connect()
-
-/obj/machinery/mineral/processing_unit_console/proc/connect()
-	if(!id) return
-	for (var/obj/machinery/mineral/processing_unit/M in machines)
-		if (istype(M) && M.id == src.id)
-			src.machine = M
-			M.CONSOLE = src
+		src.machine = locate(/obj/machinery/mineral/processing_unit, get_step(src, machinedir))
+		if (machine)
+			machine.CONSOLE = src
+		else
+			del(src)
 
 /obj/machinery/mineral/processing_unit_console/process()
 	updateDialog()
@@ -37,114 +29,96 @@
 	user.set_machine(src)
 
 	var/dat = "<b>Smelter control console</b><br><br>"
-
-	if(stage == 1)
-		if(!machine)
-			if(!src.id)
-				dat += text("Communication circuit is dead. <br>")
-				dat += text("Replace it and try to reconnect. <br>")
+	//iron
+	if(machine.ore_iron || machine.ore_glass || machine.ore_plasma || machine.ore_uranium || machine.ore_gold || machine.ore_silver || machine.ore_diamond || machine.ore_clown || machine.ore_adamantine)
+		if(machine.ore_iron)
+			if (machine.selected_iron==1)
+				dat += text("<A href='?src=\ref[src];sel_iron=no'><font color='green'>Smelting</font></A> ")
 			else
-				dat += text("Couldn't locate Furnace. Try again later. ")
-			dat += text("<A href='?src=\ref[src];page=1'>Try to reconnect</A>. <br>")
+				dat += text("<A href='?src=\ref[src];sel_iron=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Iron: [machine.ore_iron]<br>")
 		else
-			dat += text("Connection successfully established!")
-		dat += text("<A href='?src=\ref[src];page=0'>Return</A>. <br>")
+			machine.selected_iron = 0
 
-	else //if(stage == 0)
-		if(!machine)
-			dat += text("Couldn't locate Furnace. <br>")
-			dat += text("<A href='?src=\ref[src];page=1'>Try to reconnect</A>. <br>")
-		else
-			//iron
-			if(machine.ore_iron || machine.ore_glass || machine.ore_plasma || machine.ore_uranium || machine.ore_gold || machine.ore_silver || machine.ore_diamond || machine.ore_clown || machine.ore_adamantine)
-				if(machine.ore_iron)
-					if (machine.selected_iron==1)
-						dat += text("<A href='?src=\ref[src];sel_iron=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_iron=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Iron: [machine.ore_iron]<br>")
-				else
-					machine.selected_iron = 0
-
-				//sand - glass
-				if(machine.ore_glass)
-					if (machine.selected_glass==1)
-						dat += text("<A href='?src=\ref[src];sel_glass=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_glass=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Sand: [machine.ore_glass]<br>")
-				else
-					machine.selected_glass = 0
-
-				//plasma
-				if(machine.ore_plasma)
-					if (machine.selected_plasma==1)
-						dat += text("<A href='?src=\ref[src];sel_plasma=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_plasma=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Plasma: [machine.ore_plasma]<br>")
-				else
-					machine.selected_plasma = 0
-
-				//uranium
-				if(machine.ore_uranium)
-					if (machine.selected_uranium==1)
-						dat += text("<A href='?src=\ref[src];sel_uranium=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_uranium=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Uranium: [machine.ore_uranium]<br>")
-				else
-					machine.selected_uranium = 0
-
-				//gold
-				if(machine.ore_gold)
-					if (machine.selected_gold==1)
-						dat += text("<A href='?src=\ref[src];sel_gold=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_gold=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Gold: [machine.ore_gold]<br>")
-				else
-					machine.selected_gold = 0
-
-				//silver
-				if(machine.ore_silver)
-					if (machine.selected_silver==1)
-						dat += text("<A href='?src=\ref[src];sel_silver=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_silver=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Silver: [machine.ore_silver]<br>")
-				else
-					machine.selected_silver = 0
-
-				//diamond
-				if(machine.ore_diamond)
-					if (machine.selected_diamond==1)
-						dat += text("<A href='?src=\ref[src];sel_diamond=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_diamond=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Diamond: [machine.ore_diamond]<br>")
-				else
-					machine.selected_diamond = 0
-
-				//bananium
-				if(machine.ore_clown)
-					if (machine.selected_clown==1)
-						dat += text("<A href='?src=\ref[src];sel_clown=no'><font color='green'>Smelting</font></A> ")
-					else
-						dat += text("<A href='?src=\ref[src];sel_clown=yes'><font color='red'>Not smelting</font></A> ")
-					dat += text("Bananium: [machine.ore_clown]<br>")
-				else
-					machine.selected_clown = 0
-
-
-				//On or off
-				dat += text("Machine is currently ")
-				if (machine.on==1)
-					dat += text("<A href='?src=\ref[src];set_on=off'>On</A> ")
-				else
-					dat += text("<A href='?src=\ref[src];set_on=on'>Off</A> ")
+		//sand - glass
+		if(machine.ore_glass)
+			if (machine.selected_glass==1)
+				dat += text("<A href='?src=\ref[src];sel_glass=no'><font color='green'>Smelting</font></A> ")
 			else
-				dat+="---No Materials Loaded---"
+				dat += text("<A href='?src=\ref[src];sel_glass=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Sand: [machine.ore_glass]<br>")
+		else
+			machine.selected_glass = 0
+
+		//plasma
+		if(machine.ore_plasma)
+			if (machine.selected_plasma==1)
+				dat += text("<A href='?src=\ref[src];sel_plasma=no'><font color='green'>Smelting</font></A> ")
+			else
+				dat += text("<A href='?src=\ref[src];sel_plasma=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Plasma: [machine.ore_plasma]<br>")
+		else
+			machine.selected_plasma = 0
+
+		//uranium
+		if(machine.ore_uranium)
+			if (machine.selected_uranium==1)
+				dat += text("<A href='?src=\ref[src];sel_uranium=no'><font color='green'>Smelting</font></A> ")
+			else
+				dat += text("<A href='?src=\ref[src];sel_uranium=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Uranium: [machine.ore_uranium]<br>")
+		else
+			machine.selected_uranium = 0
+
+		//gold
+		if(machine.ore_gold)
+			if (machine.selected_gold==1)
+				dat += text("<A href='?src=\ref[src];sel_gold=no'><font color='green'>Smelting</font></A> ")
+			else
+				dat += text("<A href='?src=\ref[src];sel_gold=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Gold: [machine.ore_gold]<br>")
+		else
+			machine.selected_gold = 0
+
+		//silver
+		if(machine.ore_silver)
+			if (machine.selected_silver==1)
+				dat += text("<A href='?src=\ref[src];sel_silver=no'><font color='green'>Smelting</font></A> ")
+			else
+				dat += text("<A href='?src=\ref[src];sel_silver=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Silver: [machine.ore_silver]<br>")
+		else
+			machine.selected_silver = 0
+
+		//diamond
+		if(machine.ore_diamond)
+			if (machine.selected_diamond==1)
+				dat += text("<A href='?src=\ref[src];sel_diamond=no'><font color='green'>Smelting</font></A> ")
+			else
+				dat += text("<A href='?src=\ref[src];sel_diamond=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Diamond: [machine.ore_diamond]<br>")
+		else
+			machine.selected_diamond = 0
+
+		//bananium
+		if(machine.ore_clown)
+			if (machine.selected_clown==1)
+				dat += text("<A href='?src=\ref[src];sel_clown=no'><font color='green'>Smelting</font></A> ")
+			else
+				dat += text("<A href='?src=\ref[src];sel_clown=yes'><font color='red'>Not smelting</font></A> ")
+			dat += text("Bananium: [machine.ore_clown]<br>")
+		else
+			machine.selected_clown = 0
+
+
+		//On or off
+		dat += text("Machine is currently ")
+		if (machine.on==1)
+			dat += text("<A href='?src=\ref[src];set_on=off'>On</A> ")
+		else
+			dat += text("<A href='?src=\ref[src];set_on=on'>Off</A> ")
+	else
+		dat+="---No Materials Loaded---"
 
 
 	user << browse("[dat]", "window=console_processing_unit")
@@ -156,11 +130,6 @@
 		return
 	usr.set_machine(src)
 	src.add_fingerprint(usr)
-
-	if(href_list["page"])
-		src.connect()
-		src.stage = text2num(href_list["page"])
-
 	if(href_list["sel_iron"])
 		if (href_list["sel_iron"] == "yes")
 			machine.selected_iron = 1
@@ -218,7 +187,6 @@
 	icon_state = "furnace"
 	density = 1
 	anchored = 1.0
-	var/id = 0
 	var/obj/machinery/mineral/input = null
 	var/obj/machinery/mineral/output = null
 	var/obj/machinery/mineral/CONSOLE = null
@@ -330,9 +298,25 @@
 						new /obj/item/stack/sheet/mineral/clown(output.loc)
 					else
 						on = 0
+				if (selected_glass == 1 && selected_gold == 0 && selected_silver == 0 && selected_diamond == 0 && selected_plasma == 1 && selected_uranium == 0 && selected_iron == 0 && selected_clown == 0)
+					if (ore_glass > 0 && ore_plasma > 0)
+						ore_glass--;
+						ore_plasma--;
+						new /obj/item/stack/sheet/glass/plasmaglass(output.loc)
+					else
+						on = 0
+				if (selected_glass == 1 && selected_gold == 0 && selected_silver == 0 && selected_diamond == 0 && selected_plasma == 1 && selected_uranium == 0 && selected_iron == 1 && selected_clown == 0)
+					if (ore_glass > 0 && ore_plasma > 0 && ore_iron > 0)
+						ore_glass--;
+						ore_iron--;
+						ore_plasma--;
+						new /obj/item/stack/sheet/glass/plasmarglass(output.loc)
+					else
+						on = 0
 					continue
 				//THESE TWO ARE CODED FOR URIST TO USE WHEN HE GETS AROUND TO IT.
 				//They were coded on 18 Feb 2012. If you're reading this in 2015, then firstly congratulations on the world not ending on 21 Dec 2012 and secondly, Urist is apparently VERY lazy. ~Errorage
+				//Iamgoofball here, this comment I'm typing right now was made in 11/1/2013. If you're reading this in 2020, then please let me know if the world has gone into a nuclear apocalypse. Also Urist has been tried and hung for how lazy he was. That and he was jaywalking.
 				/*if (selected_glass == 0 && selected_gold == 0 && selected_silver == 0 && selected_diamond == 1 && selected_plasma == 0 && selected_uranium == 1 && selected_iron == 0 && selected_clown == 0)
 					if (ore_uranium >= 2 && ore_diamond >= 1)
 						ore_uranium -= 2
@@ -412,34 +396,42 @@
 			if (O)
 				if (istype(O,/obj/item/weapon/ore/iron))
 					ore_iron++;
+					O.loc = null
 					del(O)
 					continue
 				if (istype(O,/obj/item/weapon/ore/glass))
 					ore_glass++;
+					O.loc = null
 					del(O)
 					continue
 				if (istype(O,/obj/item/weapon/ore/diamond))
 					ore_diamond++;
+					O.loc = null
 					del(O)
 					continue
 				if (istype(O,/obj/item/weapon/ore/plasma))
 					ore_plasma++
+					O.loc = null
 					del(O)
 					continue
 				if (istype(O,/obj/item/weapon/ore/gold))
 					ore_gold++
+					O.loc = null
 					del(O)
 					continue
 				if (istype(O,/obj/item/weapon/ore/silver))
 					ore_silver++
+					O.loc = null
 					del(O)
 					continue
 				if (istype(O,/obj/item/weapon/ore/uranium))
 					ore_uranium++
+					O.loc = null
 					del(O)
 					continue
 				if (istype(O,/obj/item/weapon/ore/clown))
 					ore_clown++
+					O.loc = null
 					del(O)
 					continue
 				O.loc = src.output.loc

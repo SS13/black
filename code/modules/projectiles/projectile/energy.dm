@@ -15,14 +15,10 @@
 	weaken = 10
 	stutter = 10
 
-// Если кто ещё вздумает "пофиксить" тазер то лучше сразу врежте себе по яйцам и вырежте печень.
-//Сначала догони~
-
-/obj/item/projectile/energy/electrode/New()
-	agony = rand(30,130)
+	agony = 80
 	damage_type = HALLOSS
-
 	//Damage will be handled on the MOB side, to prevent window shattering.
+
 
 
 /obj/item/projectile/energy/declone
@@ -63,5 +59,10 @@
 	damage_type = TOX
 	weaken = 5
 
-
+/obj/item/projectile/energy/plasma
+	name = "plasma bolt"
+	icon_state = "energy"
+	damage = 20
+	damage_type = TOX
+	irradiate = 20
 

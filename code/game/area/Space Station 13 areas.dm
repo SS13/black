@@ -14,8 +14,6 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 */
 
 
-#define SUPER_JAMMED 2
-
 /area
 	var/fire = null
 	var/atmos = 1
@@ -53,14 +51,12 @@ NOTE: there are two lists of areas in the end of this file: centcom and station 
 //	var/list/lights				// list of all lights on this area
 	var/list/all_doors = list()		//Added by Strumpetplaya - Alarm Change - Contains a list of doors adjacent to this area
 	var/air_doors_activated = 0
-	var/jammed = 0 // No teleporting for you. 2 = SUPER JAMMED, inaccessible even to telecrystals.
-
 
 /*Adding a wizard area teleport list because motherfucking lag -- Urist*/
 /*I am far too lazy to make it a proper list of areas so I'll just make it run the usual telepot routine at the start of the game*/
 var/list/teleportlocs = list()
 
-proc/process_teleport_locs()
+/hook/startup/proc/setupTeleportLocs()
 	for(var/area/AR in world)
 		if(istype(AR, /area/shuttle) || istype(AR, /area/syndicate_station) || istype(AR, /area/wizard_station)) continue
 		if(teleportlocs.Find(AR.name)) continue
@@ -69,20 +65,13 @@ proc/process_teleport_locs()
 			teleportlocs += AR.name
 			teleportlocs[AR.name] = AR
 
-	var/not_in_order = 0
-	do
-		not_in_order = 0
-		if(teleportlocs.len <= 1)
-			break
-		for(var/i = 1, i <= (teleportlocs.len - 1), i++)
-			if(sorttext(teleportlocs[i], teleportlocs[i+1]) == -1)
-				teleportlocs.Swap(i, i+1)
-				not_in_order = 1
-	while(not_in_order)
+	teleportlocs = sortAssoc(teleportlocs)
+
+	return 1
 
 var/list/ghostteleportlocs = list()
 
-proc/process_ghost_teleport_locs()
+/hook/startup/proc/setupGhostTeleportLocs()
 	for(var/area/AR in world)
 		if(ghostteleportlocs.Find(AR.name)) continue
 		if(istype(AR, /area/turret_protected/aisat) || istype(AR, /area/derelict) || istype(AR, /area/tdome))
@@ -93,17 +82,9 @@ proc/process_ghost_teleport_locs()
 			ghostteleportlocs += AR.name
 			ghostteleportlocs[AR.name] = AR
 
-	var/not_in_order = 0
-	do
-		not_in_order = 0
-		if(ghostteleportlocs.len <= 1)
-			break
-		for(var/i = 1, i <= (ghostteleportlocs.len - 1), i++)
-			if(sorttext(ghostteleportlocs[i], ghostteleportlocs[i+1]) == -1)
-				ghostteleportlocs.Swap(i, i+1)
-				not_in_order = 1
-	while(not_in_order)
+	ghostteleportlocs = sortAssoc(ghostteleportlocs)
 
+	return 1
 
 /*-----------------------------------------------------------------------------*/
 
@@ -232,7 +213,7 @@ proc/process_ghost_teleport_locs()
 	icon_state = "shuttle"
 	name = "\improper Alien Shuttle Base"
 	requires_power = 1
-	luminosity = 1
+	luminosity = 0
 	lighting_use_dynamic = 1
 
 /area/shuttle/alien/mine
@@ -241,17 +222,6 @@ proc/process_ghost_teleport_locs()
 	requires_power = 1
 	luminosity = 0
 	lighting_use_dynamic = 1
-
-/area/shuttle/smuggler/base
-	icon_state = "shuttle"
-	name = "\improper Smuggler Shuttle Base"
-	requires_power = 1
-	luminosity = 1
-	lighting_use_dynamic = 1
-
-/area/shuttle/smuggler/centcom
-	icon_state = "shuttle"
-	name = "\improper Smuggler Shuttle Centcom"
 
 /area/shuttle/prison/
 	name = "\improper Prison Shuttle"
@@ -347,42 +317,6 @@ proc/process_ghost_teleport_locs()
 	name = "\improper Alien base"
 	icon_state = "yellow"
 	requires_power = 0
-
-//SS21
-
-/area/ss21/
-	name = "\improper SS21 Research"
-	icon_state = "away"
-	requires_power = 1
-	music = 'sound/ambience/inthedark.ogg'
-
-/area/ss21/gateway
-    name = "\improper SS21 Gateway"
-    icon_state = "teleporter"
-
-/area/ss21/mainhall
-    name = "\improper SS21 Main Hall"
-    icon_state = "hallC"
-
-/area/ss21/mainsolars
-    name = "\improper SS21 Main Solars"
-    icon_state = "panelsA"
-
-/area/ss21/dormitories
-    name = "\improper SS21 Dormitories"
-    icon_state = "Sleep"
-
-/area/ss21/security
-    name = "\improper SS21 Security"
-    icon_state = "brig"
-
-/area/ss21/cafeteria
-	name = "\improper SS21 Cafeteria"
-	icon_state = "cafeteria"
-
-/area/ss21/cargo
-    name = "\improper SS21 Cargo"
-    icon_state = "quartoffice"
 
 // CENTCOM
 
@@ -664,10 +598,6 @@ proc/process_ghost_teleport_locs()
  	name = "Atmospherics"
  	icon_state = "atmos"
 
-/area/atmosbrig
- 	name = "Brig Atmospherics Maintenance"
- 	icon_state = "atmosbrig"
-
 //Maintenance
 
 /area/maintenance/atmos_control
@@ -774,44 +704,35 @@ proc/process_ghost_teleport_locs()
 	name = "\improper Bridge"
 	icon_state = "bridge"
 	music = "signal"
-	jammed=1
 
 /area/bridge/meeting_room
 	name = "\improper Heads of Staff Meeting Room"
 	icon_state = "bridge"
 	music = null
-	jammed=0
 
 /area/crew_quarters/captain
 	name = "\improper Captain's Office"
 	icon_state = "captain"
-	jammed=1
 
 /area/crew_quarters/heads/hop
 	name = "\improper Head of Personnel's Quarters"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/crew_quarters/heads/hor
 	name = "\improper Research Director's Quarters"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/crew_quarters/heads/chief
 	name = "\improper Chief Engineer's Quarters"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/crew_quarters/heads/hos
 	name = "\improper Head of Security's Quarters"
 	icon_state = "head_quarters"
-	jammed=1
-
 
 /area/crew_quarters/heads/cmo
 	name = "\improper Chief Medical Officer's Quarters"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/crew_quarters/courtroom
 	name = "\improper Courtroom"
@@ -820,22 +741,18 @@ proc/process_ghost_teleport_locs()
 /area/crew_quarters/heads
 	name = "\improper Head of Personnel's Office"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/crew_quarters/hor
 	name = "\improper Research Director's Office"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/crew_quarters/hos
 	name = "\improper Head of Security's Office"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/crew_quarters/chief
 	name = "\improper Chief Engineer's Office"
 	icon_state = "head_quarters"
-	jammed=1
 
 /area/mint
 	name = "\improper Mint"
@@ -861,6 +778,14 @@ proc/process_ghost_teleport_locs()
 
 /area/crew_quarters/sleep
 	name = "\improper Dormitories"
+	icon_state = "Sleep"
+
+/area/crew_quarters/sleep/engi
+	name = "\improper Engineering Dormitories"
+	icon_state = "Sleep"
+
+/area/crew_quarters/sleep/sec
+	name = "\improper Security Dormitories"
 	icon_state = "Sleep"
 
 /area/crew_quarters/sleep_male
@@ -942,59 +867,47 @@ proc/process_ghost_teleport_locs()
 /area/holodeck/source_plating
 	name = "\improper Holodeck - Off"
 	icon_state = "Holodeck"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_emptycourt
 	name = "\improper Holodeck - Empty Court"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_boxingcourt
 	name = "\improper Holodeck - Boxing Court"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_basketball
 	name = "\improper Holodeck - Basketball Court"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_thunderdomecourt
 	name = "\improper Holodeck - Thunderdome Court"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_beach
 	name = "\improper Holodeck - Beach"
 	icon_state = "Holodeck" // Lazy.
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_burntest
 	name = "\improper Holodeck - Atmospheric Burn Test"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_wildlife
 	name = "\improper Holodeck - Wildlife Simulation"
 
 /area/holodeck/source_meetinghall
 	name = "\improper Holodeck - Meeting Hall"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_theatre
 	name = "\improper Holodeck - Theatre"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_picnicarea
 	name = "\improper Holodeck - Picnic Area"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_snowfield
 	name = "\improper Holodeck - Snow Field"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_desert
 	name = "\improper Holodeck - Desert"
-	jammed=SUPER_JAMMED
 
 /area/holodeck/source_space
 	name = "\improper Holodeck - Space"
-	jammed=SUPER_JAMMED
+
 
 
 
@@ -1017,11 +930,6 @@ proc/process_ghost_teleport_locs()
 		name = "Engineering"
 		icon_state = "engine_smes"
 
-	gravigen
-		name = "Gravity area"
-		icon_state = "engine_smes"
-
-
 	break_room
 		name = "\improper Engineering Foyer"
 		icon_state = "engine"
@@ -1029,7 +937,7 @@ proc/process_ghost_teleport_locs()
 	chiefs_office
 		name = "\improper Chief Engineer's office"
 		icon_state = "engine_control"
-		jammed=1
+
 
 //Solars
 
@@ -1104,8 +1012,6 @@ proc/process_ghost_teleport_locs()
 	name = "\improper Teleporter"
 	icon_state = "teleporter"
 	music = "signal"
-	jammed=1
-
 
 /area/gateway
 	name = "\improper Gateway"
@@ -1253,10 +1159,6 @@ proc/process_ghost_teleport_locs()
 /area/security/prison
 	name = "\improper Prison Wing"
 	icon_state = "sec_prison"
-
-/area/security/permabrig
- 	name = "\improper Permanent Cell"
- 	icon_state = "permabrig"
 
 /area/security/warden
 	name = "\improper Warden"
@@ -1413,6 +1315,10 @@ proc/process_ghost_teleport_locs()
 	name = "\improper Miscellaneous Research"
 	icon_state = "toxmisc"
 
+/area/toxins/telesci
+	name = "\improper Telescience Lab"
+	icon_state = "toxmisc"
+
 /area/toxins/server
 	name = "\improper Server Room"
 	icon_state = "server"
@@ -1473,49 +1379,6 @@ proc/process_ghost_teleport_locs()
 /area/djstation/solars
 	name = "\improper DJ Station Solars"
 	icon_state = "DJ"
-
-//SPAMSATELLITE
-/area/spamsatellite
-	name = "\improper Spam Messaging Satellite"
-	icon_state = "spamsatellite"
-
-//SHIPWRECK
-/area/shipwreck
-	name = "\improper Shipwreck"
-	icon_state = "shipwreck"
-
-//SHIP HEIST
-/area/shipheist
-	name = "Ship Heist"
-	icon_state = "shipheist"
-
-//DESOLATE BAR
-/area/desolatebar
-	name = "\improper Desolate Bar"
-	icon_state = "desolatebar"
-
-//MUSHROOM ASTEROID
-/area/mushroomasteroid
-	name = "Strange Asteroid"
-	icon_state = "mushroomasteroid"
-	music = 'sound/ambience/asteroid-desolate.ogg'
-
-//OLD COMMSAT
-/area/oldcomm
-	name = "Old Communication Satellite"
-	icon_state = "oldcomm"
-	music = 'sound/ambience/asteroid-desolate.ogg'
-
-//SMUGGLERS LAB
-/area/smugglers
-	name = "Smugglers Asteroid"
-	icon_state = "smugglers"
-	music = 'sound/ambience/shipambience.ogg'
-
-//LISTENING POST
-/area/listeningpost
-	name = "Asteroid"
-	icon_state = "listeningpost"
 
 //DERELICT
 

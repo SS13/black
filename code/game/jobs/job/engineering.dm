@@ -35,10 +35,8 @@
 		H.equip_to_slot_or_del(new /obj/item/clothing/gloves/black(H), slot_gloves)
 		if(H.backbag == 1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/engineer(H), slot_r_hand)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_l_hand)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/engineer(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
 		return 1
 
 
@@ -72,10 +70,8 @@
 		H.equip_to_slot_or_del(new /obj/item/device/pda/engineering(H), slot_l_store)
 		if(H.backbag == 1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/engineer(H), slot_r_hand)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_l_hand)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/engineer(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
 		return 1
 
 
@@ -89,8 +85,8 @@
 	spawn_positions = 2
 	supervisors = "the chief engineer"
 	selection_color = "#fff5cc"
-	access = list(access_eva, access_engine, access_engine_equip, access_tech_storage, access_maint_tunnels, access_external_airlocks, access_construction, access_atmospherics)
-	minimal_access = list(access_atmospherics, access_maint_tunnels, access_emergency_storage, access_external_airlocks, access_construction)
+	access = list(access_eva, access_engine, access_engine_equip, access_tech_storage, access_maint_tunnels, access_external_airlocks, access_construction, access_atmospherics, access_external_airlocks)
+	minimal_access = list(access_atmospherics, access_maint_tunnels, access_emergency_storage, access_construction, access_external_airlocks)
 
 
 	equip(var/mob/living/carbon/human/H)
@@ -106,8 +102,6 @@
 		H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/utility/atmostech/(H), slot_belt)
 		if(H.backbag == 1)
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/engineer(H), slot_r_hand)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H), slot_l_hand)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/engineer(H.back), slot_in_backpack)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/wallet/random(H.back), slot_in_backpack)
 		return 1

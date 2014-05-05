@@ -10,6 +10,24 @@
 	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 10, rad = 0)
 	flags = FPRINT | TABLEPASS
 
+/obj/item/clothing/under/rank/research_director/rdalt
+	desc = "A dress suit and slacks stained with hard work and dedication to science. Perhaps other things as well, but mostly hard work and dedication."
+	name = "head researcher uniform"
+	icon_state = "rdalt"
+	item_state = "rdalt"
+	item_color = "rdalt"
+	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 10, rad = 0)
+	flags = FPRINT | TABLEPASS
+
+/obj/item/clothing/under/rank/research_director/dress_rd
+	name = "research director dress uniform"
+	desc = "Feminine fashion for the style concious RD. Its fabric provides minor protection from biological contaminants."
+	icon_state = "dress_rd"
+	item_color = "dress_rd"
+	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 10, rad = 0)
+	flags = FPRINT | TABLEPASS
+
+
 /obj/item/clothing/under/rank/scientist
 	desc = "It's made of a special fiber that provides minor protection against biohazards. It has markings that denote the wearer as a scientist."
 	name = "scientist's jumpsuit"
@@ -64,9 +82,9 @@
 /obj/item/clothing/under/rank/nursesuit
 	desc = "It's a jumpsuit commonly worn by nursing staff in the medical department."
 	name = "nurse's suit"
-	icon_state = "nursesexy"
-	item_state = "nursesexy"
-	item_color = "nursesexy"
+	icon_state = "nursesuit"
+	item_state = "nursesuit"
+	item_color = "nursesuit"
 	permeability_coefficient = 0.50
 	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 10, rad = 0)
 
@@ -78,15 +96,6 @@
 	item_color = "nurse"
 	permeability_coefficient = 0.50
 	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 10, rad = 0)
-
-
-/obj/item/clothing/under/rank/nurse/nursenew
-	desc = "A dress commonly worn by the nursing staff in the medical department. This one has white stockings, hence the sex-shop look."
-	name = "nurse's dress"
-	icon_state = "nursenew"
-	item_state = "nursenew"
-	item_color = "nursenew"
-
 
 /obj/item/clothing/under/rank/orderly
 	desc = "A white suit to be worn by orderly people who love orderly things."

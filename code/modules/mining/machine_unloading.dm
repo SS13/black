@@ -34,17 +34,6 @@
 				i++
 				if (i>=10)
 					return
-
-		if (locate(/mob/living/carbon/, input.loc))
-			var/mob/living/carbon/C = locate(/mob/living/carbon/, input.loc)
-			if (!C.lying)
-				return
-			else
-				spawn ( 30 )
-				C.loc = src.loc
-				C.gib()
-
-
 		if (locate(/obj/item, input.loc))
 			var/obj/item/O
 			var/i

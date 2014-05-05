@@ -65,20 +65,9 @@
 		del(src)
 	else ..()
 
-
 /obj/structure/sign/double/map
 	name = "station map"
 	desc = "A framed picture of the station."
-
-/obj/structure/sign/double/map/MS
-	name = "station map"
-	desc = "A framed picture of a station."
-
-/obj/structure/sign/double/map/MS/left
-	icon_state = "map-left-MS"
-
-/obj/structure/sign/double/map/MS/right
-	icon_state = "map-right-MS"
 
 /obj/structure/sign/double/map/left
 	icon_state = "map-left"
@@ -138,26 +127,13 @@
 
 /obj/structure/sign/redcross
 	name = "medbay"
-	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here."
+	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here.'"
 	icon_state = "redcross"
 
 /obj/structure/sign/greencross
 	name = "medbay"
-	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here."
+	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here.'"
 	icon_state = "greencross"
-
-/obj/structure/sign/bluecross
-	name = "medbay"
-	desc = "The Intergalactic symbol of Medical institutions. You'll probably get help here."
-	icon_state = "bluecross"
-
-/obj/structure/sign/bluecross/alt
-	icon_state = "bluecross2"
-
-/obj/structure/sign/lifestar
-	name = "EMS"
-	desc = "Star of Life is the Intergalactic symbol of emergency medical services units and personnel."
-	icon_state = "lifestar"
 
 /obj/structure/sign/goldenplaque
 	name = "The Most Robust Men Award for Robustness"
@@ -199,94 +175,27 @@
 	desc = "A warning sign which reads 'HYDROPONICS'"
 	icon_state = "hydro1"
 
-/obj/structure/sign/wantedposter
-	name = "Wanted poster"
-	desc = "An old faded wanted poster with a picture of somebody wearing a gas mask. The text is illegible from age."
-	icon_state = "wantedposter"
+/obj/structure/sign/directions/science
+	name = "\improper Science department"
+	desc = "A direction sign, pointing out which way Science department is."
+	icon_state = "direction_sci"
 
-/obj/structure/sign/carp
-	name = "Space Carp Display"
-	desc = "Rather peculiar display of a spess carp. Somebody is quite good at space fishing."
-	icon_state = "carp"
+/obj/structure/sign/directions/engineering
+	name = "\improper Engineering department"
+	desc = "A direction sign, pointing out which way Engineering department is."
+	icon_state = "direction_eng"
 
+/obj/structure/sign/directions/security
+	name = "\improper Security department"
+	desc = "A direction sign, pointing out which way Security department is."
+	icon_state = "direction_sec"
 
-/obj/structure/sign/soviet/passport
-	name = "My comrade"
-	desc = "A sign depicting a passport os USSR-3, the slogan reads 'Moy tovarysch.'"
-	icon_state = "Mycomrade"
+/obj/structure/sign/directions/medical
+	name = "\improper Medical Bay"
+	desc = "A direction sign, pointing out which way Meducal Bay is."
+	icon_state = "direction_med"
 
-/obj/structure/sign/soviet/okhotsk
-	name = "\improper Okhotsuku14"
-	desc = "A coat of arms of Soviet colony Okhotsk-14. Strangely, the name of the colony is also written in hieroglyphs."
-	icon_state = "Okhotsuku14"
-
-/obj/structure/sign/soviet/ks13glory
-	name = "KS13"
-	desc = "A sign which reads 'Glory to the space station of The New Comintern!"
-	icon_state = "KC13glory"
-
-/obj/structure/sign/soviet/armyglory
-	name = "Space Army"
-	desc = "A sign which reads 'Glory to the Space Army!"
-	icon_state = "Glorytospacearmy"
-
-/obj/structure/sign/soviet/ks13vympel
-	name = "KS13 Pennant"
-	desc = "A pennant of KS 13"
-	icon_state = "KC13vympel"
-
-
-/obj/structure/sign/double/planet
-	name = "planet"
-	desc = "A framed picture of the planet."
-
-/obj/structure/sign/double/planet/left
-	icon_state = "planet-left"
-
-/obj/structure/sign/double/planet/right
-	icon_state = "planet-right"
-
-/obj/structure/sign/double/sky
-	name = "cloudy sky"
-	desc = "A framed picture of the cloudy sky."
-
-/obj/structure/sign/double/sky/left
-	icon_state = "sky-left"
-
-/obj/structure/sign/double/sky/right
-	icon_state = "sky-right"
-
-/obj/structure/sign/double/mountain
-	name = "mountain"
-	desc = "A framed picture of the mountain."
-
-/obj/structure/sign/double/mountain/left
-	icon_state = "mountain-left"
-
-/obj/structure/sign/double/mountain/right
-	icon_state = "mountain-right"
-
-//Got these from Ralphey
-/obj/structure/sign/advertisement
-	name = "advertisement display"
-	desc = "Drink some space cola!"
-	icon_state = "cola"
-
-/obj/structure/sign/advertisement/gin
-	desc = "Drink some gin!"
-	icon_state = "gin"
-
-/obj/structure/sign/advertisement/smoke
-	desc = "Smoking is cool!"
-	icon_state = "smoke"
-
-/obj/structure/sign/advertisement/random //Plain copypasta from barsigns.
-	icon_state = "gin"
-	anchored = 1
-	New()
-		ChangeSign(pick("gin", "cola", "smoke"))
-		return
-	proc/ChangeSign(var/Text)
-		src.desc = "[Text]"
-		luminosity = 1
-		return
+/obj/structure/sign/directions/evac
+	name = "\improper Escape Arm"
+	desc = "A direction sign, pointing out which way escape shuttle dock is."
+	icon_state = "direction_evac"

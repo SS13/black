@@ -15,7 +15,6 @@ var/global/list/special_roles = list( //keep synced with the defines BE_* in set
 	"cultist" = IS_MODE_COMPILED("cult"),                // 8
 	"infested monkey" = IS_MODE_COMPILED("monkey"),      // 9
 	"ninja" = "true",									 // 10
-	"meme" = IS_MODE_COMPILED("meme"),			// 11
 	"vox raider" = IS_MODE_COMPILED("heist"),			 // 11
 	"diona" = 1,                                         // 12
 )
@@ -45,6 +44,8 @@ datum/preferences
 	var/be_special = 0					//Special role selection
 	var/UI_style = "Midnight"
 	var/toggles = TOGGLES_DEFAULT
+	var/UI_style_color = "#ffffff"
+	var/UI_style_alpha = 255
 
 	//character preferences
 	var/real_name						//our character's name
@@ -70,6 +71,7 @@ datum/preferences
 	var/language = "None"				//Secondary language
 
 		//Mob preview
+	var/icon/preview_icon = null
 	var/icon/preview_icon_front = null
 	var/icon/preview_icon_side = null
 
@@ -241,10 +243,14 @@ datum/preferences
 
 		dat += "<br>"
 		dat += "<b>UI Style:</b> <a href='?_src_=prefs;preference=ui'><b>[UI_style]</b></a><br>"
+		dat += "<b>Custom UI</b>(recommended for White UI):<br>"
+		dat += "-Color: <a href='?_src_=prefs;preference=UIcolor'><b>[UI_style_color]</b></a> <table style='display:inline;' bgcolor='[UI_style_color]'><tr><td>__</td></tr></table><br>"
+		dat += "-Alpha(transparence): <a href='?_src_=prefs;preference=UIalpha'><b>[UI_style_alpha]</b></a><br>"
 		dat += "<b>Play admin midis:</b> <a href='?_src_=prefs;preference=hear_midis'><b>[(toggles & SOUND_MIDI) ? "Yes" : "No"]</b></a><br>"
 		dat += "<b>Play lobby music:</b> <a href='?_src_=prefs;preference=lobby_music'><b>[(toggles & SOUND_LOBBY) ? "Yes" : "No"]</b></a><br>"
 		dat += "<b>Ghost ears:</b> <a href='?_src_=prefs;preference=ghost_ears'><b>[(toggles & CHAT_GHOSTEARS) ? "Nearest Creatures" : "All Speech"]</b></a><br>"
 		dat += "<b>Ghost sight:</b> <a href='?_src_=prefs;preference=ghost_sight'><b>[(toggles & CHAT_GHOSTSIGHT) ? "Nearest Creatures" : "All Emotes"]</b></a><br>"
+		dat += "<b>Ghost radio:</b> <a href='?_src_=prefs;preference=ghost_radio'><b>[(toggles & CHAT_GHOSTRADIO) ? "Nearest Speakers" : "All Chatter"]</b></a><br>"
 
 		if(config.allow_Metadata)
 			dat += "<b>OOC Notes:</b> <a href='?_src_=prefs;preference=metadata;task=input'> Edit </a><br>"
@@ -258,10 +264,11 @@ datum/preferences
 		dat += "Species: <a href='byond://?src=\ref[user];preference=species;task=input'>[species]</a><br>"
 		dat += "Secondary Language:<br><a href='byond://?src=\ref[user];preference=language;task=input'>[language]</a><br>"
 		dat += "Blood Type: <a href='byond://?src=\ref[user];preference=b_type;task=input'>[b_type]</a><br>"
-		dat += "Skin Tone: <a href='?_src_=prefs;preference=s_tone;task=input'>[-s_tone +100]/550<br></a>"
+		dat += "Skin Tone: <a href='?_src_=prefs;preference=s_tone;task=input'>[-s_tone + 35]/220<br></a>"
 		//dat += "Skin pattern: <a href='byond://?src=\ref[user];preference=skin_style;task=input'>Adjust</a><br>"
 		dat += "Needs Glasses: <a href='?_src_=prefs;preference=disabilities'><b>[disabilities == 0 ? "No" : "Yes"]</b></a><br>"
 		dat += "Limbs: <a href='byond://?src=\ref[user];preference=limbs;task=input'>Adjust</a><br>"
+		dat += "Internal Organs: <a href='byond://?src=\ref[user];preference=organs;task=input'>Adjust</a><br>"
 
 		//display limbs below
 		var/ind = 0
@@ -286,6 +293,10 @@ datum/preferences
 					organ_name = "left hand"
 				if("r_hand")
 					organ_name = "right hand"
+				if("heart")
+					organ_name = "heart"
+				if("eyes")
+					organ_name = "eyes"
 
 			if(status == "cyborg")
 				++ind
@@ -297,6 +308,24 @@ datum/preferences
 				if(ind > 1)
 					dat += ", "
 				dat += "\tAmputated [organ_name]"
+			else if(status == "mechanical")
+				++ind
+				if(ind > 1)
+					dat += ", "
+				dat += "\tMechanical [organ_name]"
+			else if(status == "assisted")
+				++ind
+				if(ind > 1)
+					dat += ", "
+				switch(organ_name)
+					if("heart")
+						dat += "\tPacemaker-assisted [organ_name]"
+					if("voicebox") //on adding voiceboxes for speaking skrell/similar replacements
+						dat += "\tSurgically altered [organ_name]"
+					if("eyes")
+						dat += "\tRetinal overlayed [organ_name]"
+					else
+						dat += "\tMechanically assisted [organ_name]"
 		if(!ind)
 			dat += "\[...\]<br><br>"
 		else
@@ -895,12 +924,11 @@ datum/preferences
 							b_type = new_b_type
 
 					if("hair")
-						if(species == "Human" || species == "Unathi")
-							var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference") as color|null
-							if(new_hair)
-								r_hair = hex2num(copytext(new_hair, 2, 4))
-								g_hair = hex2num(copytext(new_hair, 4, 6))
-								b_hair = hex2num(copytext(new_hair, 6, 8))
+						var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference") as color|null // Translate it 1940
+						if(new_hair)
+							r_hair = hex2num(copytext(new_hair, 2, 4))
+							g_hair = hex2num(copytext(new_hair, 4, 6))
+							b_hair = hex2num(copytext(new_hair, 6, 8))
 
 					if("h_style")
 						var/list/valid_hairstyles = list()
@@ -911,12 +939,12 @@ datum/preferences
 
 							valid_hairstyles[hairstyle] = hair_styles_list[hairstyle]
 
-						var/new_h_style = input(user, "Choose your character's hair style:", "Character Preference")  as null|anything in valid_hairstyles
+						var/new_h_style = input(user, "Choose your character's hair style:", "Character Preference")  as null|anything in valid_hairstyles // Translate it 1941
 						if(new_h_style)
 							h_style = new_h_style
 
 					if("facial")
-						var/new_facial = input(user, "Choose your character's facial-hair colour:", "Character Preference") as color|null
+						var/new_facial = input(user, "Choose your character's facial-hair colour:", "Character Preference") as color|null // Translate it 1942
 						if(new_facial)
 							r_facial = hex2num(copytext(new_facial, 2, 4))
 							g_facial = hex2num(copytext(new_facial, 4, 6))
@@ -983,7 +1011,7 @@ datum/preferences
 
 						if(msg != null)
 							msg = copytext(msg, 1, MAX_MESSAGE_LEN)
-							msg = sanitize_uni(msg)
+							msg = html_encode(msg)
 
 							flavor_text = msg
 
@@ -1046,6 +1074,28 @@ datum/preferences
 								if(second_limb)
 									organ_data[second_limb] = "cyborg"
 
+					if("organs")
+						var/organ_name = input(user, "Which internal function do you want to change?") as null|anything in list("Heart", "Eyes")
+						if(!organ_name) return
+
+						var/organ = null
+						switch(organ_name)
+							if("Heart")
+								organ = "heart"
+							if("Eyes")
+								organ = "eyes"
+
+						var/new_state = input(user, "What state do you wish the organ to be in?") as null|anything in list("Normal","Assisted","Mechanical")
+						if(!new_state) return
+
+						switch(new_state)
+							if("Normal")
+								organ_data[organ] = null
+							if("Assisted")
+								organ_data[organ] = "assisted"
+							if("Mechanical")
+								organ_data[organ] = "mechanical"
+
 					if("skin_style")
 						var/skin_style_name = input(user, "Select a new skin style") as null|anything in list("default1", "default2", "default3")
 						if(!skin_style_name) return
@@ -1070,8 +1120,20 @@ datum/preferences
 								UI_style = "Orange"
 							if("Orange")
 								UI_style = "old"
+							if("old")
+								UI_style = "White"
 							else
 								UI_style = "Midnight"
+
+					if("UIcolor")
+						var/UI_style_color_new = input(user, "Choose your UI color, dark colors are not recommended!") as color|null
+						if(!UI_style_color_new) return
+						UI_style_color = UI_style_color_new
+
+					if("UIalpha")
+						var/UI_style_alpha_new = input(user, "Select a new alpha(transparence) parametr for UI, between 50 and 255") as num
+						if(!UI_style_alpha_new | !(UI_style_alpha_new <= 255 && UI_style_alpha_new >= 50)) return
+						UI_style_alpha = UI_style_alpha_new
 
 					if("be_special")
 						var/num = text2num(href_list["num"])
@@ -1095,6 +1157,9 @@ datum/preferences
 
 					if("ghost_sight")
 						toggles ^= CHAT_GHOSTSIGHT
+
+					if("ghost_radio")
+						toggles ^= CHAT_GHOSTRADIO
 
 					if("save")
 						save_preferences()
@@ -1165,19 +1230,27 @@ datum/preferences
 		character.skills = skills
 
 		// Destroy/cyborgize organs
+
 		for(var/name in organ_data)
 			var/datum/organ/external/O = character.organs_by_name[name]
-			if(!O) continue
-
+			var/datum/organ/internal/I = character.internal_organs_by_name[name]
 			var/status = organ_data[name]
+
 			if(status == "amputated")
 				O.amputated = 1
 				O.status |= ORGAN_DESTROYED
 				O.destspawn = 1
-			else if(status == "cyborg")
+			if(status == "cyborg")
 				O.status |= ORGAN_ROBOT
+			if(status == "assisted")
+				I.mechassist()
+			else if(status == "mechanical")
+				I.mechanize()
+
+			else continue
+
 		if(underwear > underwear_m.len || underwear < 1)
-			underwear = 1 //I'm sure this is 100% unnecessary, but I'm paranoid... sue me.
+			underwear = 0 //I'm sure this is 100% unnecessary, but I'm paranoid... sue me. //HAH NOW NO MORE MAGIC CLONING UNDIES
 		character.underwear = underwear
 
 		if(backbag > 4 || backbag < 1)

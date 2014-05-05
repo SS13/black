@@ -111,6 +111,8 @@ Implants;
 	feedback_set_details("round_start","[time2text(world.realtime)]")
 	if(ticker && ticker.mode)
 		feedback_set_details("game_mode","[ticker.mode]")
+	if(revdata)
+		feedback_set_details("revision","[revdata.revision]")
 	feedback_set_details("server_ip","[world.internet_address]:[world.port]")
 	return 1
 
@@ -193,6 +195,8 @@ Implants;
 	if(escaped_on_pod_5 > 0)
 		feedback_set("escaped_on_pod_5",escaped_on_pod_5)
 
+//	send2mainirc("A round of [src.name] has ended - [surviving_total] survivors, [ghosts] ghosts.")
+
 	return 0
 
 
@@ -204,11 +208,12 @@ Implants;
 	var/intercepttext = "<FONT size = 3><B>Cent. Com. Update</B> Requested status information:</FONT><HR>"
 	intercepttext += "<B> In case you have misplaced your copy, attached is a list of personnel whom reliable sources&trade; suspect may be affiliated with the Syndicate:</B><br>"
 
+
 	var/list/suspects = list()
 	for(var/mob/living/carbon/human/man in player_list) if(man.client && man.mind)
 		// NT relation option
 		var/special_role = man.mind.special_role
-		if (special_role == "Wizard" || special_role == "Ninja" || special_role == "Syndicate")
+		if (special_role == "Wizard" || special_role == "Ninja" || special_role == "Syndicate" || special_role == "Vox Raider")
 			continue	//NT intelligence ruled out possiblity that those are too classy to pretend to be a crew.
 		if(man.client.prefs.nanotrasen_relation == "Opposed" && prob(50) || \
 		   man.client.prefs.nanotrasen_relation == "Skeptical" && prob(20))
@@ -261,6 +266,8 @@ Implants;
 /datum/game_mode/proc/get_players_for_role(var/role, override_jobbans=0)
 	var/list/players = list()
 	var/list/candidates = list()
+	//var/list/drafted = list()
+	//var/datum/mind/applicant = null
 
 	var/roletext
 	switch(role)
@@ -271,7 +278,6 @@ Implants;
 		if(BE_REV)			roletext="revolutionary"
 		if(BE_CULTIST)		roletext="cultist"
 		if(BE_NINJA)		roletext="ninja"
-		if(BE_MEME)			roletext="meme"
 		if(BE_RAIDER)		roletext="raider"
 
 	// Assemble a list of active players without jobbans.

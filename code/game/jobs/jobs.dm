@@ -63,7 +63,6 @@ var/list/engineering_positions = list(
 	"Chief Engineer",
 	"Station Engineer",
 	"Atmospheric Technician",
-	"Roboticist"
 )
 
 

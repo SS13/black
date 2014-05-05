@@ -1,3 +1,6 @@
+//This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:31
+var/global/list/all_objectives = list()
+
 datum/objective
 	var/datum/mind/owner = null			//Who owns the objective.
 	var/explanation_text = "Nothing"	//What that person is supposed to do.
@@ -6,8 +9,13 @@ datum/objective
 	var/completed = 0					//currently only used for custom objectives.
 
 	New(var/text)
+		all_objectives |= src
 		if(text)
 			explanation_text = text
+
+	Del()
+		all_objectives -= src
+		..()
 
 	proc/check_completion()
 		return completed
@@ -17,10 +25,6 @@ datum/objective
 		for(var/datum/mind/possible_target in ticker.minds)
 			if(possible_target != owner && ishuman(possible_target.current) && (possible_target.current.stat != 2))
 				possible_targets += possible_target
-
-		for (var/datum/objective/O in owner.objectives)
-			possible_targets -= O.target
-
 		if(possible_targets.len > 0)
 			target = pick(possible_targets)
 
@@ -279,9 +283,6 @@ datum/objective/hijack
 	explanation_text = "Hijack the emergency shuttle by escaping alone."
 
 	check_completion()
-		if(istype(owner.current, /mob/living/parasite/meme))
-			if(!owner.current:host || owner.current:host.stat)
-				return 0
 		if(!owner.current || owner.current.stat)
 			return 0
 		if(emergency_shuttle.location<2)
@@ -362,10 +363,6 @@ datum/objective/escape
 				var/mob/living/carbon/C = owner.current
 				if (!C.handcuffed)
 					return 1
-			if(istype(owner.current:host, /mob/living/carbon))
-				var/mob/living/carbon/C = owner.current:host
-				if (!C.handcuffed)
-					return 1
 			return 0
 
 		var/area/check_area = location.loc
@@ -388,9 +385,6 @@ datum/objective/survive
 	explanation_text = "Stay alive until the end."
 
 	check_completion()
-		if(istype(owner.current, /mob/living/parasite/meme))
-			if(owner.current:host.stat == DEAD)
-				return 0
 		if(!owner.current || owner.current.stat == DEAD || isbrain(owner.current))
 			return 0		//Brains no longer win survive objectives. --NEO
 		if(issilicon(owner.current) && owner.current != owner.original)
@@ -543,7 +537,7 @@ datum/objective/steal
 			var/tmp_obj = new custom_target
 			var/custom_name = tmp_obj:name
 			del(tmp_obj)
-			custom_name = copytext(sanitize(input("Enter target name:", "Objective target", custom_name) as text|null),1,MAX_MESSAGE_LEN)
+			custom_name = copytext(sanitize_multi(input("Enter target name:", "Objective target", custom_name) as text|null),1,MAX_MESSAGE_LEN)
 			if (!custom_name) return
 			target_name = custom_name
 			steal_target = custom_target
@@ -556,8 +550,6 @@ datum/objective/steal
 		if(!steal_target || !owner.current)	return 0
 		if(!isliving(owner.current))	return 0
 		var/list/all_items = owner.current.get_contents()
-		if(istype(owner.current, /mob/living/parasite/meme))
-			all_items = owner.current:host.get_contents()
 		switch (target_name)
 			if("28 moles of plasma (full tank)","10 diamonds","50 gold bars","25 refined uranium bars")
 				var/target_amount = text2num(target_name)//Non-numbers are ignored.
@@ -607,19 +599,6 @@ datum/objective/steal
 						return 1
 		return 0
 
-
-datum/objective/meme_attune
-	proc/gen_amount_goal(var/lowbound = 4, var/highbound = 6)
-		target_amount = rand (lowbound,highbound)
-
-		explanation_text = "Attune [target_amount] humanoid brains."
-		return target_amount
-
-	check_completion()
-		if(owner && owner.current && istype(owner.current,/mob/living/parasite/meme) && (owner.current:indoctrinated.len >= target_amount))
-			return 1
-		else
-			return 0
 
 
 datum/objective/download
@@ -943,8 +922,12 @@ datum/objective/heist/inviolate_crew
 		if(H.is_raider_crew_safe()) return 1
 		return 0
 
+#define MAX_VOX_KILLS 10 //Number of kills during the round before the Inviolate is broken.
+						 //Would be nice to use vox-specific kills but is currently not feasible.
+var/global/vox_kills = 0 //Used to check the Inviolate.
+
 datum/objective/heist/inviolate_death
 	explanation_text = "Follow the Inviolate. Minimise death and loss of resources."
 	check_completion()
-		if(vox_kills>5) return 0
+		if(vox_kills > MAX_VOX_KILLS) return 0
 		return 1

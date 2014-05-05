@@ -7,11 +7,14 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 */
 
 /obj/item/device/uplink
+
 	var/welcome 					// Welcoming menu message
 	var/items						// List of items
+	var/valid_items = list()
 	var/item_data					// raw item text
 	var/list/ItemList				// Parsed list of items
 	var/uses 						// Numbers of crystals
+	var/nanoui_items[0]
 	// List of items not to shove in their hands.
 	var/list/NotInHand = list(/obj/machinery/singularity_beacon/syndicate)
 
@@ -23,6 +26,41 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 		items = replacetext(item_data)
 	ItemList = text2list(src.items, ";")	// Parsing the items text string
 	uses = ticker.mode.uplink_uses
+	nanoui_items = generate_nanoui_items()
+	for(var/D in ItemList)
+		var/list/O = text2list(D, ":")
+		if(O.len>0)
+			valid_items += O[1]		
+
+
+
+/*
+	Built the Items List for use with NanoUI
+*/
+
+/obj/item/device/uplink/proc/generate_nanoui_items()
+	var/items_nano[0]
+	for(var/D in ItemList)
+		var/list/O = text2list(D, ":")
+		if(O.len != 3)  //If it is not an actual item, make a break in the menu.
+			if(O.len == 1)  //If there is one item, it's probably a title
+				items_nano[++items_nano.len] = list("Category" = "[O[1]]", "items" = list())
+			continue
+
+		var/path_text = O[1]
+		var/cost = text2num(O[2])
+
+		var/path_obj = text2path(path_text)
+
+		// Because we're using strings, this comes up if item paths change.
+		// Failure to handle this error borks uplinks entirely.  -Sayu
+		if(!path_obj)
+			error("Syndicate item is not a valid path: [path_text]")
+		else
+			var/itemname = O[3]
+			items_nano[items_nano.len]["items"] += list(list("Name" = itemname, "Cost" = cost, "obj_path" = path_text))
+
+	return items_nano
 
 //Let's build a menu!
 /obj/item/device/uplink/proc/generate_menu()
@@ -41,7 +79,7 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 	var/category_items = 1 //To prevent stupid :P
 
 	for(var/D in ItemList)
-		var/list/O = stringsplit(D, ":")
+		var/list/O = text2list(D, ":")
 		if(O.len != 3)	//If it is not an actual item, make a break in the menu.
 			if(O.len == 1)	//If there is one item, it's probably a title
 				dat += "<b>[O[1]]</b><br>"
@@ -53,7 +91,7 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 			continue
 
 		path_text = O[1]
-		cost = text2num(O[2])
+		cost = Clamp(text2num(O[2]),1,20) //Another halfassed fix for href exploit ~Z
 
 		if(cost>uses)
 			continue
@@ -98,7 +136,6 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 		randomItems.Add("/obj/item/device/radio/beacon/syndicate") //Singularity Beacon
 
 	if(uses > 5)
-		randomItems.Add("new /obj/item/device/flashlight/emp")//EMP jammer hidden in a flashlight
 		randomItems.Add("/obj/item/weapon/gun/projectile") //Revolver
 
 	if(uses > 4)
@@ -114,7 +151,6 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 		randomItems.Add("/obj/item/weapon/storage/box/emps") //EMP Grenades
 		randomItems.Add("/obj/item/weapon/pen/paralysis") //Paralysis Pen
 		randomItems.Add("/obj/item/weapon/cartridge/syndicate") //Detomatix Cartridge
-		randomItems.Add("/obj/item/weapon/melee/knifezippo")//Zippo with hidden knife
 		randomItems.Add("/obj/item/clothing/under/chameleon") //Chameleon Jumpsuit
 		randomItems.Add("/obj/item/weapon/card/id/syndicate") //Agent ID Card
 		randomItems.Add("/obj/item/weapon/card/emag") //Cryptographic Sequencer
@@ -158,11 +194,11 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 				uses -= 6
 			if("/obj/item/weapon/gun/energy/crossbow" , "/obj/item/device/powersink")
 				uses -= 5
-			if("/obj/item/weapon/melee/energy/sword" , "/obj/item/clothing/mask/gas/voice" , "/obj/item/device/chameleon" , "/obj/item/device/flashlight/emp")
+			if("/obj/item/weapon/melee/energy/sword" , "/obj/item/clothing/mask/gas/voice" , "/obj/item/device/chameleon")
 				uses -= 4
 			if("/obj/item/weapon/storage/box/emps" , "/obj/item/weapon/pen/paralysis" , "/obj/item/weapon/cartridge/syndicate" , "/obj/item/clothing/under/chameleon" , \
 			"/obj/item/weapon/card/emag" , "/obj/item/weapon/storage/box/syndie_kit/space" , "/obj/item/device/encryptionkey/binary" , \
-			"/obj/item/weapon/storage/box/syndie_kit/imp_freedom" , "/obj/item/clothing/glasses/thermal/syndi","/obj/item/weapon/melee/knifezippo")
+			"/obj/item/weapon/storage/box/syndie_kit/imp_freedom" , "/obj/item/clothing/glasses/thermal/syndi")
 				uses -= 3
 			if("/obj/item/ammo_magazine/a357" , "/obj/item/clothing/shoes/syndigaloshes" , "/obj/item/weapon/plastique", "/obj/item/weapon/card/id/syndicate")
 				uses -= 2
@@ -224,20 +260,16 @@ A list of items and costs is stored under the datum of every game mode, alongsid
 			feedback_add_details("traitor_uplink_items_bought","RA")
 		if("/obj/item/clothing/shoes/syndigaloshes")
 			feedback_add_details("traitor_uplink_items_bought","SH")
-		if("/obj/item/weapon/melee/knifezippo")
-			feedback_add_details("traitor_uplink_items_bought","ZP")
 		if("/obj/item/weapon/plastique")
 			feedback_add_details("traitor_uplink_items_bought","C4")
 		if("/obj/item/weapon/soap/syndie")
 			feedback_add_details("traitor_uplink_items_bought","SP")
 		if("/obj/item/weapon/storage/toolbox/syndicate")
 			feedback_add_details("traitor_uplink_items_bought","ST")
-		if ("/obj/item/device/flashlight/emp")
-			feedback_add_details("traitor_uplink_items_bought","FL")
-/
-obj/item/device/uplink/Topic(href, href_list)
 
+/obj/item/device/uplink/Topic(href, href_list)
 	if (href_list["buy_item"])
+
 		if(href_list["buy_item"] == "random")
 			var/boughtItem = chooseRandomItem()
 			if(boughtItem)
@@ -305,42 +337,63 @@ obj/item/device/uplink/Topic(href, href_list)
 		return 1
 	return 0
 
-// Interaction code. Gathers a list of items purchasable from the paren't uplink and displays it. It also adds a lock button.
-/obj/item/device/uplink/hidden/interact(mob/user as mob)
+/*
+	NANO UI FOR UPLINK WOOP WOOP
+*/
+/obj/item/device/uplink/hidden/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null)
+	var/title = "Syndicate Uplink"
+	var/data[0]
 
-	var/dat = "<body link='yellow' alink='white' bgcolor='#601414'><font color='white'>"
-	dat += src.generate_menu()
-	dat += "<A href='byond://?src=\ref[src];lock=1'>Lock</a>"
-	dat += "</font></body>"
-	user << browse(dat, "window=hidden")
-	onclose(user, "hidden")
-	return
+	data["crystals"] = uses
+	data["nano_items"] = nanoui_items
+	data["welcome"] = welcome
+
+	// update the ui if it exists, returns null if no ui is passed/found
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data)
+	if (!ui)
+		// the ui does not exist, so we'll create a new() one
+        // for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
+		ui = new(user, src, ui_key, "uplink.tmpl", title, 450, 600)
+		// when the ui is first opened this is the data it will use
+		ui.set_initial_data(data)
+		// open the new ui window
+		ui.open()
+
+// Interaction code. Gathers a list of items purchasable from the paren't uplink and displays it. It also adds a lock button.
+/obj/item/device/uplink/hidden/interact(mob/user)
+
+	ui_interact(user)
 
 // The purchasing code.
 /obj/item/device/uplink/hidden/Topic(href, href_list)
-
 	if (usr.stat || usr.restrained())
 		return
 
 	if (!( istype(usr, /mob/living/carbon/human)))
 		return 0
-
+	var/mob/user = usr
+	var/datum/nanoui/ui = nanomanager.get_open_ui(user, src, "main")
 	if ((usr.contents.Find(src.loc) || (in_range(src.loc, usr) && istype(src.loc.loc, /turf))))
 		usr.set_machine(src)
 		if(href_list["lock"])
 			toggle()
-			usr << browse(null, "window=hidden")
+			ui.close()
 			return 1
 
 		if(..(href, href_list) == 1)
+
+			if(!(href_list["buy_item"] in valid_items))
+				return
+
 			var/path_obj = text2path(href_list["buy_item"])
+
 			var/obj/I = new path_obj(get_turf(usr))
 			if(ishuman(usr))
 				var/mob/living/carbon/human/A = usr
 				A.put_in_any_hand_if_possible(I)
 			purchase_log += "[usr] ([usr.ckey]) bought [I]."
 	interact(usr)
-	return
+	return 1
 
 // I placed this here because of how relevant it is.
 // You place this in your uplinkable item to check if an uplink is active or not.
@@ -382,6 +435,3 @@ obj/item/device/uplink/Topic(href, href_list)
 	..()
 	hidden_uplink = new(src)
 	hidden_uplink.uses = 10
-
-
-

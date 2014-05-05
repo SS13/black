@@ -3,8 +3,7 @@ var/inactive_keys = "None<br>"
 
 /client/proc/check_customitem_activity()
 	set category = "Admin"
-	set name = "Activity of PwCI"
-	set desc = "Check activity of players with custom items"
+	set name = "Check activity of players with custom items"
 
 	var/dat = "<b>Inactive players with custom items</b><br>"
 	dat += "<br>"

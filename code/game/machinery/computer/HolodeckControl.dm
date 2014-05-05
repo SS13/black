@@ -349,7 +349,7 @@
 						T.temperature = 5000
 						T.hotspot_expose(50000,50000,1)
 			if(L.name=="Holocarp Spawn")
-				new /mob/living/simple_animal/hostile/carp/holocarp(L.loc)
+				new /mob/living/simple_animal/hostile/carp(L.loc)
 
 
 /obj/machinery/computer/HolodeckControl/proc/emergencyShutdown()
@@ -454,6 +454,15 @@
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "wood_table"
 
+/obj/structure/holostool
+	name = "stool"
+	desc = "Apply butt."
+	icon = 'icons/obj/objects.dmi'
+	icon_state = "stool"
+	anchored = 1.0
+	flags = FPRINT
+	pressure_resistance = 15
+
 
 /obj/item/clothing/gloves/boxing/hologlove
 	name = "boxing gloves"
@@ -523,6 +532,12 @@
 		w_class = 2
 		playsound(user, 'sound/weapons/saberoff.ogg', 50, 1)
 		user << "\blue [src] can now be concealed."
+
+	if(istype(user,/mob/living/carbon/human))
+		var/mob/living/carbon/human/H = user
+		H.update_inv_l_hand()
+		H.update_inv_r_hand()
+
 	add_fingerprint(user)
 	return
 
@@ -564,7 +579,7 @@
 /obj/structure/holohoop/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if (istype(mover,/obj/item) && mover.throwing)
 		var/obj/item/I = mover
-		if(istype(I, /obj/item/weapon/dummy) || istype(I, /obj/item/projectile))
+		if(istype(I, /obj/item/projectile))
 			return
 		if(prob(50))
 			I.loc = src.loc

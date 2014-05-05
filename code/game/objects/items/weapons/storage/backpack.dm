@@ -23,12 +23,12 @@
  */
 
 /obj/item/weapon/storage/backpack/holding
-	name = "Bag of Holding"
+	name = "bag of holding"
 	desc = "A backpack that opens into a localized pocket of Blue Space."
 	origin_tech = "bluespace=4"
 	icon_state = "holdingpack"
-	max_w_class = 5
-	max_combined_w_class = 35
+	max_w_class = 4
+	max_combined_w_class = 28
 
 	New()
 		..()
@@ -84,7 +84,7 @@
 	icon_state = "cultpack"
 
 /obj/item/weapon/storage/backpack/clown
-	name = "Giggles Von Honkerton"
+	name = "Giggles von Honkerton"
 	desc = "It's a backpack made by Honk! Co."
 	icon_state = "clownpack"
 	item_state = "clownpack"
@@ -100,12 +100,6 @@
 	desc = "It's a very robust backpack."
 	icon_state = "securitypack"
 	item_state = "securitypack"
-
-/obj/item/weapon/storage/backpack/ertcommander
-	name = "ERT commander backpack"
-	desc = "A backpack for the ERT commander."
-	icon_state = "ertpack"
-	item_state = "ertpack"
 
 /obj/item/weapon/storage/backpack/captain
 	name = "captain's backpack"
@@ -186,10 +180,3 @@
 	desc = "An exclusive satchel for Nanotrasen officers."
 	icon_state = "satchel-cap"
 	item_state = "captainpack"
-
-/obj/item/weapon/storage/backpack/toy
-	name = "space backpack"
-	icon = 'icons/obj/tank.dmi'
-	desc = "You can look like a real spessman with it! WARNING: this backpack is not suitable for real space EVA!"
-	icon_state = "jetpack-on"
-	item_state = "jetpack-on"

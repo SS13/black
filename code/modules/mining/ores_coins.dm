@@ -4,7 +4,7 @@
 	name = "Rock"
 	icon = 'icons/obj/mining.dmi'
 	icon_state = "ore2"
-	var/datum/geosample/geological_data
+	var/datum/geosample/geologic_data
 
 /obj/item/weapon/ore/uranium
 	name = "Uranium ore"
@@ -81,30 +81,6 @@
 	throwforce = 0.0
 	w_class = 1.0
 	var/string_attached
-	var/spamcheck = 0
-
-/obj/item/weapon/coin/attack_self(mob/user as mob)
-	if (spamcheck)
-		return
-
-	var/result = rand(1, 3)
-	var/comment = "Head!"
-	if(result == 1)
-		comment = "Head"
-		user.visible_message("<span class='notice'>[user] has flipped [src]. Catches it in the air. [comment]</span>")
-		playsound(user.loc, 'sound/items/coinflip_caught.ogg', 40, 1)
-	if(result == 2)
-		comment = "Tail!"
-		user.visible_message("<span class='notice'>[user] has flipped [src]. Catches it in the air. [comment]</span>")
-		playsound(user.loc, 'sound/items/coinflip_caught.ogg', 40, 1)
-	if(result == 3)
-		user.drop_item()
-		user.visible_message("<span class='notice'>[user] has flipped [src], but could not catch it! [src] lands on the floor! </span>")
-		playsound(user.loc, 'sound/items/coinflip_drop.ogg', 50, 1)
-
-		spamcheck = 1
-	spawn(30)
-		spamcheck = 0
 
 /obj/item/weapon/coin/New()
 	pixel_x = rand(0,16)-8

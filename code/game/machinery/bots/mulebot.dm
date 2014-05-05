@@ -51,7 +51,7 @@
 						// the installed power cell
 
 	// constants for internal wiring bitflags
-	var/const/wire_power1 = 1		// power connections
+	var/const/wire_power1 = 1			// power connections
 	var/const/wire_power2 = 2
 	var/const/wire_mobavoid = 4		// mob avoidance
 	var/const/wire_loadcheck = 8		// load checking (non-crate)
@@ -964,6 +964,6 @@
 	s.set_up(3, 1, src)
 	s.start()
 
-	new /obj/effect/decal/cleanable/oil(src.loc)
+	new /obj/effect/decal/cleanable/blood/oil(src.loc)
 	unload(0)
 	del(src)

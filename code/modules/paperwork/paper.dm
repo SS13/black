@@ -42,6 +42,8 @@
 		return
 
 /obj/item/weapon/paper/update_icon()
+	if(icon_state == "paper_talisman")
+		return
 	if(info)
 		icon_state = "paper_words"
 		return
@@ -227,6 +229,30 @@
 		\[hr\] : Adds a horizontal rule.
 	</BODY></HTML>"}, "window=paper_help")
 
+/obj/item/weapon/paper/proc/burnpaper(obj/item/weapon/lighter/P, mob/user)
+	var/class = "<span class='warning'>"
+
+	if(P.lit && !user.restrained())
+		if(istype(P, /obj/item/weapon/lighter/zippo))
+			class = "<span class='rose'>"
+
+		user.visible_message("[class][user] holds \the [P] up to \the [src], it looks like \he's trying to burn it!", \
+		"[class]You hold \the [P] up to \the [src], burning it slowly.")
+
+		spawn(20)
+			if(get_dist(src, user) < 2 && user.get_active_hand() == P && P.lit)
+				user.visible_message("[class][user] burns right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap.", \
+				"[class]You burn right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap.")
+
+				if(user.get_inactive_hand() == src)
+					user.drop_from_inventory(src)
+
+				new /obj/effect/decal/cleanable/ash(src.loc)
+				del(src)
+
+			else
+				user << "\red You must hold \the [P] steady to burn \the [src]."
+
 
 /obj/item/weapon/paper/Topic(href, href_list)
 	..()
@@ -235,6 +261,8 @@
 
 	if(href_list["write"])
 		var/id = href_list["write"]
+		//var/t = strip_html_simple(input(usr, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
+		//var/t =  strip_html_simple(input("Enter what you want to write:", "Write", null, null)  as message, MAX_MESSAGE_LEN)
 		var/t =  input("Enter what you want to write:", "Write", null, null)  as message
 		var/obj/item/i = usr.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
 		var/iscrayon = 0
@@ -284,6 +312,7 @@
 			user << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]")
 		//openhelp(user)
 		return
+
 	else if(istype(P, /obj/item/weapon/stamp))
 		if((!in_range(src, usr) && loc != user && !( istype(loc, /obj/item/weapon/clipboard) ) && loc.loc != user && user.get_active_hand() != P))
 			return
@@ -309,28 +338,7 @@
 		user << "<span class='notice'>You stamp the paper with your rubber stamp.</span>"
 
 	else if(istype(P, /obj/item/weapon/lighter))
-		var/class = "<span class='warning'>"
-
-		if(P:lit && !user.restrained())
-			if(istype(P, /obj/item/weapon/lighter))
-				class = "<span class='rose'>"
-
-			user.visible_message("[class][user] holds \the [P] up to \the [src], it looks like \he's trying to burn it!", \
-			"[class]You hold \the [P] up to \the [src], burning it slowly.")
-
-			spawn(20)
-				if(get_dist(src, user) < 2 && user.get_active_hand() == P && P:lit)
-					user.visible_message("[class][user] burns right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap.", \
-					"[class]You burn right through \the [src], turning it to ash. It flutters through the air before settling on the floor in a heap.")
-
-					if(user.get_inactive_hand() == src)
-						user.drop_from_inventory(src)
-
-					new /obj/effect/decal/cleanable/ash(src.loc)
-					del(src)
-
-				else
-					user << "\red You must hold \the [P] steady to burn \the [src]."
+		burnpaper(P, user)
 
 	add_fingerprint(user)
 	return
@@ -342,13 +350,9 @@
 	name = "paper- 'Judgement'"
 	info = "For crimes against the station, the offender is sentenced to:<BR>\n<BR>\n"
 
-/obj/item/weapon/paper/gravity_gen
-	name = "paper- 'Generate your own gravity!'"
-	info = "<h1>Gravity Generator Instructions For Dummies</h1>\n\t<p>Surprisingly, gravity isn't that hard to make! All you have to do is inject deadly radioactive minerals into a ball of\n\tenergy and you have yourself gravity! You can turn the machine on or off when required but you must remember that the generator\n\twill EMIT RADIATION when charging or discharging, you can tell it is charging or discharging by the noise it makes, so please WEAR PROTECTIVE CLOTHING.</p>\n\t<br>\n\t<h3>It blew up!</h3>\n\t<p>Don't panic! The gravity generator was designed to be easily repaired. If, somehow, the sturdy framework did not survive then\n\tplease proceed to panic; otherwise follow these steps.</p><ol>\n\t<li>Secure the screws of the framework with a screwdriver.</li>\n\t<li>Mend the damaged framework with a welding tool.</li>\n\t<li>Add additional plasteel plating.</li>\n\t<li>Secure the additional plating with a wrench.</li></ol>"
-
 /obj/item/weapon/paper/Toxin
 	name = "paper- 'Chemical Information'"
-	info = "Known Onboard Toxins:<BR>\n\tGrade A Semi-Liquid Plasma:<BR>\n\t\tHighly poisonous. You cannot sustain concentrations above 15 units.<BR>\n\t\tA gas mask fails to filter plasma after 50 units.<BR>\n\t\tWill attempt to diffuse like a gas.<BR>\n\t\tFiltered by scrubbers.<BR>\n\t\tThere is a bottled version which is very different<BR>\n\t\t\tfrom the version found in canisters!<BR>\n<BR>\n\t\tWARNING: Highly Flammable. Keep away from heat sources<BR>\n\t\texcept in a enclosed fire area!<BR>\n\t\tWARNING: It is a crime to use this without authorization.<BR>\nKnown Onboard Anti-Toxin:<BR>\n\tAnti-Toxin Type 01P: Works against Grade A Plasma.<BR>\n\t\tBest if injected directly into bloodstream.<BR>\n\t\tA full injection is in every regular Med-Kit.<BR>\n\t\tSpecial toxin Kits hold around 7.<BR>\n<BR>\nKnown Onboard Chemicals (other):<BR>\n\tRejuvenation T#001:<BR>\n\t\tEven 1 unit injected directly into the bloodstream<BR>\n\t\t\twill cure paralysis and sleep toxins.<BR>\n\t\tIf administered to a dying patient it will prevent<BR>\n\t\t\tfurther damage for about units*3 seconds.<BR>\n\t\t\tit will not cure them or allow them to be cured.<BR>\n\t\tIt can be administeredd to a non-dying patient<BR>\n\t\t\tbut the chemicals disappear just as fast.<BR>\n\tSleep Toxin T#054:<BR>\n\t\t5 units will induce precisely 1 minute of sleep.<BR>\n\t\t\tThe effect are cumulative.<BR>\n\t\tWARNING: It is a crime to use this without authorization"
+	info = "Known Onboard Toxins:<BR>\n\tGrade A Semi-Liquid Plasma:<BR>\n\t\tHighly poisonous. You cannot sustain concentrations above 15 units.<BR>\n\t\tA gas mask fails to filter plasma after 50 units.<BR>\n\t\tWill attempt to diffuse like a gas.<BR>\n\t\tFiltered by scrubbers.<BR>\n\t\tThere is a bottled version which is very different<BR>\n\t\t\tfrom the version found in canisters!<BR>\n<BR>\n\t\tWARNING: Highly Flammable. Keep away from heat sources<BR>\n\t\texcept in a enclosed fire area!<BR>\n\t\tWARNING: It is a crime to use this without authorization.<BR>\nKnown Onboard Anti-Toxin:<BR>\n\tAnti-Toxin Type 01P: Works against Grade A Plasma.<BR>\n\t\tBest if injected directly into bloodstream.<BR>\n\t\tA full injection is in every regular Med-Kit.<BR>\n\t\tSpecial toxin Kits hold around 7.<BR>\n<BR>\nKnown Onboard Chemicals (other):<BR>\n\tRejuvenation T#001:<BR>\n\t\tEven 1 unit injected directly into the bloodstream<BR>\n\t\t\twill cure paralysis and sleep toxins.<BR>\n\t\tIf administered to a dying patient it will prevent<BR>\n\t\t\tfurther damage for about units*3 seconds.<BR>\n\t\t\tit will not cure them or allow them to be cured.<BR>\n\t\tIt can be administeredd to a non-dying patient<BR>\n\t\t\tbut the chemicals disappear just as fast.<BR>\n\tSleep Toxin T#054:<BR>\n\t\t5 units wilkl induce precisely 1 minute of sleep.<BR>\n\t\t\tThe effect are cumulative.<BR>\n\t\tWARNING: It is a crime to use this without authorization"
 
 /obj/item/weapon/paper/courtroom
 	name = "paper- 'A Crash Course in Legal SOP on SS13'"

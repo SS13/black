@@ -15,6 +15,8 @@
 			return 0
 		if (affected.status & ORGAN_DESTROYED)
 			return 0
+		if (target_zone == "head" && target.species && (target.species.flags & IS_SYNTHETIC))
+			return 1
 		if (affected.status & ORGAN_ROBOT)
 			return 0
 		return 1
@@ -30,7 +32,6 @@
 	max_duration = 110
 
 	can_use(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
-		if(!istype(target)) return
 		var/datum/organ/external/affected = target.get_organ(target_zone)
 		return ..() && affected.open == 0 && target_zone != "mouth"
 
@@ -53,8 +54,8 @@
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/datum/organ/external/affected = target.get_organ(target_zone)
-		user.visible_message("\red [user]'s hand slips, slicing open [target]'s [affected.display_name] in a wrong spot with \the [tool]!", \
-		"\red Your hand slips, slicing open [target]'s [affected.display_name] in a wrong spot with \the [tool]!")
+		user.visible_message("\red [user]'s hand slips, slicing open [target]'s [affected.display_name] in the wrong place with \the [tool]!", \
+		"\red Your hand slips, slicing open [target]'s [affected.display_name] in the wrong place with \the [tool]!")
 		affected.createwound(CUT, 10)
 
 /datum/surgery_step/generic/clamp_bleeders
@@ -134,14 +135,14 @@
 
 	fail_step(mob/living/user, mob/living/carbon/human/target, target_zone, obj/item/tool)
 		var/datum/organ/external/affected = target.get_organ(target_zone)
-		var/msg = "\red [user]'s hand slips, tearing the edges of incision on [target]'s [affected.display_name] with \the [tool]!"
-		var/self_msg = "\red Your hand slips, tearing the edges of incision on [target]'s [affected.display_name] with \the [tool]!"
+		var/msg = "\red [user]'s hand slips, tearing the edges of the incision on [target]'s [affected.display_name] with \the [tool]!"
+		var/self_msg = "\red Your hand slips, tearing the edges of the incision on [target]'s [affected.display_name] with \the [tool]!"
 		if (target_zone == "chest")
-			msg = "\red [user]'s hand slips, damaging several organs [target]'s torso with \the [tool]!"
-			self_msg = "\red Your hand slips, damaging several organs [target]'s torso with \the [tool]!"
+			msg = "\red [user]'s hand slips, damaging several organs in [target]'s torso with \the [tool]!"
+			self_msg = "\red Your hand slips, damaging several organs in [target]'s torso with \the [tool]!"
 		if (target_zone == "groin")
-			msg = "\red [user]'s hand slips, damaging several organs [target]'s lower abdomen with \the [tool]"
-			self_msg = "\red Your hand slips, damaging several organs [target]'s lower abdomen with \the [tool]!"
+			msg = "\red [user]'s hand slips, damaging several organs in [target]'s lower abdomen with \the [tool]"
+			self_msg = "\red Your hand slips, damaging several organs in [target]'s lower abdomen with \the [tool]!"
 		user.visible_message(msg, self_msg)
 		target.apply_damage(12, BRUTE, affected)
 

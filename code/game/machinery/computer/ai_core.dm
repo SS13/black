@@ -179,15 +179,6 @@
 			A.transfer_ai("INACTIVE","AICARD",src,user)
 		return
 
-	attack_hand(var/mob/user as mob)
-		if(ishuman(user))//Checks to see if they are ninja
-			if(istype(user:gloves, /obj/item/clothing/gloves/space_ninja)&&user:gloves:candrain&&!user:gloves:draining)
-				if(user:wear_suit:s_control)
-					user:wear_suit:transfer_ai("INACTIVE","NINJASUIT",src,user)
-				else
-					user << "\red <b>ERROR</b>: \black Remote access channel disabled."
-		return
-
 /*
 This is a good place for AI-related object verbs so I'm sticking it here.
 If adding stuff to this, don't forget that an AI need to cancel_camera() whenever it physically moves to a different location.
@@ -271,7 +262,7 @@ That prevents a few funky behaviors.
 							A.loc = T.loc
 							A.cancel_camera()
 							A << "You have been uploaded to a stationary terminal. Remote device connection restored."
-							U << "\blue <b>Transfer succesful</b>: \black [A.name] ([rand(1000,9999)].exe) installed and executed succesfully. Local copy has been removed."
+							U << "\blue <b>Transfer successful</b>: \black [A.name] ([rand(1000,9999)].exe) installed and executed successfully. Local copy has been removed."
 							del(T)
 			if("AIFIXER")//AI Fixer terminal.
 				var/obj/machinery/computer/aifixer/T = target
@@ -295,7 +286,7 @@ That prevents a few funky behaviors.
 								T.overlays -= image('icons/obj/computer.dmi', "ai-fixer-empty")
 								A.cancel_camera()
 								A << "You have been uploaded to a stationary terminal. Sadly, there is no remote access from here."
-								U << "\blue <b>Transfer successful</b>: \black [A.name] ([rand(1000,9999)].exe) installed and executed succesfully. Local copy has been removed."
+								U << "\blue <b>Transfer successful</b>: \black [A.name] ([rand(1000,9999)].exe) installed and executed successfully. Local copy has been removed."
 						else
 							if(!C.contents.len && T.occupant && !T.active)
 								C.name = "inteliCard - [T.occupant.name]"
@@ -307,7 +298,7 @@ That prevents a few funky behaviors.
 									C.icon_state = "aicard-full"
 									T.overlays -= image('icons/obj/computer.dmi', "ai-fixer-full")
 								T.occupant << "You have been downloaded to a mobile storage device. Still no remote access."
-								U << "\blue <b>Transfer succesful</b>: \black [T.occupant.name] ([rand(1000,9999)].exe) removed from host terminal and stored within local memory."
+								U << "\blue <b>Transfer successful</b>: \black [T.occupant.name] ([rand(1000,9999)].exe) removed from host terminal and stored within local memory."
 								T.occupant.loc = C
 								T.occupant.cancel_camera()
 								T.occupant = null
@@ -332,7 +323,7 @@ That prevents a few funky behaviors.
 								T.overlays -= image('icons/obj/computer.dmi', "ai-fixer-empty")
 								A.cancel_camera()
 								A << "You have been uploaded to a stationary terminal. Sadly, there is no remote access from here."
-								U << "\blue <b>Transfer successful</b>: \black [A.name] ([rand(1000,9999)].exe) installed and executed succesfully. Local copy has been removed."
+								U << "\blue <b>Transfer successful</b>: \black [A.name] ([rand(1000,9999)].exe) installed and executed successfully. Local copy has been removed."
 						else
 							if(!C.AI && T.occupant && !T.active)
 								if (T.occupant.stat)

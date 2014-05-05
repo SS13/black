@@ -148,6 +148,8 @@
 			msg += "<span class='warning'>[t_He] [t_is] wearing \icon[shoes] [shoes.gender==PLURAL?"some":"a"] blood-stained [shoes.name] on [t_his] feet!</span>\n"
 		else
 			msg += "[t_He] [t_is] wearing \icon[shoes] \a [shoes] on [t_his] feet.\n"
+	else if(feet_blood_DNA)
+		msg += "<span class='warning'>[t_He] [t_has] blood-stained feet!</span>\n"
 
 	//mask
 	if(wear_mask && !skipmask)
@@ -203,7 +205,7 @@
 	if(suiciding)
 		msg += "<span class='warning'>[t_He] appears to have commited suicide... there is no hope of recovery.</span>\n"
 
-	if(MSMALLSIZE in mutations)
+	if(mSmallsize in mutations)
 		msg += "[t_He] [t_is] small halfling!\n"
 
 	var/distance = get_dist(usr,src)
@@ -243,7 +245,7 @@
 	if(!key && brain_op_stage != 4 && stat != DEAD)
 		msg += "<span class='deadsay'>[t_He] [t_is] totally catatonic. The stresses of life in deep-space must have been too much for [t_him]. Any recovery is unlikely</span>\n"
 	else if(!client && brain_op_stage != 4 && stat != DEAD)
-		msg += "[t_He] [t_has] a vacant, braindead stare...\n"
+		msg += "[t_He] [t_has] suddenly fallen asleep.\n"
 
 	var/list/wound_flavor_text = list()
 	var/list/is_destroyed = list()
@@ -416,7 +418,6 @@
 	if(hasHUD(usr,"medical"))
 		var/perpname = "wot"
 		var/medical = "None"
-		msg += "<span class='warning'>Damage Specifics: [src.getOxyLoss()]-[src.getToxLoss()]-[src.getFireLoss()]-[src.getBruteLoss()]</span>\n"
 
 		if(wear_id)
 			if(istype(wear_id,/obj/item/weapon/card/id))
@@ -437,7 +438,8 @@
 		msg += "<span class = 'deptradio'>Medical records:</span> <a href='?src=\ref[src];medrecord=`'>\[View\]</a> <a href='?src=\ref[src];medrecordadd=`'>\[Add comment\]</a>\n"
 
 
-	if(print_flavor_text() && !skipface) msg += "[print_flavor_text()]\n"
+	if(print_flavor_text()) msg += "[print_flavor_text()]\n"
+	if(mob_alert) msg += "[t_He] looking for something.\n"
 
 	msg += "*---------*</span>"
 	if (pose)
@@ -452,10 +454,10 @@
 			if (istype(O, usr))
 				break
 			if (O != src)
-				O.show_message("<b>[usr]</b> looking at <b>[src]</b>.", 1)
+				O.show_message("<b>[usr]</b> смотрит на <b>[src]</b>.", 1)
 			else
-				O.show_message("<b>[usr]</b> looking at <b>you</b>", 1)
-		usr << "<b>You</b> looking at <b>[src]</b>"
+				O.show_message("<b>[usr]</b> смотрит на <b>вас</b>", 1)
+		usr << "<b>“ы</b> смотришь на <b>[src]</b>"
 
 //Helper procedure. Called by /mob/living/carbon/human/examine() and /mob/living/carbon/human/Topic() to determine HUD access to security and medical records.
 /proc/hasHUD(mob/M as mob, hudtype)

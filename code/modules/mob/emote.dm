@@ -10,7 +10,7 @@
 
 	var/input
 	if(!message)
-		input = copytext(sanitize(input(src,"Choose an emote to display.") as text|null),1,MAX_MESSAGE_LEN)
+		input = copytext(input(src,"Choose an emote to display.") as text|null,1,MAX_MESSAGE_LEN)
 	else
 		input = message
 	if(input)
@@ -20,6 +20,7 @@
 
 
 	if (message)
+		message = sanitize_multi(message)
 		log_emote("[name]/[key] : [message]")
 
  //Hearing gasp and such every five seconds is not good emotes were not global for a reason.
@@ -36,18 +37,16 @@
 				M.show_message(message)
 
 
+		// Type 1 (Visual) emotes are sent to anyone in view of the item
 		if (m_type & 1)
 			for (var/mob/O in viewers(src, null))
 				O.show_message(message, m_type)
-				if(istype(O,/mob/living/carbon/human))
-					for(var/mob/living/parasite/P in O:parasites)
-						P.show_message(message, m_type)
+
+		// Type 2 (Audible) emotes are sent to anyone in hear range
+		// of the *LOCATION* -- this is important for pAIs to be heard
 		else if (m_type & 2)
-			for (var/mob/O in hearers(src.loc, null))
+			for (var/mob/O in hearers(get_turf(src), null))
 				O.show_message(message, m_type)
-				if(istype(O,/mob/living/carbon/human))
-					for(var/mob/living/parasite/P in O:parasites)
-						P.show_message(message, m_type)
 
 /mob/proc/emote_dead(var/message)
 
@@ -63,6 +62,7 @@
 		if(!dsay_allowed)
 			src << "\red Deadchat is globally muted"
 			return
+
 
 	var/input
 	if(!message)
@@ -86,5 +86,5 @@
 			if(M.client && M.client.holder && (M.client.holder.rights & R_ADMIN|R_MOD) && (M.client.prefs.toggles & CHAT_DEAD)) // Show the emote to admins/mods
 				M << message
 
-			else if(M.stat == DEAD && M.client && (M.client.prefs.toggles & CHAT_DEAD)) // Show the emote to regular ghosts with deadchat toggled on
+			else if(M.stat == DEAD && (M.client.prefs.toggles & CHAT_DEAD)) // Show the emote to regular ghosts with deadchat toggled on
 				M.show_message(message, 2)

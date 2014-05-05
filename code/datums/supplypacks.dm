@@ -45,13 +45,13 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 
 /datum/supply_packs/food
 	name = "Food crate"
-	contains = list(/obj/item/weapon/reagent_containers/food/drinks/flour,
-					/obj/item/weapon/reagent_containers/food/drinks/sugar,
+	contains = list(/obj/item/weapon/reagent_containers/food/snacks/flour,
+					/obj/item/weapon/reagent_containers/food/snacks/flour,
+					/obj/item/weapon/reagent_containers/food/snacks/flour,
+					/obj/item/weapon/reagent_containers/food/snacks/flour,
 					/obj/item/weapon/reagent_containers/food/drinks/milk,
 					/obj/item/weapon/reagent_containers/food/drinks/milk,
 					/obj/item/weapon/storage/fancy/egg_box,
-					/obj/item/weapon/reagent_containers/food/condiment/enzyme,
-					/obj/item/weapon/reagent_containers/food/snacks/grown/banana,
 					/obj/item/weapon/reagent_containers/food/snacks/grown/banana,
 					/obj/item/weapon/reagent_containers/food/snacks/grown/banana)
 	cost = 10
@@ -129,24 +129,16 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/item/weapon/reagent_containers/food/drinks/bottle/goldschlager,
 					/obj/item/weapon/storage/fancy/cigarettes/dromedaryco,
 					/obj/item/weapon/lipstick/random,
-					/obj/item/weapon/reagent_containers/food/drinks/ale,
-					/obj/item/weapon/reagent_containers/food/drinks/ale,
-					/obj/item/weapon/reagent_containers/food/drinks/beer,
-					/obj/item/weapon/reagent_containers/food/drinks/beer,
-					/obj/item/weapon/reagent_containers/food/drinks/beer)
-	cost = 25
+					/obj/item/weapon/reagent_containers/food/drinks/cans/ale,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/ale,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer,
+					/obj/item/weapon/reagent_containers/food/drinks/cans/beer)
+	cost = 20
 	containertype = /obj/structure/closet/crate
 	containername = "Party equipment"
 	group = "Hospitality"
-
-/datum/supply_packs/piano
-	name = "Piano set"
-	contains = list(/obj/structure/device/piano)
-	cost = 215
-	containertype = /obj/structure/largecrate
-	containername = "Piano. Caution: Fragile!"
-	group = "Hospitality"
-
 
 /datum/supply_packs/internals
 	name = "Internals crate"
@@ -185,6 +177,8 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 /datum/supply_packs/janitor
 	name = "Janitorial supplies"
 	contains = list(/obj/item/weapon/reagent_containers/glass/bucket,
+					/obj/item/weapon/reagent_containers/glass/bucket,
+					/obj/item/weapon/reagent_containers/glass/bucket,
 					/obj/item/weapon/mop,
 					/obj/item/weapon/caution,
 					/obj/item/weapon/caution,
@@ -210,38 +204,6 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containertype = /obj/structure/closet/crate
 	containername = "Replacement lights"
 	group = "Engineering"
-
-/datum/supply_packs/costume
-	name = "Standard Costume crate"
-	contains = list(/obj/item/weapon/storage/backpack/clown,
-					/obj/item/clothing/shoes/clown_shoes,
-					/obj/item/clothing/mask/gas/clown_hat,
-					/obj/item/clothing/under/rank/clown,
-					/obj/item/weapon/bikehorn,
-					/obj/item/clothing/under/mime,
-					/obj/item/clothing/shoes/black,
-					/obj/item/clothing/gloves/white,
-					/obj/item/clothing/mask/gas/mime,
-					/obj/item/clothing/head/beret,
-					/obj/item/clothing/suit/suspenders,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/bottleofnothing)
-	cost = 20
-	containertype = /obj/structure/closet/crate/secure
-	containername = "Standard Costumes"
-	access = access_theatre
-	group = "Operations"
-
-/datum/supply_packs/boxing
-	name = "Boxing gear supply"
-	contains = list(/obj/item/clothing/gloves/boxing,
-					/obj/item/clothing/gloves/boxing/blue,
-					/obj/item/clothing/gloves/boxing/green,
-					/obj/item/clothing/gloves/boxing/yellow)
-
-	cost = 15
-	containertype = /obj/structure/closet
-	containername = "Boxing gear"
-	group = "Operations"
 
 /datum/supply_packs/wizard
 	name = "Wizard costume"
@@ -351,16 +313,6 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	access = access_hydroponics
 	group = "Hydroponics"
 
-
-/datum/supply_packs/tray
-	name = "Hydroponics Tray Crate" //Grow weed in cargo every shift, mah niggah!
-	contains = list(/obj/machinery/hydroponics)
-	cost = 35
-	containertype = /obj/structure/closet/crate/hydroponics
-	containername = "Hydroponics tray cratee"
-	access = access_hydroponics
-	group = "Hydroponics"
-
 /datum/supply_packs/exoticseeds
 	name = "Exotic Seeds Crate"
 	contains = list(/obj/item/seeds/nettleseed,
@@ -381,7 +333,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 
 /datum/supply_packs/medical
 	name = "Medical crate"
-	contains = list(/obj/item/weapon/storage/firstaid/radiation,
+	contains = list(/obj/item/weapon/storage/firstaid/regular,
 					/obj/item/weapon/storage/firstaid/fire,
 					/obj/item/weapon/storage/firstaid/toxin,
 					/obj/item/weapon/storage/firstaid/o2,
@@ -391,7 +343,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/item/weapon/reagent_containers/glass/bottle/stoxin,
 					/obj/item/weapon/storage/box/syringes,
 					/obj/item/weapon/storage/box/autoinjectors)
-	cost = 15
+	cost = 10
 	containertype = /obj/structure/closet/crate/medical
 	containername = "Medical crate"
 	group = "Medical / Science"
@@ -484,6 +436,14 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containertype = /obj/structure/largecrate
 	containername = "fuel tank crate"
 	group = "Engineering"
+
+/datum/supply_packs/coolanttank
+	name = "Coolant tank crate"
+	contains = list(/obj/structure/reagent_dispensers/coolanttank)
+	cost = 16
+	containertype = /obj/structure/largecrate
+	containername = "coolant tank crate"
+	group = "Medical / Science"
 
 /datum/supply_packs/solar
 	name = "Solar Pack crate"
@@ -695,33 +655,6 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	access = access_armory
 	group = "Security"
 
-/*datum/supply_packs/riotadvanced
-	name = "Advanced riot gear crate"
-	contains = list(/obj/item/weapon/melee/classic_baton/nightstick,
-					/obj/item/weapon/melee/classic_baton/nightstick,
-					/obj/item/weapon/melee/classic_baton/nightstick,
-					/obj/item/weapon/shield/metal,
-					/obj/item/weapon/shield/metal,
-					/obj/item/weapon/shield/metal,
-					/obj/item/clothing/gloves/combat,
-					/obj/item/clothing/gloves/combat,
-					/obj/item/clothing/gloves/combat,
-					/obj/item/weapon/storage/box/flashbangs,
-					/obj/item/weapon/handcuffs,
-					/obj/item/weapon/handcuffs,
-					/obj/item/weapon/handcuffs,
-					/obj/item/clothing/head/helmet/riot/tinted,
-					/obj/item/clothing/suit/armor/riot,
-					/obj/item/clothing/head/helmet/riot/tinted,
-					/obj/item/clothing/suit/armor/riot,
-					/obj/item/clothing/head/helmet/riot/tinted,
-					/obj/item/clothing/suit/armor/riot)
-	cost = 75
-	containertype = /obj/structure/closet/crate/secure
-	containername = "Advanced riot gear crate"
-	access = access_armory
-	group = "Security"*/
-
 /datum/supply_packs/loyalty
 	name = "Loyalty implant crate"
 	contains = list (/obj/item/weapon/storage/lockbox/loyalty)
@@ -731,37 +664,33 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	access = access_armory
 	group = "Security"
 
-/datum/supply_packs/ballisticcombat
-	name = "Combat ballistic gear crate"
+/datum/supply_packs/ballistic
+	name = "Ballistic gear crate"
 	contains = list(/obj/item/clothing/suit/armor/bulletproof,
 					/obj/item/clothing/suit/armor/bulletproof,
 					/obj/item/weapon/gun/projectile/shotgun/pump/combat,
 					/obj/item/weapon/gun/projectile/shotgun/pump/combat)
-	cost = 75
+	cost = 50
 	containertype = /obj/structure/closet/crate/secure
-	containername = "Combat ballistic gear crate"
+	containername = "Ballistic gear crate"
 	access = access_armory
 	group = "Security"
 
-/datum/supply_packs/ballisticservice
-	name = "Service ballistic gear crate"
-	contains = list(/obj/item/clothing/suit/armor/bulletproof,
-					/obj/item/clothing/suit/armor/bulletproof,
-					/obj/item/weapon/gun/projectile/shotgun/pump,
-					/obj/item/weapon/gun/projectile/shotgun/pump)
-	cost = 65
+/datum/supply_packs/erifle
+	name = "Energy marksman crate"
+	contains = list(/obj/item/clothing/suit/armor/laserproof,
+					/obj/item/clothing/suit/armor/laserproof,
+					/obj/item/weapon/gun/energy/sniperrifle,
+					/obj/item/weapon/gun/energy/sniperrifle)
+	cost = 50
 	containertype = /obj/structure/closet/crate/secure
-	containername = "Service ballistic gear crate"
+	containername = "Energy marksman crate"
 	access = access_armory
 	group = "Security"
-
 
 /datum/supply_packs/shotgunammo
 	name = "Shotgun shells"
 	contains = list(/obj/item/ammo_casing/shotgun,
-					/obj/item/ammo_casing/shotgun,
-					/obj/item/ammo_casing/shotgun,
-					/obj/item/ammo_casing/shotgun,
 					/obj/item/ammo_casing/shotgun,
 					/obj/item/ammo_casing/shotgun,
 					/obj/item/ammo_casing/shotgun,
@@ -807,7 +736,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/machinery/deployable/barrier,
 					/obj/machinery/deployable/barrier,
 					/obj/machinery/deployable/barrier)
-	cost = 30
+	cost = 20
 	containertype = /obj/structure/closet/crate/secure/gear
 	containername = "Security Barriers crate"
 	group = "Security"
@@ -818,7 +747,7 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/machinery/shieldwallgen,
 					/obj/machinery/shieldwallgen,
 					/obj/machinery/shieldwallgen)
-	cost = 35
+	cost = 20
 	containertype = /obj/structure/closet/crate/secure
 	containername = "Shield Generators crate"
 	access = access_teleporter
@@ -839,7 +768,6 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/item/clothing/head/collectable/wizard,
 					/obj/item/clothing/head/collectable/hardhat,
 					/obj/item/clothing/head/collectable/HoS,
-					/obj/item/clothing/head/hardhat/justice,
 					/obj/item/clothing/head/collectable/thunderdome,
 					/obj/item/clothing/head/collectable/swat,
 					/obj/item/clothing/head/collectable/slime,
@@ -874,11 +802,10 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	/obj/item/weapon/reagent_containers/glass/paint/white,
 	/obj/item/weapon/reagent_containers/glass/paint/remover,
 	/obj/item/weapon/contraband/poster,
-	/obj/item/hand_labeler_refill,
 	/obj/item/weapon/wrapping_paper,
 	/obj/item/weapon/wrapping_paper,
 	/obj/item/weapon/wrapping_paper)
-	cost = 15
+	cost = 10
 	containertype = "/obj/structure/closet/crate"
 	containername = "Arts and Crafts crate"
 	group = "Operations"
@@ -887,9 +814,8 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	num_contained = 5
 	contains = list(/obj/item/seeds/bloodtomatoseed,
 					/obj/item/weapon/storage/pill_bottle/zoom,
-					/obj/item/weapon/contraband/poster,
 					/obj/item/weapon/storage/pill_bottle/happy,
-					/obj/item/weapon/reagent_containers/food/drinks/bottle/absinthe)
+					/obj/item/weapon/reagent_containers/food/drinks/bottle/pwine)
 
 	name = "Contraband crate"
 	cost = 30
@@ -952,13 +878,35 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/item/pizzabox/meat,
 					/obj/item/pizzabox/vegetable)
 	name = "Surprise pack of five dozen pizzas"
-	cost = 20
+	cost = 15
 	containertype = /obj/structure/closet/crate/freezer
 	containername = "Pizza crate"
 	group = "Hospitality"
 
+/datum/supply_packs/randomised/costume
+	num_contained = 2
+	contains = list(/obj/item/clothing/suit/pirate,
+					/obj/item/clothing/suit/johnny_coat,
+					/obj/item/clothing/suit/judgerobe,
+					/obj/item/clothing/suit/wcoat,
+					/obj/item/clothing/suit/hastur,
+					/obj/item/clothing/suit/imperium_monk,
+					/obj/item/clothing/suit/ianshirt,
+					/obj/item/clothing/under/gimmick/rank/captain/suit,
+					/obj/item/clothing/under/gimmick/rank/head_of_personnel/suit,
+					/obj/item/clothing/under/lawyer/purpsuit,
+					/obj/item/clothing/suit/suspenders,
+					/obj/item/clothing/suit/storage/labcoat/mad,
+					/obj/item/clothing/suit/bio_suit/plaguedoctorsuit)
+	name = "Standard Costume crate"
+	cost = 10
+	containertype = /obj/structure/closet/crate/secure
+	containername = "Standard Costumes"
+	access = access_theatre
+	group = "Operations"
+
 /datum/supply_packs/formal_wear
-	contains = list(/obj/item/clothing/head/fedora,
+	contains = list(/obj/item/clothing/head/bowler,
 					/obj/item/clothing/head/that,
 					/obj/item/clothing/suit/storage/lawyer/bluejacket,
 					/obj/item/clothing/suit/storage/lawyer/purpjacket,
@@ -1020,6 +968,25 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	group = "Engineering"
 	access = access_ce
 
+/datum/supply_packs/smbig
+	name = "Supermatter Core"
+	contains = list(/obj/machinery/power/supermatter)
+	cost = 50
+	containertype = /obj/structure/closet/crate/secure/plasma
+	containername = "Supermatter crate (CAUTION)"
+	group = "Engineering"
+	access = access_ce
+
+
+/* /datum/supply_packs/smsmall // Currently nonfunctional, waiting on virgil
+	name = "Supermatter Shard"
+	contains = list(/obj/machinery/power/supermatter/shard)
+	cost = 25
+	containertype = /obj/structure/closet/crate/secure/plasma
+	containername = "Supermatter shard crate (CAUTION)"
+	access = access_ce
+	group = "Engineering" */
+
 /datum/supply_packs/shield_cap
 	contains = list(/obj/item/weapon/circuitboard/shield_cap)
 	name = "Experimental shield capacitor circuitry"
@@ -1054,6 +1021,24 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containername = "Atmospheric circulator crate"
 	group = "Engineering"
 	access = access_engine
+
+/datum/supply_packs/air_dispenser
+	contains = list(/obj/machinery/pipedispenser/orderable)
+	name = "Pipe Dispenser"
+	cost = 35
+	containertype = /obj/structure/closet/crate/secure/large
+	containername = "Pipe Dispenser Crate"
+	group = "Engineering"
+	access = access_atmospherics
+
+/datum/supply_packs/disposals_dispenser
+	contains = list(/obj/machinery/pipedispenser/disposal/orderable)
+	name = "Disposals Pipe Dispenser"
+	cost = 35
+	containertype = /obj/structure/closet/crate/secure/large
+	containername = "Disposal Dispenser Crate"
+	group = "Engineering"
+	access = access_atmospherics
 
 /datum/supply_packs/bee_keeper
 	name = "Beekeeping Crate"

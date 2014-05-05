@@ -9,7 +9,7 @@
 	name = "space minimoog"
 	icon = 'icons/obj/musician.dmi'
 	icon_state = "minimoog"
-	anchored = 0
+	anchored = 1
 	density = 1
 	var/datum/song/song
 	var/playing = 0

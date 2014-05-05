@@ -7,7 +7,7 @@
 	Enjoy! - Doohl
 
 
-	Notice: This all gets automatically compiled in a list in dna.dm, so you do not
+	Notice: This all gets automatically compiled in a list in dna2.dm, so you do not
 	have to define any UI values for sprite accessories manually for hair and facial
 	hair. Just add in new hair types and the game will naturally adapt.
 
@@ -60,6 +60,10 @@
 	cut
 		name = "Cut Hair"
 		icon_state = "hair_c"
+
+	flair
+		name = "Flaired Hair"
+		icon_state = "hair_flair"
 
 	long
 		name = "Shoulder-length Hair"
@@ -123,6 +127,11 @@
 	ponytail3
 		name = "Ponytail 3"
 		icon_state = "hair_ponytail3"
+
+	sideponytail
+		name = "Side Ponytail"
+		icon_state = "hair_stail"
+		gender = FEMALE
 
 	parted
 		name = "Parted"
@@ -235,7 +244,7 @@
 	hitop
 		name = "Hitop"
 		icon_state = "hair_hitop"
-		//gender = MALE
+		gender = MALE
 
 	mohawk
 		name = "Mohawk"
@@ -244,18 +253,22 @@
 	jensen
 		name = "Adam Jensen Hair"
 		icon_state = "hair_jensen"
-		//gender = MALE
+		gender = MALE
 
 	gelled
 		name = "Gelled Back"
 		icon_state = "hair_gelled"
-		//gender = FEMALE
+		gender = FEMALE
+
+	gentle
+		name = "Gentle"
+		icon_state = "hair_gentle"
+		gender = FEMALE
 
 	spiky
 		name = "Spiky"
 		icon_state = "hair_spikey"
 		species_allowed = list("Human","Unathi")
-
 	kusangi
 		name = "Kusanagi Hair"
 		icon_state = "hair_kusanagi"
@@ -283,10 +296,15 @@
 		icon_state = "hair_braid"
 		gender = FEMALE
 
+	braid2
+		name = "Long Braid"
+		icon_state = "hair_hbraid"
+		gender = FEMALE
+
 	odango
 		name = "Odango"
 		icon_state = "hair_odango"
-		//gender = FEMALE
+		gender = FEMALE
 
 	ombre
 		name = "Ombre"
@@ -301,31 +319,101 @@
 	updo
 		name = "Updo"
 		icon_state = "hair_updo"
-		//gender = FEMALE
+		gender = FEMALE
 
 	skinhead
 		name = "Skinhead"
 		icon_state = "hair_skinhead"
-		gender = MALE
-
-	sidepart
-		name = "Sidepart"
-		icon_state = "hair_sidepart"
-		gender = MALE
-
-	fancyboy
-		name = "Fancyboy`s hairdo"
-		icon_state = "hair_fancyboy"
 
 	balding
 		name = "Balding Hair"
 		icon_state = "hair_e"
 		gender = MALE // turnoff!
 
-
 	bald
 		name = "Bald"
 		icon_state = "bald"
+
+	icp_screen_pink
+		name = "pink IPC screen"
+		icon_state = "ipc_pink"
+		species_allowed = list("Machine")
+
+	icp_screen_red
+		name = "red IPC screen"
+		icon_state = "ipc_red"
+		species_allowed = list("Machine")
+
+	icp_screen_green
+		name = "green IPC screen"
+		icon_state = "ipc_green"
+		species_allowed = list("Machine")
+
+	icp_screen_blue
+		name = "blue IPC screen"
+		icon_state = "ipc_blue"
+		species_allowed = list("Machine")
+
+	icp_screen_breakout
+		name = "breakout IPC screen"
+		icon_state = "ipc_breakout"
+		species_allowed = list("Machine")
+
+	icp_screen_eight
+		name = "eight IPC screen"
+		icon_state = "ipc_eight"
+		species_allowed = list("Machine")
+
+	icp_screen_goggles
+		name = "goggle eyes IPC screen"
+		icon_state = "ipc_goggles"
+		species_allowed = list("Machine")
+
+	icp_screen_monoeye
+		name = "monoeye IPC screen"
+		icon_state = "ipc_monoeye"
+		species_allowed = list("Machine")
+
+	icp_screen_nature
+		name = "nature scene IPC screen"
+		icon_state = "ipc_nature"
+		species_allowed = list("Machine")
+
+	icp_screen_orange
+		name = "orange IPC screen"
+		icon_state = "ipc_orange"
+		species_allowed = list("Machine")
+
+	icp_screen_purple
+		name = "purple IPC screen"
+		icon_state = "ipc_purple"
+		species_allowed = list("Machine")
+
+	icp_screen_shower
+		name = "shower head IPC screen"
+		icon_state = "ipc_shower"
+		species_allowed = list("Machine")
+
+	icp_screen_static
+		name = "static IPC screen"
+		icon_state = "ipc_static"
+		species_allowed = list("Machine")
+
+	icp_screen_yellow
+		name = "yellow IPC screen"
+		icon_state = "ipc_yellow"
+		species_allowed = list("Machine")
+
+	icp_screen_heart
+		name = "heart IPC screen"
+		icon_state = "ipc_heart"
+		species_allowed = list("Machine")
+
+	icp_screen_slim
+		name = "slim_IPC_screen"
+		icon_state = "ipc_slim"
+		species_allowed = list("Machine")
+
 /*
 ///////////////////////////////////
 /  =---------------------------=  /
@@ -343,7 +431,7 @@
 		name = "Shaved"
 		icon_state = "bald"
 		gender = NEUTER
-		species_allowed = list("Human","Unathi","Tajaran","Skrell","Vox")
+		species_allowed = list("Human","Unathi","Tajaran","Skrell","Vox","Machine")
 
 	watson
 		name = "Watson Mustache"
@@ -423,31 +511,31 @@
 		name = "Long Unathi Spines"
 		icon_state = "soghun_longspines"
 		species_allowed = list("Unathi")
-		do_colouration = 1
+		do_colouration = 0
 
 	una_spines_short
 		name = "Short Unathi Spines"
 		icon_state = "soghun_shortspines"
 		species_allowed = list("Unathi")
-		do_colouration = 1
+		do_colouration = 0
 
 	una_frills_long
 		name = "Long Unathi Frills"
 		icon_state = "soghun_longfrills"
 		species_allowed = list("Unathi")
-		do_colouration = 1
+		do_colouration = 0
 
 	una_frills_short
 		name = "Short Unathi Frills"
-		icon_state = "soghun_shortfrill"
+		icon_state = "soghun_shortfrills"
 		species_allowed = list("Unathi")
-		do_colouration = 1
+		do_colouration = 0
 
 	una_horns
 		name = "Unathi Horns"
 		icon_state = "soghun_horns"
 		species_allowed = list("Unathi")
-		do_colouration = 1
+		do_colouration = 0
 
 	skr_tentacle_m
 		name = "Skrell Male Tentacles"
@@ -495,67 +583,78 @@
 		name = "Tajaran Ears"
 		icon_state = "ears_plain"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_clean
 		name = "Tajara Clean"
 		icon_state = "hair_clean"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
+
+	taj_ears_bangs
+		name = "Tajara Bangs"
+		icon_state = "hair_bangs"
+		species_allowed = list("Tajaran")
+		do_colouration = 0
+
+	taj_ears_braid
+		name = "Tajara Braid"
+		icon_state = "hair_tbraid"
+		species_allowed = list("Tajaran")
+		do_colouration = 0
 
 	taj_ears_shaggy
 		name = "Tajara Shaggy"
 		icon_state = "hair_shaggy"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_mohawk
 		name = "Tajaran Mohawk"
 		icon_state = "hair_mohawk"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_plait
 		name = "Tajara Plait"
 		icon_state = "hair_plait"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_straight
 		name = "Tajara Straight"
 		icon_state = "hair_straight"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_long
 		name = "Tajara Long"
 		icon_state = "hair_long"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_rattail
 		name = "Tajara Rat Tail"
 		icon_state = "hair_rattail"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_spiky
 		name = "Tajara Spiky"
 		icon_state = "hair_tajspiky"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_ears_messy
 		name = "Tajara Messy"
 		icon_state = "hair_messy"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	vox_quills_short
 		name = "Short Vox Quills"
 		icon_state = "vox_shortquills"
 		species_allowed = list("Vox")
-		do_colouration = 1
 
 /datum/sprite_accessory/facial_hair
 
@@ -563,37 +662,37 @@
 		name = "Tajara Sideburns"
 		icon_state = "facial_mutton"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_mutton
 		name = "Tajara Mutton"
 		icon_state = "facial_mutton"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_pencilstache
 		name = "Tajara Pencilstache"
 		icon_state = "facial_pencilstache"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_moustache
 		name = "Tajara Moustache"
 		icon_state = "facial_moustache"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_goatee
 		name = "Tajara Goatee"
 		icon_state = "facial_goatee"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 	taj_smallstache
 		name = "Tajara Smallsatche"
 		icon_state = "facial_smallstache"
 		species_allowed = list("Tajaran")
-		do_colouration = 1
+		do_colouration = 0
 
 //skin styles - WIP
 //going to have to re-integrate this with surgery

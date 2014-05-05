@@ -1,18 +1,19 @@
 /mob/living/carbon/human/movement_delay()
-	if(MRUN in mutations)
-		return (config.human_delay)
-
 	var/tally = 0
+
+	if(species && species.flags & IS_SLOW)
+		tally = 7
+
+	if (istype(loc, /turf/space)) return -1 // It's hard to be slowed down in space by... anything
+
+	if(embedded_flag)
+		handle_embedded_objects() //Moving with objects stuck in you can cause bad times.
 
 	if(reagents.has_reagent("hyperzine")) return -1
 
 	if(reagents.has_reagent("nuka_cola")) return -1
 
-	if (istype(loc, /turf/space)) return -1 // It's hard to be slowed down in space by... anything
-
-	handle_embedded_objects() //Moving with objects stuck in you can cause bad times.
-
-	var/health_deficiency = (100 - health - halloss)
+	var/health_deficiency = (100 - health + halloss)
 	if(health_deficiency >= 40) tally += (health_deficiency / 25)
 
 	var/hungry = (500 - nutrition)/5 // So overeat would be 100 and default level would be 80
@@ -40,7 +41,11 @@
 	if (bodytemperature < 283.222)
 		tally += (283.222 - bodytemperature) / 10 * 1.75
 
+	if(mRun in mutations)
+		tally = 0
+
 	return (tally+config.human_delay)
+
 
 /mob/living/carbon/human/Process_Spacemove(var/check_drift = 0)
 	//Can we act

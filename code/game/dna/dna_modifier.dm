@@ -1,3 +1,38 @@
+#define DNA_BLOCK_SIZE 3
+
+// Buffer datatype flags.
+#define DNA2_BUF_UI 1
+#define DNA2_BUF_UE 2
+#define DNA2_BUF_SE 4
+
+//list("data" = null, "owner" = null, "label" = null, "type" = null, "ue" = 0),
+/datum/dna2/record
+	var/datum/dna/dna = null
+	var/types=0
+	var/name="Empty"
+
+	// Stuff for cloners
+	var/id=null
+	var/implant=null
+	var/ckey=null
+	var/mind=null
+
+/datum/dna2/record/proc/GetData()
+	var/list/ser=list("data" = null, "owner" = null, "label" = null, "type" = null, "ue" = 0)
+	if(dna)
+		ser["ue"] = (types & DNA2_BUF_UE) == DNA2_BUF_UE
+		if(types & DNA2_BUF_SE)
+			ser["data"] = dna.SE
+		else
+			ser["data"] = dna.UI
+		ser["owner"] = src.dna.real_name
+		ser["label"] = name
+		if(types & DNA2_BUF_UI)
+			ser["type"] = "ui"
+		else
+			ser["type"] = "se"
+	return ser
+
 /////////////////////////// DNA MACHINES
 /obj/machinery/dna_scannernew
 	name = "\improper DNA modifier"
@@ -5,12 +40,14 @@
 	icon = 'icons/obj/Cryogenic2.dmi'
 	icon_state = "scanner_0"
 	density = 1
-	var/locked = 0.0
-	var/mob/occupant = null
 	anchored = 1.0
 	use_power = 1
 	idle_power_usage = 50
 	active_power_usage = 300
+	var/locked = 0
+	var/mob/living/carbon/occupant = null
+	var/obj/item/weapon/reagent_containers/glass/beaker = null
+	var/opened = 0
 
 /obj/machinery/dna_scannernew/New()
 	..()
@@ -40,15 +77,20 @@
 
 	if (usr.stat != 0)
 		return
+
+	eject_occupant()
+
+	add_fingerprint(usr)
+	return
+
+/obj/machinery/dna_scannernew/proc/eject_occupant()
 	src.go_out()
 	for(var/obj/O in src)
-		if((!istype(O,/obj/item/weapon/circuitboard/clonescanner)) && (!istype(O,/obj/item/weapon/stock_parts)) && (!istype(O,/obj/item/weapon/cable_coil)))
+		if((!istype(O,/obj/item/weapon/reagent_containers)) && (!istype(O,/obj/item/weapon/circuitboard/clonescanner)) && (!istype(O,/obj/item/weapon/stock_parts)) && (!istype(O,/obj/item/weapon/cable_coil)))
 			O.loc = get_turf(src)//Ejects items that manage to get in there (exluding the components)
 	if(!occupant)
 		for(var/mob/M in src)//Failsafe so you can get mobs out
 			M.loc = get_turf(src)
-	add_fingerprint(usr)
-	return
 
 /obj/machinery/dna_scannernew/verb/move_inside()
 	set src in oview(1)
@@ -72,17 +114,24 @@
 	usr.loc = src
 	src.occupant = usr
 	src.icon_state = "scanner_1"
-	/*
-	for(var/obj/O in src)    // THIS IS P. STUPID -- LOVE, DOOHL
-		//O = null
-		del(O)
-		//Foreach goto(124)
-	*/
 	src.add_fingerprint(usr)
 	return
 
-/obj/machinery/dna_scannernew/attackby(obj/item/weapon/grab/G as obj, user as mob)
-	if ((!( istype(G, /obj/item/weapon/grab) ) || !( ismob(G.affecting) )))
+/obj/machinery/dna_scannernew/attackby(var/obj/item/weapon/item as obj, var/mob/user as mob)
+	if(istype(item, /obj/item/weapon/reagent_containers/glass))
+		if(beaker)
+			user << "\red A beaker is already loaded into the machine."
+			return
+
+		beaker = item
+		user.drop_item()
+		item.loc = src
+		user.visible_message("[user] adds \a [item] to \the [src]!", "You add \a [item] to \the [src]!")
+		return
+	else if (!istype(item, /obj/item/weapon/grab))
+		return
+	var/obj/item/weapon/grab/G = item
+	if (!ismob(G.affecting))
 		return
 	if (src.occupant)
 		user << "\blue <B>The scanner is already occupied!</B>"
@@ -90,15 +139,18 @@
 	if (G.affecting.abiotic())
 		user << "\blue <B>Subject cannot have abiotic items on.</B>"
 		return
-	var/mob/M = G.affecting
+	put_in(G.affecting)
+	src.add_fingerprint(user)
+	del(G)
+	return
+
+/obj/machinery/dna_scannernew/proc/put_in(var/mob/M)
 	if(M.client)
 		M.client.perspective = EYE_PERSPECTIVE
 		M.client.eye = src
 	M.loc = src
 	src.occupant = M
 	src.icon_state = "scanner_1"
-
-	src.add_fingerprint(user)
 
 	// search for ghosts, if the corpse is empty and the scanner is connected to a cloner
 	if(locate(/obj/machinery/computer/cloning, get_step(src, NORTH)) \
@@ -111,19 +163,11 @@
 				if(ghost.mind == M.mind)
 					ghost << "<b><font color = #330033><font size = 3>Your corpse has been placed into a cloning scanner. Return to your body if you want to be resurrected/cloned!</b> (Verbs -> Ghost -> Re-enter corpse)</font color>"
 					break
-	del(G)
 	return
 
 /obj/machinery/dna_scannernew/proc/go_out()
 	if ((!( src.occupant ) || src.locked))
 		return
-/*
-//	it's like this was -just- here to break constructed dna scanners -Pete
-//	if that's not the case, slap my shit and uncomment this.
-//	for(var/obj/O in src)
-//		O.loc = src.loc
-*/
-		//Foreach goto(30)
 	if (src.occupant.client)
 		src.occupant.client.eye = src.occupant.client.mob
 		src.occupant.client.perspective = MOB_PERSPECTIVE
@@ -170,6 +214,70 @@
 			A.loc = src.loc
 		del(src)
 
+/obj/machinery/computer/scan_consolenew
+	name = "DNA Modifier Access Console"
+	desc = "Scand DNA."
+	icon = 'icons/obj/computer.dmi'
+	icon_state = "scanner"
+	density = 1
+	var/selected_ui_block = 1.0
+	var/selected_ui_subblock = 1.0
+	var/selected_se_block = 1.0
+	var/selected_se_subblock = 1.0
+	var/selected_ui_target = 1
+	var/selected_ui_target_hex = 1
+	var/radiation_duration = 2.0
+	var/radiation_intensity = 1.0
+	var/list/datum/dna2/record/buffers[3]
+	var/irradiating = 0
+	var/injector_ready = 0	//Quick fix for issue 286 (screwdriver the screen twice to restore injector)	-Pete
+	var/obj/machinery/dna_scannernew/connected = null
+	var/obj/item/weapon/disk/data/disk = null
+	var/selected_menu_key = null
+	anchored = 1
+	use_power = 1
+	idle_power_usage = 10
+	active_power_usage = 400
+	var/waiting_for_user_input=0 // Fix for #274 (Mash create block injector without answering dialog to make unlimited injectors) - N3X
+
+/obj/machinery/computer/scan_consolenew/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I, /obj/item/weapon/screwdriver))
+		playsound(src.loc, 'sound/items/Screwdriver.ogg', 50, 1)
+		if(do_after(user, 20))
+			if (src.stat & BROKEN)
+				user << "\blue The broken glass falls out."
+				var/obj/structure/computerframe/A = new /obj/structure/computerframe( src.loc )
+				new /obj/item/weapon/shard( src.loc )
+				var/obj/item/weapon/circuitboard/scan_consolenew/M = new /obj/item/weapon/circuitboard/scan_consolenew( A )
+				for (var/obj/C in src)
+					C.loc = src.loc
+				A.circuit = M
+				A.state = 3
+				A.icon_state = "3"
+				A.anchored = 1
+				del(src)
+			else
+				user << "\blue You disconnect the monitor."
+				var/obj/structure/computerframe/A = new /obj/structure/computerframe( src.loc )
+				var/obj/item/weapon/circuitboard/scan_consolenew/M = new /obj/item/weapon/circuitboard/scan_consolenew( A )
+				for (var/obj/C in src)
+					C.loc = src.loc
+				A.circuit = M
+				A.state = 4
+				A.icon_state = "4"
+				A.anchored = 1
+				del(src)
+	if (istype(I, /obj/item/weapon/disk/data)) //INSERT SOME diskS
+		if (!src.disk)
+			user.drop_item()
+			I.loc = src
+			src.disk = I
+			user << "You insert [I]."
+			nanomanager.update_uis(src) // update all UIs attached to src()
+			return
+	else
+		src.attack_hand(user)
+	return
 
 /obj/machinery/computer/scan_consolenew/ex_act(severity)
 
@@ -204,23 +312,40 @@
 
 /obj/machinery/computer/scan_consolenew/New()
 	..()
+	for(var/i=0;i<3;i++)
+		buffers[i+1]=new /datum/dna2/record
 	spawn(5)
 		for(dir in list(NORTH,EAST,SOUTH,WEST))
 			connected = locate(/obj/machinery/dna_scannernew, get_step(src, dir))
 			if(!isnull(connected))
 				break
 		spawn(250)
-			src.injectorready = 1
+			src.injector_ready = 1
 		return
 	return
 
+/obj/machinery/computer/scan_consolenew/proc/all_dna_blocks(var/list/buffer)
+	var/list/arr = list()
+	for(var/i = 1, i <= buffer.len, i++)
+		arr += "[i]:[EncodeDNABlock(buffer[i])]"
+	return arr
+
+/obj/machinery/computer/scan_consolenew/proc/setInjectorBlock(var/obj/item/weapon/dnainjector/I, var/blk, var/datum/dna2/record/buffer)
+	var/pos = findtext(blk,":")
+	if(!pos) return 0
+	var/id = text2num(copytext(blk,1,pos))
+	if(!id) return 0
+	I.block = id
+	I.buf = buffer
+	return 1
+
 /obj/machinery/computer/scan_consolenew/attackby(obj/item/W as obj, mob/user as mob)
-	if ((istype(W, /obj/item/weapon/disk/data)) && (!src.diskette))
+	if ((istype(W, /obj/item/weapon/disk/data)) && (!src.disk))
 		user.drop_item()
 		W.loc = src
-		src.diskette = W
+		src.disk = W
 		user << "You insert [W]."
-		src.updateUsrDialog()
+		nanomanager.update_uis(src) // update all UIs attached to src()
 /*
 /obj/machinery/computer/scan_consolenew/process() //not really used right now
 	if(stat & (NOPOWER|BROKEN))
@@ -230,773 +355,503 @@
 	return
 */
 /obj/machinery/computer/scan_consolenew/attack_paw(user as mob)
-	return src.attack_hand(user)
+	ui_interact(user)
 
 /obj/machinery/computer/scan_consolenew/attack_ai(user as mob)
-	return src.attack_hand(user)
+	src.add_hiddenprint(user)
+	ui_interact(user)
 
 /obj/machinery/computer/scan_consolenew/attack_hand(user as mob)
-	if(..())
+	if(!..())
+		ui_interact(user)
+
+ /**
+  * The ui_interact proc is used to open and update Nano UIs
+  * If ui_interact is not used then the UI will not update correctly
+  * ui_interact is currently defined for /atom/movable (which is inherited by /obj and /mob)
+  *
+  * @param user /mob The mob who is interacting with this ui
+  * @param ui_key string A string key to use for this ui. Allows for multiple unique uis on one obj/mob (defaut value "main")
+  * @param ui /datum/nanoui This parameter is passed by the nanoui process() proc when updating an open ui
+  *
+  * @return nothing
+  */
+/obj/machinery/computer/scan_consolenew/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null)
+
+	if(user == connected.occupant || user.stat)
 		return
-	var/dat
-	if (src.delete && src.temphtml) //Window in buffer but its just simple message, so nothing
-		src.delete = src.delete
 
-	else if (!src.delete && src.temphtml) //Window in buffer - its a menu, dont add clear message
-		dat = text("[]<BR><BR><A href='?src=\ref[];clear=1'>Main Menu</A>", src.temphtml, src)
+	// this is the data which will be sent to the ui
+	var/data[0]
+	data["selectedMenuKey"] = selected_menu_key
+	data["locked"] = src.connected.locked
+	data["hasOccupant"] = connected.occupant ? 1 : 0
+
+	data["isInjectorReady"] = injector_ready
+
+	data["hasDisk"] = disk ? 1 : 0
+
+	var/diskData[0]
+	if (!disk || !disk.buf)
+		diskData["data"] = null
+		diskData["owner"] = null
+		diskData["label"] = null
+		diskData["type"] = null
+		diskData["ue"] = null
 	else
-		if (src.connected) //Is something connected?
-			var/mob/living/occupant = src.connected.occupant
-			dat = "<font color='blue'><B>Occupant Statistics:</B></FONT><BR>" //Blah obvious
-			if(occupant && occupant.dna) //is there REALLY someone in there?
-				if(NOCLONE in occupant.mutations)
-					dat += "The occupant's DNA structure is ruined beyond recognition, please insert a subject with an intact DNA structure.<BR><BR>" //NOPE. -Pete
-					dat += text("<A href='?src=\ref[];buffermenu=1'>View/Edit/Transfer Buffer</A><BR><BR>", src)
-					dat += text("<A href='?src=\ref[];radset=1'>Radiation Emitter Settings</A><BR><BR>", src)
-				else
-					if (!istype(occupant,/mob/living/carbon/human))
-						sleep(1)
-					var/t1
-					switch(occupant.stat) // obvious, see what their status is
-						if(0)
-							t1 = "Conscious"
-						if(1)
-							t1 = "Unconscious"
-						else
-							t1 = "*dead*"
-					dat += text("[]\tHealth %: [] ([])</FONT><BR>", (occupant.health > 50 ? "<font color='blue'>" : "<font color='red'>"), occupant.health, t1)
-					dat += text("<font color='green'>Radiation Level: []%</FONT><BR><BR>", occupant.radiation)
-					dat += text("Unique Enzymes : <font color='blue'>[]</FONT><BR>", uppertext(occupant.dna.unique_enzymes))
-					dat += text("Unique Identifier: <font color='blue'>[]</FONT><BR>", occupant.dna.uni_identity)
-					dat += text("Structural Enzymes: <font color='blue'>[]</FONT><BR><BR>", occupant.dna.struc_enzymes)
-					dat += text("<A href='?src=\ref[];unimenu=1'>Modify Unique Identifier</A><BR>", src)
-					dat += text("<A href='?src=\ref[];strucmenu=1'>Modify Structural Enzymes</A><BR><BR>", src)
-					dat += text("<A href='?src=\ref[];buffermenu=1'>View/Edit/Transfer Buffer</A><BR><BR>", src)
-					dat += text("<A href='?src=\ref[];genpulse=1'>Pulse Radiation</A><BR>", src)
-					dat += text("<A href='?src=\ref[];radset=1'>Radiation Emitter Settings</A><BR><BR>", src)
-					dat += text("<A href='?src=\ref[];rejuv=1'>Inject Rejuvenators</A><BR><BR>", src)
-			else
-				dat += "The scanner is empty.<BR><BR>"
-				dat += text("<A href='?src=\ref[];buffermenu=1'>View/Edit/Transfer Buffer</A><BR><BR>", src)
-				dat += text("<A href='?src=\ref[];radset=1'>Radiation Emitter Settings</A><BR><BR>", src)
-			if (!( src.connected.locked ))
-				dat += text("<A href='?src=\ref[];locked=1'>Lock (Unlocked)</A><BR>", src)
-			else
-				dat += text("<A href='?src=\ref[];locked=1'>Unlock (Locked)</A><BR>", src)
-				//Other stuff goes here
-			if (!isnull(src.diskette))
-				dat += text("<A href='?src=\ref[];eject_disk=1'>Eject Disk</A><BR>", src)
-			dat += text("<BR><BR><A href='?src=\ref[];mach_close=scannernew'>Close</A>", user)
-		else
-			dat = "<font color='red'> Error: No DNA Modifier connected. </FONT>"
-	user << browse(dat, "window=scannernew;size=550x625")
-	onclose(user, "scannernew")
-	return
+		diskData = disk.buf.GetData()
+	data["disk"] = diskData
 
-/obj/machinery/computer/scan_consolenew/proc/all_dna_blocks(var/buffer)
-	var/list/arr = list()
-	for(var/i = 1, i <= length(buffer)/3, i++)
-		arr += "[i]:[copytext(buffer,i*3-2,i*3+1)]"
-	return arr
+	var/list/new_buffers = list()
+	for(var/datum/dna2/record/buf in src.buffers)
+		new_buffers += list(buf.GetData())
+	data["buffers"]=new_buffers
 
-/obj/machinery/computer/scan_consolenew/proc/setInjectorBlock(var/obj/item/weapon/dnainjector/I, var/blk, var/buffer)
-	var/pos = findtext(blk,":")
-	if(!pos) return 0
-	var/id = text2num(copytext(blk,1,pos))
-	if(!id) return 0
-	I.block = id
-	I.dna = copytext(buffer,id*3-2,id*3+1)
-	return 1
+	data["radiationIntensity"] = radiation_intensity
+	data["radiationDuration"] = radiation_duration
+	data["irradiating"] = irradiating
+
+	data["dnaBlockSize"] = DNA_BLOCK_SIZE
+	data["selectedUIBlock"] = selected_ui_block
+	data["selectedUISubBlock"] = selected_ui_subblock
+	data["selectedSEBlock"] = selected_se_block
+	data["selectedSESubBlock"] = selected_se_subblock
+	data["selectedUITarget"] = selected_ui_target
+	data["selectedUITargetHex"] = selected_ui_target_hex
+
+	var/occupantData[0]
+	if (!src.connected.occupant || !src.connected.occupant.dna)
+		occupantData["name"] = null
+		occupantData["stat"] = null
+		occupantData["isViableSubject"] = null
+		occupantData["health"] = null
+		occupantData["maxHealth"] = null
+		occupantData["minHealth"] = null
+		occupantData["uniqueEnzymes"] = null
+		occupantData["uniqueIdentity"] = null
+		occupantData["structuralEnzymes"] = null
+		occupantData["radiationLevel"] = null
+	else
+		occupantData["name"] = connected.occupant.name
+		occupantData["stat"] = connected.occupant.stat
+		occupantData["isViableSubject"] = 1
+		if (NOCLONE in connected.occupant.mutations || !src.connected.occupant.dna)
+			occupantData["isViableSubject"] = 0
+		occupantData["health"] = connected.occupant.health
+		occupantData["maxHealth"] = connected.occupant.maxHealth
+		occupantData["minHealth"] = config.health_threshold_dead
+		occupantData["uniqueEnzymes"] = connected.occupant.dna.unique_enzymes
+		occupantData["uniqueIdentity"] = connected.occupant.dna.uni_identity
+		occupantData["structuralEnzymes"] = connected.occupant.dna.struc_enzymes
+		occupantData["radiationLevel"] = connected.occupant.radiation
+	data["occupant"] = occupantData;
+
+	data["isBeakerLoaded"] = connected.beaker ? 1 : 0
+	data["beakerLabel"] = null
+	data["beakerVolume"] = 0
+	if(connected.beaker)
+		data["beakerLabel"] = connected.beaker.label_text ? connected.beaker.label_text : null
+		if (connected.beaker.reagents && connected.beaker.reagents.reagent_list.len)
+			for(var/datum/reagent/R in connected.beaker.reagents.reagent_list)
+				data["beakerVolume"] += R.volume
+
+	// update the ui if it exists, returns null if no ui is passed/found
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data)
+	if (!ui)
+		// the ui does not exist, so we'll create a new() one
+        // for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
+		ui = new(user, src, ui_key, "dna_modifier.tmpl", "DNA Modifier Console", 660, 700)
+		// when the ui is first opened this is the data it will use
+		ui.set_initial_data(data)
+		// open the new ui window
+		ui.open()
+		// auto update every Master Controller tick
+		ui.set_auto_update(1)
 
 /obj/machinery/computer/scan_consolenew/Topic(href, href_list)
 	if(..())
-		return
+		return 0 // don't update uis
 	if(!istype(usr.loc, /turf))
-		return
+		return 0 // don't update uis
 	if(!src || !src.connected)
-		return
-	if ((usr.contents.Find(src) || in_range(src, usr) && istype(src.loc, /turf)) || (istype(usr, /mob/living/silicon)))
-		usr.set_machine(src)
-		if (href_list["locked"])
-			if ((src.connected && src.connected.occupant))
-				src.connected.locked = !( src.connected.locked )
-		////////////////////////////////////////////////////////
-		if (href_list["genpulse"])
-			if(!src.connected.occupant || !src.connected.occupant.dna)//Makes sure someone is in there (And valid) before trying anything
-				src.temphtml = text("No viable occupant detected.")//More than anything, this just acts as a sanity check in case the option DOES appear for whatever reason
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
+		return 0 // don't update uis
+	if(irradiating) // Make sure that it isn't already irradiating someone...
+		return 0 // don't update uis
+
+	add_fingerprint(usr)
+
+	if (href_list["selectMenuKey"])
+		selected_menu_key = href_list["selectMenuKey"]
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["toggleLock"])
+		if ((src.connected && src.connected.occupant))
+			src.connected.locked = !( src.connected.locked )
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["pulseRadiation"])
+		irradiating = src.radiation_duration
+		var/lock_state = src.connected.locked
+		src.connected.locked = 1//lock it
+		nanomanager.update_uis(src) // update all UIs attached to src
+
+		sleep(10*src.radiation_duration) // sleep for radiation_duration seconds
+
+		irradiating = 0
+
+		if (!src.connected.occupant)
+			return 1 // return 1 forces an update to all Nano uis attached to src
+
+		if (prob(95))
+			if(prob(75))
+				randmutb(src.connected.occupant)
 			else
-				src.delete = 1
-				src.temphtml = text("Working ... Please wait ([] Seconds)", src.radduration)
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-				var/lock_state = src.connected.locked
-				src.connected.locked = 1//lock it
-				sleep(10*src.radduration)
-				if (!src.connected.occupant)
-					temphtml = null
-					delete = 0
-					return null
-				if (prob(95))
-					if(prob(75))
-						randmutb(src.connected.occupant)
-					else
-						randmuti(src.connected.occupant)
+				randmuti(src.connected.occupant)
+		else
+			if(prob(95))
+				randmutg(src.connected.occupant)
+			else
+				randmuti(src.connected.occupant)
+
+		src.connected.occupant.radiation += ((src.radiation_intensity*3)+src.radiation_duration*3)
+		src.connected.locked = lock_state
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["radiationDuration"])
+		if (text2num(href_list["radiationDuration"]) > 0)
+			if (src.radiation_duration < 20)
+				src.radiation_duration += 2
+		else
+			if (src.radiation_duration > 2)
+				src.radiation_duration -= 2
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["radiationIntensity"])
+		if (text2num(href_list["radiationIntensity"]) > 0)
+			if (src.radiation_intensity < 10)
+				src.radiation_intensity++
+		else
+			if (src.radiation_intensity > 1)
+				src.radiation_intensity--
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	////////////////////////////////////////////////////////
+
+	if (href_list["changeUITarget"] && text2num(href_list["changeUITarget"]) > 0)
+		if (src.selected_ui_target < 15)
+			src.selected_ui_target++
+			src.selected_ui_target_hex = src.selected_ui_target
+			switch(selected_ui_target)
+				if(10)
+					src.selected_ui_target_hex = "A"
+				if(11)
+					src.selected_ui_target_hex = "B"
+				if(12)
+					src.selected_ui_target_hex = "C"
+				if(13)
+					src.selected_ui_target_hex = "D"
+				if(14)
+					src.selected_ui_target_hex = "E"
+				if(15)
+					src.selected_ui_target_hex = "F"
+		else
+			src.selected_ui_target = 0
+			src.selected_ui_target_hex = 0
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["changeUITarget"] && text2num(href_list["changeUITarget"]) < 1)
+		if (src.selected_ui_target > 0)
+			src.selected_ui_target--
+			src.selected_ui_target_hex = src.selected_ui_target
+			switch(selected_ui_target)
+				if(10)
+					src.selected_ui_target_hex = "A"
+				if(11)
+					src.selected_ui_target_hex = "B"
+				if(12)
+					src.selected_ui_target_hex = "C"
+				if(13)
+					src.selected_ui_target_hex = "D"
+				if(14)
+					src.selected_ui_target_hex = "E"
+		else
+			src.selected_ui_target = 15
+			src.selected_ui_target_hex = "F"
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["selectUIBlock"] && href_list["selectUISubblock"]) // This chunk of code updates selected block / sub-block based on click
+		var/select_block = text2num(href_list["selectUIBlock"])
+		var/select_subblock = text2num(href_list["selectUISubblock"])
+		if ((select_block <= 13) && (select_block >= 1))
+			src.selected_ui_block = select_block
+		if ((select_subblock <= DNA_BLOCK_SIZE) && (select_subblock >= 1))
+			src.selected_ui_subblock = select_subblock
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["pulseUIRadiation"])
+		var/block = src.connected.occupant.dna.GetUISubBlock(src.selected_ui_block,src.selected_ui_subblock)
+
+		irradiating = src.radiation_duration
+		var/lock_state = src.connected.locked
+		src.connected.locked = 1//lock it
+		nanomanager.update_uis(src) // update all UIs attached to src
+
+		sleep(10*src.radiation_duration) // sleep for radiation_duration seconds
+
+		irradiating = 0
+
+		if (!src.connected.occupant)
+			return 1
+
+		if (prob((80 + (src.radiation_duration / 2))))
+			block = miniscrambletarget(num2text(selected_ui_target), src.radiation_intensity, src.radiation_duration)
+			src.connected.occupant.dna.SetUISubBlock(src.selected_ui_block,src.selected_ui_subblock,block)
+			src.connected.occupant.UpdateAppearance()
+			src.connected.occupant.radiation += (src.radiation_intensity+src.radiation_duration)
+		else
+			if	(prob(20+src.radiation_intensity))
+				randmutb(src.connected.occupant)
+				domutcheck(src.connected.occupant,src.connected)
+			else
+				randmuti(src.connected.occupant)
+				src.connected.occupant.UpdateAppearance()
+			src.connected.occupant.radiation += ((src.radiation_intensity*2)+src.radiation_duration)
+		src.connected.locked = lock_state
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	////////////////////////////////////////////////////////
+
+	if (href_list["injectRejuvenators"])
+		if (!connected.occupant)
+			return 0
+		var/inject_amount = round(text2num(href_list["injectRejuvenators"]), 5) // round to nearest 5
+		if (inject_amount < 0) // Since the user can actually type the commands himself, some sanity checking
+			inject_amount = 0
+		if (inject_amount > 50)
+			inject_amount = 50
+		connected.beaker.reagents.trans_to(connected.occupant, inject_amount)
+		connected.beaker.reagents.reaction(connected.occupant)
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	////////////////////////////////////////////////////////
+
+	if (href_list["selectSEBlock"] && href_list["selectSESubblock"]) // This chunk of code updates selected block / sub-block based on click (se stands for strutural enzymes)
+		var/select_block = text2num(href_list["selectSEBlock"])
+		var/select_subblock = text2num(href_list["selectSESubblock"])
+		if ((select_block <= DNA_SE_LENGTH) && (select_block >= 1))
+			src.selected_se_block = select_block
+		if ((select_subblock <= DNA_BLOCK_SIZE) && (select_subblock >= 1))
+			src.selected_se_subblock = select_subblock
+		//testing("User selected block [selected_se_block] (sent [select_block]), subblock [selected_se_subblock] (sent [select_block]).")
+		return 1 // return 1 forces an update to all Nano uis attached to src
+
+	if (href_list["pulseSERadiation"])
+		var/block = src.connected.occupant.dna.GetSESubBlock(src.selected_se_block,src.selected_se_subblock)
+		//var/original_block=block
+		//testing("Irradiating SE block [src.selected_se_block]:[src.selected_se_subblock] ([block])...")
+
+		irradiating = src.radiation_duration
+		var/lock_state = src.connected.locked
+		src.connected.locked = 1 //lock it
+		nanomanager.update_uis(src) // update all UIs attached to src
+
+		sleep(10*src.radiation_duration) // sleep for radiation_duration seconds
+
+		irradiating = 0
+
+		if(src.connected.occupant)
+			if (prob((80 + (src.radiation_duration / 2))))
+				// FIXME: Find out what these corresponded to and change them to the WHATEVERBLOCK they need to be.
+				//if ((src.selected_se_block != 2 || src.selected_se_block != 12 || src.selected_se_block != 8 || src.selected_se_block || 10) && prob (20))
+				var/real_SE_block=selected_se_block
+				block = miniscramble(block, src.radiation_intensity, src.radiation_duration)
+				if(prob(20))
+					if (src.selected_se_block > 1 && src.selected_se_block < DNA_SE_LENGTH/2)
+						real_SE_block++
+					else if (src.selected_se_block > DNA_SE_LENGTH/2 && src.selected_se_block < DNA_SE_LENGTH)
+						real_SE_block--
+
+				//testing("Irradiated SE block [real_SE_block]:[src.selected_se_subblock] ([original_block] now [block]) [(real_SE_block!=selected_se_block) ? "(SHIFTED)":""]!")
+				connected.occupant.dna.SetSESubBlock(real_SE_block,selected_se_subblock,block)
+				src.connected.occupant.radiation += (src.radiation_intensity+src.radiation_duration)
+				domutcheck(src.connected.occupant,src.connected)
+			else
+				src.connected.occupant.radiation += ((src.radiation_intensity*2)+src.radiation_duration)
+				if	(prob(80-src.radiation_duration))
+					//testing("Random bad mut!")
+					randmutb(src.connected.occupant)
+					domutcheck(src.connected.occupant,src.connected)
 				else
-					if(prob(95))
-						randmutg(src.connected.occupant)
-					else
-						randmuti(src.connected.occupant)
-				src.connected.occupant.radiation += ((src.radstrength*3)+src.radduration*3)
-				src.connected.locked = lock_state
-				temphtml = null
-				delete = 0
-		if (href_list["radset"])
-			src.temphtml = text("Radiation Duration: <B><font color='green'>[]</B></FONT><BR>", src.radduration)
-			src.temphtml += text("Radiation Intensity: <font color='green'><B>[]</B></FONT><BR><BR>", src.radstrength)
-			src.temphtml += text("<A href='?src=\ref[];radleminus=1'>--</A> Duration <A href='?src=\ref[];radleplus=1'>++</A><BR>", src, src)
-			src.temphtml += text("<A href='?src=\ref[];radinminus=1'>--</A> Intesity <A href='?src=\ref[];radinplus=1'>++</A><BR>", src, src)
-			src.delete = 0
-		if (href_list["radleplus"])
-			if(!src.connected.occupant || !src.connected.occupant.dna)
-				src.temphtml = text("No viable occupant detected.")
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-			if (src.radduration < 20)
-				src.radduration++
-				src.radduration++
-			dopage(src,"radset")
-		if (href_list["radleminus"])
-			if(!src.connected.occupant || !src.connected.occupant.dna)
-				src.temphtml = text("No viable occupant detected.")
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-			if (src.radduration > 2)
-				src.radduration--
-				src.radduration--
-			dopage(src,"radset")
-		if (href_list["radinplus"])
-			if (src.radstrength < 10)
-				src.radstrength++
-			dopage(src,"radset")
-		if (href_list["radinminus"])
-			if (src.radstrength > 1)
-				src.radstrength--
-			dopage(src,"radset")
-		////////////////////////////////////////////////////////
-		if (href_list["unimenu"])
-			if(!src.connected.occupant || !src.connected.occupant.dna)
-				src.temphtml = text("No viable occupant detected.")
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-			else
-				//src.temphtml = text("Unique Identifier: <font color='blue'>[]</FONT><BR><BR>", src.connected.occupant.dna.uni_identity)
-				//src.temphtml = text("Unique Identifier: <font color='blue'>[getleftblocks(src.connected.occupant.dna.uni_identity,uniblock,3)][src.subblock == 1 ? "<U><B>"+getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),1,1)+"</U></B>" : getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),1,1)][src.subblock == 2 ? "<U><B>"+getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),2,1)+"</U></B>" : getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),2,1)][src.subblock == 3 ? "<U><B>"+getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),3,1)+"</U></B>" : getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),3,1)][getrightblocks(src.connected.occupant.dna.uni_identity,uniblock,3)]</FONT><BR><BR>")
+					randmuti(src.connected.occupant)
+					//testing("Random identity mut!")
+					src.connected.occupant.UpdateAppearance()
+		src.connected.locked = lock_state
+		return 1 // return 1 forces an update to all Nano uis attached to src
 
-				// New way of displaying DNA blocks
-				src.temphtml = text("Unique Identifier: <font color='blue'>[getblockstring(src.connected.occupant.dna.uni_identity,uniblock,subblock,3, src,1)]</FONT><br><br>")
+	if(href_list["ejectBeaker"])
+		if(connected.beaker)
+			var/obj/item/weapon/reagent_containers/glass/B = connected.beaker
+			B.loc = connected.loc
+			connected.beaker = null
+		return 1
 
-				src.temphtml += text("Selected Block: <font color='blue'><B>[]</B></FONT><BR>", src.uniblock)
-				src.temphtml += text("<A href='?src=\ref[];unimenuminus=1'><-</A> Block <A href='?src=\ref[];unimenuplus=1'>-></A><BR><BR>", src, src)
-				src.temphtml += text("Selected Sub-Block: <font color='blue'><B>[]</B></FONT><BR>", src.subblock)
-				src.temphtml += text("<A href='?src=\ref[];unimenusubminus=1'><-</A> Sub-Block <A href='?src=\ref[];unimenusubplus=1'>-></A><BR><BR>", src, src)
-				src.temphtml += text("Selected Target: <font color='blue'><B>[]</B></FONT><BR>", src.unitargethex)
-				src.temphtml += text("<A href='?src=\ref[];unimenutargetminus=1'><-</A> Target <A href='?src=\ref[];unimenutargetplus=1'>-></A><BR><BR>", src, src)
-				src.temphtml += "<B>Modify Block:</B><BR>"
-				src.temphtml += text("<A href='?src=\ref[];unipulse=1'>Irradiate</A><BR>", src)
-				src.delete = 0
-		if (href_list["unimenuplus"])
-			if (src.uniblock < 13)
-				src.uniblock++
-			else
-				src.uniblock = 1
-			dopage(src,"unimenu")
-		if (href_list["unimenuminus"])
-			if (src.uniblock > 1)
-				src.uniblock--
-			else
-				src.uniblock = 13
-			dopage(src,"unimenu")
-		if (href_list["unimenusubplus"])
-			if (src.subblock < 3)
-				src.subblock++
-			else
-				src.subblock = 1
-			dopage(src,"unimenu")
-		if (href_list["unimenusubminus"])
-			if (src.subblock > 1)
-				src.subblock--
-			else
-				src.subblock = 3
-			dopage(src,"unimenu")
-		if (href_list["unimenutargetplus"])
-			if (src.unitarget < 15)
-				src.unitarget++
-				src.unitargethex = src.unitarget
-				switch(unitarget)
-					if(10)
-						src.unitargethex = "A"
-					if(11)
-						src.unitargethex = "B"
-					if(12)
-						src.unitargethex = "C"
-					if(13)
-						src.unitargethex = "D"
-					if(14)
-						src.unitargethex = "E"
-					if(15)
-						src.unitargethex = "F"
-			else
-				src.unitarget = 0
-				src.unitargethex = 0
-			dopage(src,"unimenu")
-		if (href_list["unimenutargetminus"])
-			if (src.unitarget > 0)
-				src.unitarget--
-				src.unitargethex = src.unitarget
-				switch(unitarget)
-					if(10)
-						src.unitargethex = "A"
-					if(11)
-						src.unitargethex = "B"
-					if(12)
-						src.unitargethex = "C"
-					if(13)
-						src.unitargethex = "D"
-					if(14)
-						src.unitargethex = "E"
-			else
-				src.unitarget = 15
-				src.unitargethex = "F"
-			dopage(src,"unimenu")
-		if (href_list["uimenuset"] && href_list["uimenusubset"]) // This chunk of code updates selected block / sub-block based on click
-			var/menuset = text2num(href_list["uimenuset"])
-			var/menusubset = text2num(href_list["uimenusubset"])
-			if ((menuset <= 13) && (menuset >= 1))
-				src.uniblock = menuset
-			if ((menusubset <= 3) && (menusubset >= 1))
-				src.subblock = menusubset
-			dopage(src, "unimenu")
-		if (href_list["unipulse"])
-			if(src.connected.occupant)
-				var/block
-				var/newblock
-				var/tstructure2
-				block = getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),src.subblock,1)
-				src.delete = 1
-				src.temphtml = text("Working ... Please wait ([] Seconds)", src.radduration)
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-				var/lock_state = src.connected.locked
-				src.connected.locked = 1//lock it
-				sleep(10*src.radduration)
-				if (!src.connected.occupant)
-					temphtml = null
-					delete = 0
-					return null
-				///
-				if (prob((80 + (src.radduration / 2))))
-					block = miniscrambletarget(num2text(unitarget), src.radstrength, src.radduration)
-					newblock = null
-					if (src.subblock == 1) newblock = block + getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),2,1) + getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),3,1)
-					if (src.subblock == 2) newblock = getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),1,1) + block + getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),3,1)
-					if (src.subblock == 3) newblock = getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),1,1) + getblock(getblock(src.connected.occupant.dna.uni_identity,src.uniblock,3),2,1) + block
-					tstructure2 = setblock(src.connected.occupant.dna.uni_identity, src.uniblock, newblock,3)
-					src.connected.occupant.dna.uni_identity = tstructure2
-					updateappearance(src.connected.occupant,src.connected.occupant.dna.uni_identity)
-					src.connected.occupant.radiation += (src.radstrength+src.radduration)
-				else
-					if	(prob(20+src.radstrength))
-						randmutb(src.connected.occupant)
-						domutcheck(src.connected.occupant,src.connected)
-					else
-						randmuti(src.connected.occupant)
-						updateappearance(src.connected.occupant,src.connected.occupant.dna.uni_identity)
-					src.connected.occupant.radiation += ((src.radstrength*2)+src.radduration)
-				src.connected.locked = lock_state
-			dopage(src,"unimenu")
-			src.delete = 0
-		////////////////////////////////////////////////////////
-		if (href_list["rejuv"])
-			if(!src.connected.occupant || !src.connected.occupant.dna)
-				src.temphtml = text("No viable occupant detected.")
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-			else
-				var/mob/living/carbon/human/H = src.connected.occupant
-				if(H)
-					if (H.reagents.get_reagent_amount("inaprovaline") < 60)
-						H.reagents.add_reagent("inaprovaline", 30)
-					usr << text("Occupant now has [] units of rejuvenation in his/her bloodstream.", H.reagents.get_reagent_amount("inaprovaline"))
-					src.delete = 0
-		////////////////////////////////////////////////////////
-		if (href_list["strucmenu"])
-			if(!src.connected.occupant || !src.connected.occupant.dna)
-				src.temphtml = text("No viable occupant detected.")
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-			else
-				// Get this shit outta here it sucks
-				//src.temphtml = text("Structural Enzymes: <font color='blue'>[getleftblocks(src.connected.occupant.dna.struc_enzymes,strucblock,3)][src.subblock == 1 ? "<U><B>"+getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),1,1)+"</U></B>" : getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),1,1)][src.subblock == 2 ? "<U><B>"+getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),2,1)+"</U></B>" : getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),2,1)][src.subblock == 3 ? "<U><B>"+getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),3,1)+"</U></B>" : getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),3,1)][getrightblocks(src.connected.occupant.dna.struc_enzymes,strucblock,3)]</FONT><BR><BR>")
-				//src.temphtml = text("Structural Enzymes: <font color='blue'>[]</FONT><BR><BR>", src.connected.occupant.dna.struc_enzymes)
+	if(href_list["ejectOccupant"])
+		connected.eject_occupant()
+		return 1
 
-				// New shit, it doesn't suck (as much)
-				src.temphtml = text("Structural Enzymes: <font color='blue'>[getblockstring(src.connected.occupant.dna.struc_enzymes,strucblock,subblock,3,src,0)]</FONT><br><br>")
-																							// SE of occupant,	selected block,	selected subblock,	block size (3 subblocks)
+	// Transfer Buffer Management
+	if(href_list["bufferOption"])
+		var/bufferOption = href_list["bufferOption"]
 
-				src.temphtml += text("Selected Block: <font color='blue'><B>[]</B></FONT><BR>", src.strucblock)
-				src.temphtml += text("<A href='?src=\ref[];strucmenuminus=1'><-</A> Block <A href='?src=\ref[];strucmenuplus=1'>-></A><BR><BR>", src, src)
-				src.temphtml += text("Selected Sub-Block: <font color='blue'><B>[]</B></FONT><BR>", src.subblock)
-				src.temphtml += text("<A href='?src=\ref[];strucmenusubminus=1'><-</A> Sub-Block <A href='?src=\ref[];strucmenusubplus=1'>-></A><BR><BR>", src, src)
-				src.temphtml += "<B>Modify Block:</B><BR>"
-				src.temphtml += text("<A href='?src=\ref[];strucpulse=1'>Irradiate</A><BR>", src)
-				src.delete = 0
-		if (href_list["strucmenuplus"])
-			if (src.strucblock < STRUCDNASIZE)
-				src.strucblock++
-			else
-				src.strucblock = 1
-			dopage(src,"strucmenu")
-		if (href_list["strucmenuminus"])
-			if (src.strucblock > 1)
-				src.strucblock--
-			else
-				src.strucblock = STRUCDNASIZE
-			dopage(src,"strucmenu")
-		if (href_list["strucmenusubplus"])
-			if (src.subblock < 3)
-				src.subblock++
-			else
-				src.subblock = 1
-			dopage(src,"strucmenu")
-		if (href_list["strucmenusubminus"])
-			if (src.subblock > 1)
-				src.subblock--
-			else
-				src.subblock = 3
-			dopage(src,"strucmenu")
-		if (href_list["semenuset"] && href_list["semenusubset"]) // This chunk of code updates selected block / sub-block based on click (se stands for strutural enzymes)
-			var/menuset = text2num(href_list["semenuset"])
-			var/menusubset = text2num(href_list["semenusubset"])
-			if ((menuset <= STRUCDNASIZE) && (menuset >= 1))
-				src.strucblock = menuset
-			if ((menusubset <= 3) && (menusubset >= 1))
-				src.subblock = menusubset
-			dopage(src, "strucmenu")
-		if (href_list["strucpulse"])
-			var/block
-			var/newblock
-			var/tstructure2
-			var/oldblock
+		// These bufferOptions do not require a bufferId
+		if (bufferOption == "wipeDisk")
+			if ((isnull(src.disk)) || (src.disk.read_only))
+				//src.temphtml = "Invalid disk. Please try again."
+				return 0
+
+			src.disk.buf=null
+			//src.temphtml = "Data saved."
+			return 1
+
+		if (bufferOption == "ejectDisk")
+			if (!src.disk)
+				return
+			src.disk.loc = get_turf(src)
+			src.disk = null
+			return 1
+
+		// All bufferOptions from here on require a bufferId
+		if (!href_list["bufferId"])
+			return 0
+
+		var/bufferId = text2num(href_list["bufferId"])
+
+		if (bufferId < 1 || bufferId > 3)
+			return 0 // Not a valid buffer id
+
+		if (bufferOption == "saveUI")
+			if(src.connected.occupant && src.connected.occupant.dna)
+				var/datum/dna2/record/databuf=new
+				databuf.types = DNA2_BUF_UE
+				databuf.dna = src.connected.occupant.dna.Clone()
+				if(ishuman(connected.occupant))
+					databuf.dna.real_name=connected.occupant.name
+				databuf.name = "Unique Identifier"
+				src.buffers[bufferId] = databuf
+			return 1
+
+		if (bufferOption == "saveUIAndUE")
+			if(src.connected.occupant && src.connected.occupant.dna)
+				var/datum/dna2/record/databuf=new
+				databuf.types = DNA2_BUF_UI|DNA2_BUF_UE
+				databuf.dna = src.connected.occupant.dna.Clone()
+				if(ishuman(connected.occupant))
+					databuf.dna.real_name=connected.occupant.name
+				databuf.name = "Unique Identifier + Unique Enzymes"
+				src.buffers[bufferId] = databuf
+			return 1
+
+		if (bufferOption == "saveSE")
+			if(src.connected.occupant && src.connected.occupant.dna)
+				var/datum/dna2/record/databuf=new
+				databuf.types = DNA2_BUF_SE
+				databuf.dna = src.connected.occupant.dna.Clone()
+				if(ishuman(connected.occupant))
+					databuf.dna.real_name=connected.occupant.name
+				databuf.name = "Structural Enzymes"
+				src.buffers[bufferId] = databuf
+			return 1
+
+		if (bufferOption == "clear")
+			src.buffers[bufferId]=new /datum/dna2/record()
+			return 1
+
+		if (bufferOption == "changeLabel")
+			var/datum/dna2/record/buf = src.buffers[bufferId]
+			var/text = sanitize_multi(input(usr, "New Label:", "Edit Label", buf.name) as text|null)
+			buf.name = text
+			src.buffers[bufferId] = buf
+			return 1
+
+		if (bufferOption == "transfer")
+			if (!src.connected.occupant || (NOCLONE in src.connected.occupant.mutations) || !src.connected.occupant.dna)
+				return
+
+			irradiating = 2
 			var/lock_state = src.connected.locked
 			src.connected.locked = 1//lock it
-			if (src.connected.occupant)
-				block = getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),src.subblock,1)
-				src.delete = 1
-				src.temphtml = text("Working ... Please wait ([] Seconds)", src.radduration)
-				usr << browse(temphtml, "window=scannernew;size=550x650")
-				onclose(usr, "scannernew")
-				sleep(10*src.radduration)
-			else
-				temphtml = null
-				delete = 0
-				return null
-			///
-			if(src.connected.occupant)
-				if (prob((80 + (src.radduration / 2))))
-					if ((src.strucblock != 2 || src.strucblock != 12 || src.strucblock != 8 || src.strucblock || 10) && prob (20))
-						oldblock = src.strucblock
-						block = miniscramble(block, src.radstrength, src.radduration)
-						newblock = null
-						if (src.strucblock > 1 && src.strucblock < STRUCDNASIZE/2)
-							src.strucblock++
-						else if (src.strucblock > STRUCDNASIZE/2 && src.strucblock < STRUCDNASIZE)
-							src.strucblock--
-						if (src.subblock == 1) newblock = block + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),2,1) + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),3,1)
-						if (src.subblock == 2) newblock = getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),1,1) + block + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),3,1)
-						if (src.subblock == 3) newblock = getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),1,1) + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),2,1) + block
-						tstructure2 = setblock(src.connected.occupant.dna.struc_enzymes, src.strucblock, newblock,3)
-						src.connected.occupant.dna.struc_enzymes = tstructure2
-						domutcheck(src.connected.occupant,src.connected)
-						src.connected.occupant.radiation += (src.radstrength+src.radduration)
-						src.strucblock = oldblock
-					else
-					//
-						block = miniscramble(block, src.radstrength, src.radduration)
-						newblock = null
-						if (src.subblock == 1) newblock = block + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),2,1) + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),3,1)
-						if (src.subblock == 2) newblock = getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),1,1) + block + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),3,1)
-						if (src.subblock == 3) newblock = getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),1,1) + getblock(getblock(src.connected.occupant.dna.struc_enzymes,src.strucblock,3),2,1) + block
-						tstructure2 = setblock(src.connected.occupant.dna.struc_enzymes, src.strucblock, newblock,3)
-						src.connected.occupant.dna.struc_enzymes = tstructure2
-						domutcheck(src.connected.occupant,src.connected)
-						src.connected.occupant.radiation += (src.radstrength+src.radduration)
-				else
-					if	(prob(80-src.radduration))
-						randmutb(src.connected.occupant)
-						domutcheck(src.connected.occupant,src.connected)
-					else
-						randmuti(src.connected.occupant)
-						updateappearance(src.connected.occupant,src.connected.occupant.dna.uni_identity)
-					src.connected.occupant.radiation += ((src.radstrength*2)+src.radduration)
-			src.connected.locked = lock_state
-			///
-			dopage(src,"strucmenu")
-			src.delete = 0
-		////////////////////////////////////////////////////////
-		if (href_list["buffermenu"])
-			src.temphtml = "<B>Buffer 1:</B><BR>"
-			if (!(src.buffer1))
-				src.temphtml += "Buffer Empty<BR>"
-			else
-				src.temphtml += text("Data: <font color='blue'>[]</FONT><BR>", src.buffer1)
-				src.temphtml += text("By: <font color='blue'>[]</FONT><BR>", src.buffer1owner)
-				src.temphtml += text("Label: <font color='blue'>[]</FONT><BR>", src.buffer1label)
-			if (src.connected.occupant && !(NOCLONE in src.connected.occupant.mutations)) src.temphtml += text("Save : <A href='?src=\ref[];b1addui=1'>UI</A> - <A href='?src=\ref[];b1adduiue=1'>UI+UE</A> - <A href='?src=\ref[];b1addse=1'>SE</A><BR>", src, src, src)
-			if (src.buffer1) src.temphtml += text("Transfer to: <A href='?src=\ref[];b1transfer=1'>Occupant</A> - <A href='?src=\ref[];b1injector=1'>Full Injector</A> - <A href='?src=\ref[];b1injector=2'>Iso Injector</A><BR>", src, src, src)
-			//if (src.buffer1) src.temphtml += text("<A href='?src=\ref[];b1iso=1'>Isolate Block</A><BR>", src)
-			if (src.buffer1) src.temphtml += "Disk: <A href='?src=\ref[src];save_disk=1'>Save To</a> | <A href='?src=\ref[src];load_disk=1'>Load From</a><br>"
-			if (src.buffer1) src.temphtml += text("<A href='?src=\ref[];b1label=1'>Edit Label</A><BR>", src)
-			if (src.buffer1) src.temphtml += text("<A href='?src=\ref[];b1clear=1'>Clear Buffer</A><BR><BR>", src)
-			if (!src.buffer1) src.temphtml += "<BR>"
-			src.temphtml += "<B>Buffer 2:</B><BR>"
-			if (!(src.buffer2))
-				src.temphtml += "Buffer Empty<BR>"
-			else
-				src.temphtml += text("Data: <font color='blue'>[]</FONT><BR>", src.buffer2)
-				src.temphtml += text("By: <font color='blue'>[]</FONT><BR>", src.buffer2owner)
-				src.temphtml += text("Label: <font color='blue'>[]</FONT><BR>", src.buffer2label)
-			if (src.connected.occupant && !(NOCLONE in src.connected.occupant.mutations)) src.temphtml += text("Save : <A href='?src=\ref[];b2addui=1'>UI</A> - <A href='?src=\ref[];b2adduiue=1'>UI+UE</A> - <A href='?src=\ref[];b2addse=1'>SE</A><BR>", src, src, src)
-			if (src.buffer2) src.temphtml += text("Transfer to: <A href='?src=\ref[];b2transfer=1'>Occupant</A> - <A href='?src=\ref[];b2injector=1'>Full Injector</A> - <A href='?src=\ref[];b2injector=2'>Iso Injector</A><BR>", src, src, src)
-			//if (src.buffer2) src.temphtml += text("<A href='?src=\ref[];b2iso=1'>Isolate Block</A><BR>", src)
-			if (src.buffer2) src.temphtml += "Disk: <A href='?src=\ref[src];save_disk=2'>Save To</a> | <A href='?src=\ref[src];load_disk=2'>Load From</a><br>"
-			if (src.buffer2) src.temphtml += text("<A href='?src=\ref[];b2label=1'>Edit Label</A><BR>", src)
-			if (src.buffer2) src.temphtml += text("<A href='?src=\ref[];b2clear=1'>Clear Buffer</A><BR><BR>", src)
-			if (!src.buffer2) src.temphtml += "<BR>"
-			src.temphtml += "<B>Buffer 3:</B><BR>"
-			if (!(src.buffer3))
-				src.temphtml += "Buffer Empty<BR>"
-			else
-				src.temphtml += text("Data: <font color='blue'>[]</FONT><BR>", src.buffer3)
-				src.temphtml += text("By: <font color='blue'>[]</FONT><BR>", src.buffer3owner)
-				src.temphtml += text("Label: <font color='blue'>[]</FONT><BR>", src.buffer3label)
-			if (src.connected.occupant && !(NOCLONE in src.connected.occupant.mutations)) src.temphtml += text("Save : <A href='?src=\ref[];b3addui=1'>UI</A> - <A href='?src=\ref[];b3adduiue=1'>UI+UE</A> - <A href='?src=\ref[];b3addse=1'>SE</A><BR>", src, src, src)
-			if (src.buffer3) src.temphtml += text("Transfer to: <A href='?src=\ref[];b3transfer=1'>Occupant</A> - <A href='?src=\ref[];b3injector=1'>Full Injector</A> - <A href='?src=\ref[];b3injector=2'>Iso Injector</A><BR>", src, src, src)
-			//if (src.buffer3) src.temphtml += text("<A href='?src=\ref[];b3iso=1'>Isolate Block</A><BR>", src)
-			if (src.buffer3) src.temphtml += "Disk: <A href='?src=\ref[src];save_disk=3'>Save To</a> | <A href='?src=\ref[src];load_disk=3'>Load From</a><br>"
-			if (src.buffer3) src.temphtml += text("<A href='?src=\ref[];b3label=1'>Edit Label</A><BR>", src)
-			if (src.buffer3) src.temphtml += text("<A href='?src=\ref[];b3clear=1'>Clear Buffer</A><BR><BR>", src)
-			if (!src.buffer3) src.temphtml += "<BR>"
-		if (href_list["b1addui"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer1iue = 0
-				src.buffer1 = src.connected.occupant.dna.uni_identity
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer1owner = src.connected.occupant.name
-				else
-					src.buffer1owner = src.connected.occupant.real_name
-				src.buffer1label = "Unique Identifier"
-				src.buffer1type = "ui"
-				dopage(src,"buffermenu")
-		if (href_list["b1adduiue"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer1 = src.connected.occupant.dna.uni_identity
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer1owner = src.connected.occupant.name
-				else
-					src.buffer1owner = src.connected.occupant.real_name
-				src.buffer1label = "Unique Identifier & Unique Enzymes"
-				src.buffer1type = "ui"
-				src.buffer1iue = 1
-				dopage(src,"buffermenu")
-		if (href_list["b2adduiue"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer2 = src.connected.occupant.dna.uni_identity
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer2owner = src.connected.occupant.name
-				else
-					src.buffer2owner = src.connected.occupant.real_name
-				src.buffer2label = "Unique Identifier & Unique Enzymes"
-				src.buffer2type = "ui"
-				src.buffer2iue = 1
-				dopage(src,"buffermenu")
-		if (href_list["b3adduiue"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer3 = src.connected.occupant.dna.uni_identity
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer3owner = src.connected.occupant.name
-				else
-					src.buffer3owner = src.connected.occupant.real_name
-				src.buffer3label = "Unique Identifier & Unique Enzymes"
-				src.buffer3type = "ui"
-				src.buffer3iue = 1
-				dopage(src,"buffermenu")
-		if (href_list["b2addui"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer2iue = 0
-				src.buffer2 = src.connected.occupant.dna.uni_identity
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer2owner = src.connected.occupant.name
-				else
-					src.buffer2owner = src.connected.occupant.real_name
-				src.buffer2label = "Unique Identifier"
-				src.buffer2type = "ui"
-				dopage(src,"buffermenu")
-		if (href_list["b3addui"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer3iue = 0
-				src.buffer3 = src.connected.occupant.dna.uni_identity
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer3owner = src.connected.occupant.name
-				else
-					src.buffer3owner = src.connected.occupant.real_name
-				src.buffer3label = "Unique Identifier"
-				src.buffer3type = "ui"
-				dopage(src,"buffermenu")
-		if (href_list["b1addse"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer1iue = 0
-				src.buffer1 = src.connected.occupant.dna.struc_enzymes
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer1owner = src.connected.occupant.name
-				else
-					src.buffer1owner = src.connected.occupant.real_name
-				src.buffer1label = "Structural Enzymes"
-				src.buffer1type = "se"
-				dopage(src,"buffermenu")
-		if (href_list["b2addse"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer2iue = 0
-				src.buffer2 = src.connected.occupant.dna.struc_enzymes
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer2owner = src.connected.occupant.name
-				else
-					src.buffer2owner = src.connected.occupant.real_name
-				src.buffer2label = "Structural Enzymes"
-				src.buffer2type = "se"
-				dopage(src,"buffermenu")
-		if (href_list["b3addse"])
-			if(src.connected.occupant && src.connected.occupant.dna)
-				src.buffer3iue = 0
-				src.buffer3 = src.connected.occupant.dna.struc_enzymes
-				if (!istype(src.connected.occupant,/mob/living/carbon/human))
-					src.buffer3owner = src.connected.occupant.name
-				else
-					src.buffer3owner = src.connected.occupant.real_name
-				src.buffer3label = "Structural Enzymes"
-				src.buffer3type = "se"
-				dopage(src,"buffermenu")
-		if (href_list["b1clear"])
-			src.buffer1 = null
-			src.buffer1owner = null
-			src.buffer1label = null
-			src.buffer1iue = null
-			dopage(src,"buffermenu")
-		if (href_list["b2clear"])
-			src.buffer2 = null
-			src.buffer2owner = null
-			src.buffer2label = null
-			src.buffer2iue = null
-			dopage(src,"buffermenu")
-		if (href_list["b3clear"])
-			src.buffer3 = null
-			src.buffer3owner = null
-			src.buffer3label = null
-			src.buffer3iue = null
-			dopage(src,"buffermenu")
-		if (href_list["b1label"])
-			src.buffer1label = sanitize(input("New Label:","Edit Label","Infos here"))
-			dopage(src,"buffermenu")
-		if (href_list["b2label"])
-			src.buffer2label = sanitize(input("New Label:","Edit Label","Infos here"))
-			dopage(src,"buffermenu")
-		if (href_list["b3label"])
-			src.buffer3label = sanitize(input("New Label:","Edit Label","Infos here"))
-			dopage(src,"buffermenu")
-		if (href_list["b1transfer"])
-			if (!src.connected.occupant || (NOCLONE in src.connected.occupant.mutations) || !src.connected.occupant.dna)
-				return
-			if (src.buffer1type == "ui")
-				if (src.buffer1iue)
-					src.connected.occupant.real_name = src.buffer1owner
-					src.connected.occupant.name = src.buffer1owner
-				src.connected.occupant.dna.uni_identity = src.buffer1
-				updateappearance(src.connected.occupant,src.connected.occupant.dna.uni_identity)
-			else if (src.buffer1type == "se")
-				src.connected.occupant.dna.struc_enzymes = src.buffer1
-				domutcheck(src.connected.occupant,src.connected)
-			src.temphtml = "Transfered."
-			src.connected.occupant.radiation += rand(20,50)
-			src.delete = 0
-		if (href_list["b2transfer"])
-			if (!src.connected.occupant || (NOCLONE in src.connected.occupant.mutations) || !src.connected.occupant.dna)
-				return
-			if (src.buffer2type == "ui")
-				if (src.buffer2iue)
-					src.connected.occupant.real_name = src.buffer2owner
-					src.connected.occupant.name = src.buffer2owner
-				src.connected.occupant.dna.uni_identity = src.buffer2
-				updateappearance(src.connected.occupant,src.connected.occupant.dna.uni_identity)
-			else if (src.buffer2type == "se")
-				src.connected.occupant.dna.struc_enzymes = src.buffer2
-				domutcheck(src.connected.occupant,src.connected)
-			src.temphtml = "Transfered."
-			src.connected.occupant.radiation += rand(20,50)
-			src.delete = 0
-		if (href_list["b3transfer"])
-			if (!src.connected.occupant || (NOCLONE in src.connected.occupant.mutations) || !src.connected.occupant.dna)
-				return
-			if (src.buffer3type == "ui")
-				if (src.buffer3iue)
-					src.connected.occupant.real_name = src.buffer3owner
-					src.connected.occupant.name = src.buffer3owner
-				src.connected.occupant.dna.uni_identity = src.buffer3
-				updateappearance(src.connected.occupant,src.connected.occupant.dna.uni_identity)
-			else if (src.buffer3type == "se")
-				src.connected.occupant.dna.struc_enzymes = src.buffer3
-				domutcheck(src.connected.occupant,src.connected)
-			src.temphtml = "Transfered."
-			src.connected.occupant.radiation += rand(20,50)
-			src.delete = 0
-		if (href_list["b1injector"])
-			if (src.injectorready)
-				var/success = 1
-				var/obj/item/weapon/dnainjector/I = new /obj/item/weapon/dnainjector
-				I.dnatype = src.buffer1type
-				if(href_list["b1injector"]=="2")
-					var/blk = input(usr,"Select Block","Block") in all_dna_blocks(src.buffer1)
-					success = setInjectorBlock(I,blk,src.buffer1)
-				else
-					I.dna = src.buffer1
-				if(success)
-					I.loc = src.loc
-					I.name += " ([src.buffer1label])"
-					if (src.buffer1iue) I.ue = src.buffer1owner //lazy haw haw
-					src.temphtml = "Injector created."
-					src.delete = 0
-					src.injectorready = 0
-					spawn(300)
-						src.injectorready = 1
-				else
-					src.temphtml = "Error in injector creation."
-					src.delete = 0
-			else
-				src.temphtml = "Replicator not ready yet."
-				src.delete = 0
-		if (href_list["b2injector"])
-			if (src.injectorready)
-				var/success = 1
-				var/obj/item/weapon/dnainjector/I = new /obj/item/weapon/dnainjector
-				I.dnatype = src.buffer2type
-				if(href_list["b2injector"]=="2")
-					var/blk = input(usr,"Select Block","Block") in all_dna_blocks(src.buffer2)
-					success = setInjectorBlock(I,blk,src.buffer2)
-				else
-					I.dna = src.buffer2
-				if(success)
-					I.loc = src.loc
-					I.name += " ([src.buffer2label])"
-					if (src.buffer2iue) I.ue = src.buffer2owner //lazy haw haw
-					src.temphtml = "Injector created."
-					src.delete = 0
-					src.injectorready = 0
-					spawn(300)
-						src.injectorready = 1
-				else
-					src.temphtml = "Error in injector creation."
-					src.delete = 0
-			else
-				src.temphtml = "Replicator not ready yet."
-				src.delete = 0
-		if (href_list["b3injector"])
-			if (src.injectorready)
-				var/success = 1
-				var/obj/item/weapon/dnainjector/I = new /obj/item/weapon/dnainjector
-				I.dnatype = src.buffer3type
-				if(href_list["b3injector"]=="2")
-					var/blk = input(usr,"Select Block","Block") in all_dna_blocks(src.buffer3)
-					success = setInjectorBlock(I,blk,src.buffer3)
-				else
-					I.dna = src.buffer3
-				if(success)
-					I.loc = src.loc
-					I.name += " ([src.buffer3label])"
-					if (src.buffer3iue) I.ue = src.buffer3owner //lazy haw haw
-					src.temphtml = "Injector created."
-					src.delete = 0
-					src.injectorready = 0
-					spawn(300)
-						src.injectorready = 1
-				else
-					src.temphtml = "Error in injector creation."
-					src.delete = 0
-			else
-				src.temphtml = "Replicator not ready yet."
-				src.delete = 0
-		////////////////////////////////////////////////////////
-		if (href_list["load_disk"])
-			var/buffernum = text2num(href_list["load_disk"])
-			if ((buffernum > 3) || (buffernum < 1))
-				return
-			if ((isnull(src.diskette)) || (!src.diskette.data) || (src.diskette.data == ""))
-				return
-			switch(buffernum)
-				if(1)
-					src.buffer1 = src.diskette.data
-					src.buffer1type = src.diskette.data_type
-					src.buffer1iue = src.diskette.ue
-					src.buffer1owner = src.diskette.owner
-				if(2)
-					src.buffer2 = src.diskette.data
-					src.buffer2type = src.diskette.data_type
-					src.buffer2iue = src.diskette.ue
-					src.buffer2owner = src.diskette.owner
-				if(3)
-					src.buffer3 = src.diskette.data
-					src.buffer3type = src.diskette.data_type
-					src.buffer3iue = src.diskette.ue
-					src.buffer3owner = src.diskette.owner
-			src.temphtml = "Data loaded."
+			nanomanager.update_uis(src) // update all UIs attached to src
 
-		if (href_list["save_disk"])
-			var/buffernum = text2num(href_list["save_disk"])
-			if ((buffernum > 3) || (buffernum < 1))
-				return
-			if ((isnull(src.diskette)) || (src.diskette.read_only))
-				return
-			switch(buffernum)
-				if(1)
-					src.diskette.data = buffer1
-					src.diskette.data_type = src.buffer1type
-					src.diskette.ue = src.buffer1iue
-					src.diskette.owner = src.buffer1owner
-					src.diskette.name = "data disk - '[src.buffer1owner]'"
-				if(2)
-					src.diskette.data = buffer2
-					src.diskette.data_type = src.buffer2type
-					src.diskette.ue = src.buffer2iue
-					src.diskette.owner = src.buffer2owner
-					src.diskette.name = "data disk - '[src.buffer2owner]'"
-				if(3)
-					src.diskette.data = buffer3
-					src.diskette.data_type = src.buffer3type
-					src.diskette.ue = src.buffer3iue
-					src.diskette.owner = src.buffer3owner
-					src.diskette.name = "data disk - '[src.buffer3owner]'"
-			src.temphtml = "Data saved."
-		if (href_list["eject_disk"])
-			if (!src.diskette)
-				return
-			src.diskette.loc = get_turf(src)
-			src.diskette = null
-		////////////////////////////////////////////////////////
-		if (href_list["clear"])
-			src.temphtml = null
-			src.delete = 0
-		if (href_list["update"]) //ignore
-			src.temphtml = src.temphtml
-		src.add_fingerprint(usr)
-		src.updateUsrDialog()
-	return
+			sleep(10*2) // sleep for 2 seconds
+
+			irradiating = 0
+			src.connected.locked = lock_state
+
+			var/datum/dna2/record/buf = src.buffers[bufferId]
+
+			if ((buf.types & DNA2_BUF_UI))
+				if ((buf.types & DNA2_BUF_UE))
+					src.connected.occupant.real_name = buf.dna.real_name
+					src.connected.occupant.name = buf.dna.real_name
+				src.connected.occupant.UpdateAppearance(buf.dna.UI.Copy())
+			else if (buf.types & DNA2_BUF_SE)
+				src.connected.occupant.dna.SE = buf.dna.SE
+				src.connected.occupant.dna.UpdateSE()
+				domutcheck(src.connected.occupant,src.connected)
+			src.connected.occupant.radiation += rand(20,50)
+			return 1
+
+		if (bufferOption == "createInjector")
+			if (src.injector_ready || waiting_for_user_input)
+
+				var/success = 1
+				var/obj/item/weapon/dnainjector/I = new /obj/item/weapon/dnainjector
+				var/datum/dna2/record/buf = src.buffers[bufferId]
+				if(href_list["createBlockInjector"])
+					waiting_for_user_input=1
+					var/list/selectedbuf
+					if(buf.types & DNA2_BUF_SE)
+						selectedbuf=buf.dna.SE
+					else
+						selectedbuf=buf.dna.UI
+					var/blk = input(usr,"Select Block","Block") in all_dna_blocks(selectedbuf)
+					success = setInjectorBlock(I,blk,buf)
+				else
+					I.buf = buf
+				waiting_for_user_input=0
+				if(success)
+					I.loc = src.loc
+					I.name += " ([buf.name])"
+					//src.temphtml = "Injector created."
+					src.injector_ready = 0
+					spawn(300)
+						src.injector_ready = 1
+				//else
+					//src.temphtml = "Error in injector creation."
+			//else
+				//src.temphtml = "Replicator not ready yet."
+			return 1
+
+		if (bufferOption == "loadDisk")
+			if ((isnull(src.disk)) || (!src.disk.buf))
+				//src.temphtml = "Invalid disk. Please try again."
+				return 0
+
+			src.buffers[bufferId]=src.disk.buf
+			//src.temphtml = "Data loaded."
+			return 1
+
+		if (bufferOption == "saveDisk")
+			if ((isnull(src.disk)) || (src.disk.read_only))
+				//src.temphtml = "Invalid disk. Please try again."
+				return 0
+
+			var/datum/dna2/record/buf = src.buffers[bufferId]
+
+			src.disk.buf = buf
+			src.disk.name = "data disk - '[buf.dna.real_name]'"
+			//src.temphtml = "Data saved."
+			return 1
+
+
 /////////////////////////// DNA MACHINES

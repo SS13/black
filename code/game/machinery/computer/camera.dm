@@ -1,6 +1,5 @@
 //This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:31
 
-/mob/var/usingcamerascreen = 0
 
 /obj/machinery/computer/security
 	name = "Security Cameras"
@@ -21,7 +20,7 @@
 
 
 	check_eye(var/mob/user as mob)
-		if ((get_dist(user, src) > 1 || user.blinded || !( current ) || !( current.status )) && (!istype(user, /mob/living/silicon)))
+		if ((get_dist(user, src) > 1 || !( user.canmove ) || user.blinded || !( current ) || !( current.status )) && (!istype(user, /mob/living/silicon)))
 			return null
 		user.reset_view(current)
 		return 1
@@ -35,7 +34,6 @@
 
 		if(!isAI(user))
 			user.set_machine(src)
-			user.usingcamerascreen = 1	
 
 		var/list/L = list()
 		for (var/obj/machinery/camera/C in cameranet.cameras)
@@ -52,14 +50,12 @@
 		var/t = input(user, "Which camera should you change to?") as null|anything in D
 		if(!t)
 			user.unset_machine()
-			user.usingcamerascreen = 0
 			return 0
 
 		var/obj/machinery/camera/C = D[t]
 
 		if(t == "Cancel")
 			user.unset_machine()
-			user.usingcamerascreen = 0
 			return 0
 
 		if(C)
@@ -205,3 +201,9 @@
 	desc = "Used to monitor fires and breaches."
 	icon_state = "engineeringcameras"
 	network = list("Engineering","Power Alarms","Atmosphere Alarms","Fire Alarms")
+
+/obj/machinery/computer/security/nuclear
+	name = "Mission Monitor"
+	desc = "Used to access the built-in cameras in helmets."
+	icon_state = "syndicam"
+	network = list("NUKE")

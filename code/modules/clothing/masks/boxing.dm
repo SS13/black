@@ -6,7 +6,6 @@
 	flags = FPRINT|TABLEPASS|BLOCKHAIR
 	flags_inv = HIDEFACE
 	w_class = 2
-	can_eat = 0
 
 /obj/item/clothing/mask/luchador
 	name = "Luchador Mask"
@@ -17,7 +16,6 @@
 	flags_inv = HIDEFACE
 	w_class = 2
 	siemens_coefficient = 3.0
-	can_eat = 0
 
 /obj/item/clothing/mask/luchador/tecnicos
 	name = "Tecnicos Mask"

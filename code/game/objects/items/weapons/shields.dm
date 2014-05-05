@@ -31,63 +31,6 @@
 		else
 			..()
 
-/obj/item/weapon/shield/metal
-	name = "metal shield"
-	desc = "A shield adept at blocking blunt objects from connecting with the torso of the shield wielder. This is some serious protection."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "metal"
-	flags = FPRINT | TABLEPASS| CONDUCT
-	slot_flags = SLOT_BACK
-	force = 7.0
-	throwforce = 6.0
-	throw_speed = 1
-	throw_range = 2
-	w_class = 4.0
-	g_amt = 8000
-	m_amt = 1500
-	origin_tech = "materials=2"
-	attack_verb = list("shoved", "bashed")
-	var/cooldown = 0 //shield bash cooldown. based on world.time
-
-	IsShield()
-		return 1
-
-	attackby(obj/item/weapon/W as obj, mob/user as mob)
-		if(istype(W, /obj/item/weapon/melee/baton))
-			if(cooldown < world.time - 25)
-				user.visible_message("<span class='warning'>[user] bashes [src] with [W]!</span>")
-				playsound(user.loc, 'sound/effects/shieldbashmetal.ogg', 50, 1)
-				cooldown = world.time
-		if(istype(W, /obj/item/weapon/melee/classic_baton))
-			if(cooldown < world.time - 25)
-				user.visible_message("<span class='warning'>[user] bashes [src] with [W]!</span>")
-				playsound(user.loc, 'sound/effects/shieldbashmetal2.ogg', 50, 1)
-				cooldown = world.time
-		if(istype(W, /obj/item/weapon/gun/))
-			if(cooldown < world.time - 25)
-				user.visible_message("<span class='warning'>[user] bangs [src] with [W]!</span>")
-				playsound(user.loc, 'sound/effects/shieldbashmetal2.ogg', 50, 1)
-				cooldown = world.time
-		else
-			..()
-
-/obj/item/weapon/shield/metal/green
-	name = "metal shield"
-	desc = "A shield adept at blocking blunt objects from connecting with the torso of the shield wielder. This one comes in green."
-	icon = 'icons/obj/weapons.dmi'
-	icon_state = "metalgreen"
-
-
-/obj/item/weapon/shield/riot/roman
-	name = "roman shield"
-	desc = "Bears an inscription on the inside: <i>\"Romanes venio domus\"</i>."
-	icon_state = "roman_shield"
-
-/obj/item/weapon/shield/riot/buckler
-	name = "buckler"
-	desc = "Thou be waving this thingy around - thou be sitting in ye olde brig."
-	icon_state = "buckler"
-
 /obj/item/weapon/shield/energy
 	name = "energy combat shield"
 	desc = "A shield capable of stopping most projectile and melee attacks. It can be retracted, expanded, and stored anywhere."

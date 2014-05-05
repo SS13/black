@@ -163,8 +163,6 @@
 		explosion(src.loc,-1,1,2)
 	if(src)
 		del(src)
-		spawn (30)
-		new /obj/structure/blownfueltank(src.loc)
 
 /obj/structure/reagent_dispensers/fueltank/temperature_expose(datum/gas_mixture/air, temperature, volume)
 	if(temperature > T0C+500)
@@ -205,49 +203,11 @@
 	amount_per_transfer_from_this = 10
 	New()
 		..()
-		reagents.add_reagent("beer",500)
+		reagents.add_reagent("beer",1000)
 
 /obj/structure/reagent_dispensers/beerkeg/blob_act()
 	explosion(src.loc,0,3,5,7,10)
 	del(src)
-
-/obj/structure/reagent_dispensers/keg
-	name = "keg"
-	desc = "Metal keg. Could there be beer inside?"
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "keg"
-	amount_per_transfer_from_this = 10
-
-
-/obj/structure/reagent_dispensers/spacedrugs
-	name = "keg"
-	desc = "Metal keg. Could there be beer inside?"
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "keg"
-	amount_per_transfer_from_this = 10
-	New()
-		..()
-		reagents.add_reagent("space_drugs",300)
-
-/obj/structure/reagent_dispensers/hooch
-	name = "keg"
-	desc = "Metal keg. Could there be beer inside?"
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "keg"
-	amount_per_transfer_from_this = 10
-	New()
-		..()
-		reagents.add_reagent("hooch",300)
-
-/obj/structure/reagent_dispensers/potato //Because Russians, man. You gotta drink something, right?
-	name = "keg"
-	desc = "Metal keg. Could there be beer inside?"
-	icon = 'icons/obj/objects.dmi'
-	icon_state = "keg"
-	amount_per_transfer_from_this = 10
-	New()
-		..()
-		reagents.add_reagent("potato",300)
 
 /obj/structure/reagent_dispensers/virusfood
 	name = "Virus Food Dispenser"

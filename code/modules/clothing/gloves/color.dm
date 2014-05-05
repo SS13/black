@@ -104,12 +104,6 @@
 	item_state = "lightbrowngloves"
 	item_color="light brown"
 
-/obj/item/clothing/gloves/sexymime
-	name = "sexy mime gloves"
-	icon_state = "sexymime_gloves"
-	item_state = "sexymime_gloves"
-	item_color="brown"
-
 /obj/item/clothing/gloves/brown
 	name = "brown gloves"
 	desc = "A pair of gloves, they don't look special in any way."

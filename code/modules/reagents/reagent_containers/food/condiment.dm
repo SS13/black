@@ -47,8 +47,6 @@
 			user.attack_log += text("\[[time_stamp()]\] <font color='red'>Fed [src.name] by [M.name] ([M.ckey]) Reagents: [reagentlist(src)]</font>")
 			msg_admin_attack("[user.name] ([user.ckey]) fed [M.name] ([M.ckey]) with [src.name] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)")
 
-			log_attack("<font color='red'>[user.name] ([user.ckey]) fed [M.name] ([M.ckey]) with [src.name] (INTENT: [uppertext(user.a_intent)])</font>")
-
 			if(reagents.total_volume)
 				reagents.reaction(M, INGEST)
 				spawn(5)
@@ -124,14 +122,9 @@
 					name = "Corn Oil"
 					desc = "A delicious oil used in cooking. Made from corn."
 					icon_state = "oliveoil"
-				if("honey")
-					name = "Honey"
-					desc = "Sweety golden goodnes. Bzzzz!"
-					icon_state = "honey"
 				if("sugar")
 					name = "Sugar"
 					desc = "Tastey space sugar!"
-
 				else
 					name = "Misc Condiment Bottle"
 					if (reagents.reagent_list.len==1)
@@ -179,20 +172,3 @@
 	New()
 		..()
 		reagents.add_reagent("blackpepper", 20)
-
-
-/obj/item/weapon/reagent_containers/food/condiment/honey
-	name = "Honey"
-	desc = "A bottle of sweet, sweet honey. Bzzzz!"
-	icon_state = "honey"
-	New()
-		..()
-		reagents.add_reagent("honey", 30)
-
-/obj/item/weapon/reagent_containers/food/condiment/soysauce
-	name = "Soy Sauce"
-	desc = "A bottle of soy sauce."
-	icon_state = "soysauce"
-	New()
-		..()
-		reagents.add_reagent("soysauce", 25)

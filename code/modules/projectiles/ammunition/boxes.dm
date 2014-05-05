@@ -14,6 +14,25 @@
 	multiple_sprites = 1
 
 
+/obj/item/ammo_magazine/c45m
+	name = "magazine (.45)"
+	icon_state = "45"
+	ammo_type = "/obj/item/ammo_casing/c45"
+	max_ammo = 7
+	multiple_sprites = 1
+
+/obj/item/ammo_magazine/c45/empty
+	max_ammo = 0
+
+/obj/item/ammo_magazine/c45r
+	name = "magazine (.45 rubber)"
+	icon_state = "45"
+	ammo_type = "/obj/item/ammo_casing/c45r"
+	max_ammo = 7
+	multiple_sprites = 1
+
+/obj/item/ammo_magazine/c45r/empty
+	max_ammo = 0
 
 /obj/item/ammo_magazine/a418
 	name = "ammo box (.418)"
@@ -72,7 +91,7 @@
 
 /obj/item/ammo_magazine/a12mm/empty
 	name = "magazine (12mm)"
-	icon_state = "12mm-0"
+	icon_state = "12mm"
 	ammo_type = "/obj/item/ammo_casing/12mm"
 	max_ammo = 0
 
@@ -86,7 +105,7 @@
 
 /obj/item/ammo_magazine/a50/empty
 	name = "magazine (.50)"
-	icon_state = "50ae-0"
+	icon_state = "50ae"
 	ammo_type = "/obj/item/ammo_casing/a50"
 	max_ammo = 0
 
@@ -115,51 +134,5 @@
 	name = "magazine (a762)"
 	icon_state = "a762"
 	ammo_type = "/obj/item/ammo_casing/a762"
-	max_ammo = 0
-	multiple_sprites = 1
-
-/obj/item/ammo_magazine/a357/SW
-	name = "ammo box (.357)"
-	desc = "A box of .357 ammo specially for S&W"
-	icon_state = "38"
-	ammo_type = "/obj/item/ammo_casing/a357/SW"
-	max_ammo = 6
-	multiple_sprites = 1
-
-/obj/item/ammo_magazine/a357/SW/empty
-	name = "ammo box (.357)"
-	desc = "A box of .357 ammo specially for S&W"
-	icon_state = "38"
-	ammo_type = "/obj/item/ammo_casing/a357/SW"
-	max_ammo = 0
-	multiple_sprites = 1
-
-/obj/item/ammo_magazine/beretta
-	name = "magazine (9x19)"
-	icon_state = "9x19p"
-	ammo_type = "/obj/item/ammo_casing/beretta"
-	max_ammo = 15
-	multiple_sprites = 1
-
-/obj/item/ammo_magazine/beretta/empty
-	name = "magazine (9x19)"
-	icon_state = "9x19p"
-	ammo_type = "/obj/item/ammo_casing/beretta"
-	max_ammo = 0
-	multiple_sprites = 1
-
-
-/obj/item/ammo_magazine/pp90
-	name = "pp90 magazine"
-	icon_state = "pp90_full"
-	origin_tech = "combat=3"
-	ammo_type = "/obj/item/ammo_casing/c9mm"
-	max_ammo = 18
-	multiple_sprites = 1
-
-/obj/item/ammo_magazine/pp90/empty
-	name = "pp90 magazine"
-	icon_state = "pp90_empty"
-	ammo_type = "/obj/item/ammo_casing/c9mm"
 	max_ammo = 0
 	multiple_sprites = 1

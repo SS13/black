@@ -69,10 +69,7 @@
 			new /obj/item/weapon/storage/backpack/medic(src)
 		else
 			new /obj/item/weapon/storage/backpack/satchel_med(src)
-		if(prob(50))
-			new /obj/item/clothing/under/rank/nurse(src)
-		else
-			new /obj/item/clothing/under/rank/nurse/nursenew(src)
+		new /obj/item/clothing/under/rank/nursesuit (src)
 		new /obj/item/clothing/head/nursehat (src)
 		switch(pick("blue", "green", "purple"))
 			if ("blue")
@@ -95,16 +92,14 @@
 				new /obj/item/clothing/under/rank/medical/purple(src)
 				new /obj/item/clothing/head/surgery/purple(src)
 		new /obj/item/clothing/under/rank/medical(src)
-		new /obj/item/clothing/under/rank/nursesuit(src)
+		new /obj/item/clothing/under/rank/nurse(src)
 		new /obj/item/clothing/under/rank/orderly(src)
 		new /obj/item/clothing/suit/storage/labcoat(src)
+		new /obj/item/clothing/suit/storage/fr_jacket(src)
 		new /obj/item/clothing/shoes/white(src)
+//		new /obj/item/weapon/cartridge/medical(src)
 		new /obj/item/device/radio/headset/headset_med(src)
 		new /obj/item/weapon/storage/belt/medical(src)
-		if(prob(50))
-			new /obj/item/clothing/suit/storage/fr_jacket(src)
-		else
-			new /obj/item/clothing/suit/storage/paramedicvest(src)
 		return
 
 
@@ -171,19 +166,18 @@
 /obj/structure/closet/secure_closet/chemical
 	name = "Chemical Closet"
 	desc = "Store dangerous chemicals in here."
-	icon_state = "chemmed1"
-	icon_closed = "chemmed"
-	icon_locked = "chemmed1"
-	icon_opened = "chemmedopen"
-	icon_broken = "chemmedbroken"
-	icon_off = "chemmedoff"
+	icon_state = "medical1"
+	icon_closed = "medical"
+	icon_locked = "medical1"
+	icon_opened = "medicalopen"
+	icon_broken = "medicalbroken"
+	icon_off = "medicaloff"
 	req_access = list(access_chemistry)
 
 
 	New()
 		..()
 		sleep(2)
-		new /obj/item/weapon/storage/box/pillbottles(src)
 		new /obj/item/weapon/storage/box/pillbottles(src)
 		new /obj/item/weapon/storage/box/pillbottles(src)
 		return

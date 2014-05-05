@@ -209,8 +209,9 @@
 		if(M)
 			var/turf/ear = get_turf(M)
 			if(ear)
-				if(speaker_coverage[ear])
-					. |= M
+				// Ghostship is magic: Ghosts can hear radio chatter from anywhere
+				if(speaker_coverage[ear] || (istype(M, /mob/dead/observer) && (M.client) && (M.client.prefs.toggles & CHAT_GHOSTRADIO)))
+					. |= M		// Since we're already looping through mobs, why bother using |= ? This only slows things down.
 	return .
 
 #define SIGN(X) ((X<0)?-1:1)
@@ -281,46 +282,6 @@ proc/isInSight(var/atom/A, var/atom/B)
 			return M
 	return null
 
-//i think this is used soley by verb/give(), cael
-proc/check_can_reach(atom/user, atom/target)
-	if(!in_range(user,target))
-		return 0
-	return CanReachThrough(get_turf(user), get_turf(target), target)
-
-//dummy caching, used to speed up reach checks
-var/list/DummyCache = list()
-
-/proc/CanReachThrough(turf/srcturf, turf/targetturf, atom/target)
-
-	var/obj/item/weapon/dummy/D = locate() in DummyCache
-	if(!D)
-		D = new /obj/item/weapon/dummy( srcturf )
-	else
-		DummyCache.Remove(D)
-		D.loc = srcturf
-
-	if(targetturf.density && targetturf != get_turf(target))
-		return 0
-
-	//Now, check objects to block exit that are on the border
-	for(var/obj/border_obstacle in srcturf)
-		if(border_obstacle.flags & ON_BORDER)
-			if(!border_obstacle.CheckExit(D, targetturf))
-				D.loc = null
-				DummyCache.Add(D)
-				return 0
-
-	//Next, check objects to block entry that are on the border
-	for(var/obj/border_obstacle in targetturf)
-		if((border_obstacle.flags & ON_BORDER) && (target != border_obstacle))
-			if(!border_obstacle.CanPass(D, srcturf, 1, 0))
-				D.loc = null
-				DummyCache.Add(D)
-				return 0
-
-	D.loc = null
-	DummyCache.Add(D)
-	return 1
 
 // Will return a list of active candidates. It increases the buffer 5 times until it finds a candidate which is active within the buffer.
 /proc/get_active_candidates(var/buffer = 1)
@@ -368,7 +329,6 @@ var/list/DummyCache = list()
 			for(var/client/C in group)
 				C.screen -= O
 
-
 datum/projectile_data
 	var/src_x
 	var/src_y
@@ -406,4 +366,3 @@ datum/projectile_data
 	var/dest_y = src_y + distance*cos(rotation);
 
 	return new /datum/projectile_data(src_x, src_y, time, distance, power_x, power_y, dest_x, dest_y)
-

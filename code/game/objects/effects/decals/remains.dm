@@ -4,7 +4,7 @@
 	gender = PLURAL
 	icon = 'icons/effects/blood.dmi'
 	icon_state = "remains"
-	anchored = 0 //Yeah, well, we can 'bury' them now or whatever.
+	anchored = 1
 
 /obj/effect/decal/remains/xeno
 	name = "remains"

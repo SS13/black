@@ -25,7 +25,7 @@
 
 /obj/machinery/smartfridge/chemicals
 	name = "\improper MegaChem Servitor"
-	desc = "When you need chemicals fast!"
+	desc = "When you need chemicals fast! PP inc."
 	icon = 'icons/obj/vending.dmi'
 	icon_state = "smartchem"
 	icon_on = "smartchem"
@@ -35,7 +35,6 @@
 	if(istype(O,/obj/item/weapon/reagent_containers/))
 		return 1
 	return 0
-
 
 /obj/machinery/smartfridge/seeds
 	name = "\improper MegaSeed Servitor"

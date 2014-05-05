@@ -2,7 +2,6 @@
  * Contains:
  *		Lasertag
  *		Costume
- *		Fur Coats
  *		Misc
  */
 
@@ -67,6 +66,14 @@
 	flags = FPRINT | TABLEPASS
 
 
+/obj/item/clothing/suit/johnny_coat
+	name = "johnny~~ coat"
+	desc = "Johnny~~"
+	icon_state = "johnny"
+	item_state = "johnny"
+	flags = FPRINT | TABLEPASS
+
+
 /obj/item/clothing/suit/justice
 	name = "justice suit"
 	desc = "this pretty much looks ridiculous"
@@ -95,15 +102,6 @@
 	blood_overlay_type = "armor"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 
-//Von Karma costume part
-/obj/item/clothing/suit/prosecutor_jacket
-	name = "prosecutor jacket"
-	desc = "Don't be foolish, you foolish fool wearing the foolishly foolish clothes."
-	icon_state = "prosecutor_jacket"
-	item_state = "prosecutor_jacket"
-	blood_overlay_type = "armor"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-//
 
 /obj/item/clothing/suit/apron/overalls
 	name = "coveralls"
@@ -112,10 +110,6 @@
 	item_state = "overalls"
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS
 
-/obj/item/clothing/suit/apron/surgical
-	name = "surgical apron"
-	desc = "A surgical apron used to keep the blood away from the uniform."
-	icon_state = "surgeon"
 
 /obj/item/clothing/suit/syndicatefake
 	name = "red space suit replica"
@@ -165,12 +159,6 @@
 	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
 	siemens_coefficient = 2.0
 
-/obj/item/clothing/suit/poncho
-	name = "el poncho"
-	desc = "Jefe de seguridad chupa la polla, hombre! Arriba~~"
-	icon_state = "poncho"
-	item_state = "poncho"
-	flags = FPRINT | TABLEPASS
 
 /obj/item/clothing/suit/holidaypriest
 	name = "Holiday Priest"
@@ -190,50 +178,6 @@
 	flags_inv = HIDEJUMPSUIT
 
 /*
- * Fur Coats
- */
-
-
-/obj/item/clothing/suit/winter
-	name = "warm coat"
-	desc = "Extra warm coat made for work in extreme cold conditions."
-	icon_state = "coatwinter"
-	item_state = "coatwinter"
-	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	flags_inv = HIDEJUMPSUIT
-
-/obj/item/clothing/suit/winter/attack_self(mob/user as mob)
-	if(src.icon_state == "coatwinter")
-		src.icon_state = "coatwinter-hood"
-		src.item_state = "coatwinter-hood"
-		user << "You pull the hood over your head."
-		flags = FPRINT|TABLEPASS|BLOCKHAIR
-		flags_inv = HIDEEARS|HIDEJUMPSUIT
-	else
-		src.icon_state = "coatwinter"
-		src.item_state = "coatwinter"
-		user << "You pull the hood off of your head."
-		flags = FPRINT|TABLEPASS
-
-/obj/item/clothing/suit/winter/security
-	name = "warm security coat"
-	desc = "Extra warm coat made for work in extreme cold conditions. This one is in red color with monkey fur trim hood."
-	icon_state = "coatsecurity"
-	item_state = "coatsecurity"
-
-/obj/item/clothing/suit/winter/security/attack_self(mob/user as mob)
-	if(src.icon_state == "coatsecurity")
-		src.icon_state = "coatsecurity-hood"
-		src.item_state = "coatsecurity-hood"
-		user << "You pull the hood over your head."
-		flags = FPRINT|TABLEPASS|BLOCKHAIR
-	else
-		src.icon_state = "coatsecurity"
-		src.item_state = "coatsecurity"
-		user << "You pull the hood off of your head."
-		flags = FPRINT|TABLEPASS
-
-/*
  * Misc
  */
 
@@ -250,12 +194,6 @@
 	desc = "A worn out, curiously comfortable t-shirt with a picture of Ian. You wouldn't go so far as to say it feels like being hugged when you wear it but it's pretty close. Good for sleeping in."
 	icon_state = "ianshirt"
 	item_state = "ianshirt"
-
-/obj/item/clothing/suit/nerdshirt
-	name = "videogaming shirt"
-	desc = "A baggy shirt with vintage game character Phanic the Weasel. Someone who wears this is probably quite good at arcade gaming."
-	icon_state = "nerdshirt"
-	item_state = "nerdshirt"
 
 //Blue suit jacket toggle
 /obj/item/clothing/suit/suit/verb/toggle()
@@ -312,41 +250,11 @@
 	item_state = "browncoat"
 	flags = FPRINT | TABLEPASS
 
-/obj/item/clothing/suit/charcoalcoat
-	name = "charcoal coat"
-	desc = "A long, charcoal coat."
-	icon_state = "charcoalcoat"
-	item_state = "charcoalcoat"
-	flags = FPRINT | TABLEPASS
-
 /obj/item/clothing/suit/neocoat
 	name = "black coat"
 	desc = "A flowing, black coat."
 	icon_state = "neocoat"
 	item_state = "neocoat"
-	flags = FPRINT | TABLEPASS
-
-/obj/item/clothing/suit/sovietredarmycoat
-	name = "red army coat"
-	desc = "Tovarisch komandir`s very own coat. "
-	icon_state = "redarmycoat"
-	item_state = "redarmycoat"
-	flags = FPRINT | TABLEPASS
-
-/obj/item/clothing/suit/sovietcommisarcoat
-	name = "commisar coat"
-	desc = "Tovarisch kommissar`s very own coat. "
-	icon_state = "commissarcoat"
-	item_state = "commissarcoat"
-	flags = FPRINT | TABLEPASS
-
-//actual suits
-
-/obj/item/clothing/suit/creamsuit
-	name = "cream suit"
-	desc = "A cream coloured, genteel suit."
-	icon_state = "creamsuit"
-	item_state = "creamsuit"
 	flags = FPRINT | TABLEPASS
 
 //stripper

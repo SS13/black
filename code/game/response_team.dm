@@ -280,8 +280,7 @@ proc/trigger_armed_response_team(var/force = 0)
 /mob/living/carbon/human/proc/equip_strike_team(leader_selected = 0)
 
 	//Special radio setup
-	if (!equip_to_slot_or_del(new /obj/item/device/radio/headset/ert(src), slot_l_ear))
-		equip_to_slot_or_del(new /obj/item/device/radio/headset/ert(src), slot_r_ear)
+	equip_to_slot_or_del(new /obj/item/device/radio/headset/ert(src), slot_l_ear)
 
 	//Replaced with new ERT uniform
 	equip_to_slot_or_del(new /obj/item/clothing/under/rank/centcom_officer(src), slot_w_uniform)

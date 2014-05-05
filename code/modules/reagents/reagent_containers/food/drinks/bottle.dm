@@ -131,26 +131,11 @@
 	playsound(loc, 'sound/weapons/bladeslice.ogg', 50, 1, -1)
 	return ..()
 
-/obj/item/weapon/broken_beer
-
-	name = "Broken beer bottle"
-	desc = "A broken beer bottle."
-	icon = 'icons/obj/drinks.dmi'
-	icon_state = "broken_beer"
-	force = 5.0
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/gin
 	name = "Griffeater Gin"
 	desc = "A bottle of high quality gin, produced in the New London Space Station."
 	icon_state = "ginbottle"
-	New()
-		..()
-		reagents.add_reagent("gin", 100)
-
-/obj/item/weapon/reagent_containers/food/drinks/bottle/gin/hardon
-	name = "Hardon`s Gin"
-	desc = "Famous gin, twice awarded The Space Queen`s Seal Of Approval. Ol` captain`s all-time favourite."
-	icon_state = "ginbottlealt"
 	New()
 		..()
 		reagents.add_reagent("gin", 100)
@@ -163,14 +148,6 @@
 		..()
 		reagents.add_reagent("whiskey", 100)
 
-/obj/item/weapon/reagent_containers/food/drinks/bottle/bourbon
-	name = "McRoy's Old Time Bourbon"
-	desc = "Genuine bourbon whiskey, matured deep inside brig darkest cells. A robust officer`s drink of choice."
-	icon_state = "bourbonbottle"
-	New()
-		..()
-		reagents.add_reagent("bourbon", 100)
-
 /obj/item/weapon/reagent_containers/food/drinks/bottle/vodka
 	name = "Tunguska Triple Distilled"
 	desc = "Aah, vodka. Prime choice of drink AND fuel by Russians worldwide."
@@ -178,14 +155,6 @@
 	New()
 		..()
 		reagents.add_reagent("vodka", 100)
-
-/obj/item/weapon/reagent_containers/food/drinks/bottle/vodka/Griefenko
-	name = "Griefenko Soft Vodka"
-	desc = "Superpremium potato vodka intended for rich upper-class bolsheviks only. Na zdorovye!"
-	icon_state = "vodkabottlealt"
-	New()
-		..()
-		reagents.add_reagent("vodka", 80)
 
 /obj/item/weapon/reagent_containers/food/drinks/bottle/tequilla
 	name = "Caccavo Guaranteed Quality Tequilla"
@@ -243,22 +212,6 @@
 		..()
 		reagents.add_reagent("kahlua", 100)
 
-/obj/item/weapon/reagent_containers/food/drinks/bottle/melon
-	name = "Halp Melon Liqueur"
-	desc = "Halp Melon Liqueur has been produced by G.G. Mellon`s distillery for over a century and has became a true standart for cockail making. "
-	icon_state = "midoribottle"
-	New()
-		..()
-		reagents.add_reagent("melonliquor", 100)
-
-/obj/item/weapon/reagent_containers/food/drinks/bottle/limoncello
-	name = "Giuseppe`s Homemade Limoncello"
-	desc = "Albeit being factory-made, this classic Italian liqueur made of lemons tastes like sweet, sweet vendetta. Mamma mia!"
-	icon_state = "limoncellobottle"
-	New()
-		..()
-		reagents.add_reagent("limoncello", 100)
-
 /obj/item/weapon/reagent_containers/food/drinks/bottle/goldschlager
 	name = "College Girl Goldschlager"
 	desc = "Because they are the only ones who will drink 100 proof cinnamon schnapps."
@@ -283,14 +236,6 @@
 		..()
 		reagents.add_reagent("wine", 100)
 
-obj/item/weapon/reagent_containers/food/drinks/bottle/prosecco
-	name = "Rosolimi Spumante Prosecco"
-	desc = "Famous Rosolimi Winemakers` all-time classics, this sweet sparkling wine is delicious. Bubbles!"
-	icon_state = "proseccobottle"
-	New()
-		..()
-		reagents.add_reagent("prosecco", 100)
-
 /obj/item/weapon/reagent_containers/food/drinks/bottle/absinthe
 	name = "Jailbreaker Verte"
 	desc = "One sip of this and you just know you're gonna have a good time."
@@ -298,6 +243,38 @@ obj/item/weapon/reagent_containers/food/drinks/bottle/prosecco
 	New()
 		..()
 		reagents.add_reagent("absinthe", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/melonliquor
+	name = "Emeraldine Melon Liquor"
+	desc = "A bottle of 46 proof Emeraldine Melon Liquor. Sweet and light."
+	icon_state = "alco-green" //Placeholder.
+	New()
+		..()
+		reagents.add_reagent("melonliquor", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/bluecuracao
+	name = "Miss Blue Curacao"
+	desc = "A fruity, exceptionally azure drink. Does not allow the imbiber to use the fifth magic."
+	icon_state = "alco-blue" //Placeholder.
+	New()
+		..()
+		reagents.add_reagent("bluecuracao", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/grenadine
+	name = "Briar Rose Grenadine Syrup"
+	desc = "Sweet and tangy, a bar syrup used to add color or flavor to drinks."
+	icon_state = "grenadinebottle"
+	New()
+		..()
+		reagents.add_reagent("grenadine", 100)
+
+/obj/item/weapon/reagent_containers/food/drinks/bottle/pwine
+	name = "Warlock's Velvet"
+	desc = "What a delightful packaging for a surely high quality wine! The vintage must be amazing!"
+	icon_state = "pwinebottle"
+	New()
+		..()
+		reagents.add_reagent("pwine", 100)
 
 //////////////////////////JUICES AND STUFF ///////////////////////
 

@@ -1,3 +1,4 @@
+
 /obj/machinery/gibber
 	name = "Gibber"
 	desc = "The name isn't descriptive enough?"
@@ -102,8 +103,6 @@
 	src.add_fingerprint(user)
 	if(do_after(user, 30) && G && G.affecting && !occupant)
 		user.visible_message("\red [user] stuffs [G.affecting] into the gibber!")
-		message_admins("[key_name(user, user.client)](<A HREF='?_src_=holder;adminmoreinfo=\ref[user]'>?</A>) запихнул [G.affecting] в гиббер! ([x],[y],[z] - <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[x];Y=[y];Z=[z]'>JMP</a>)",0,1)
-		log_attack("<font color='red'>[user] ([user.ckey]) stuffs [G.affecting] ([G.affecting.ckey]) into the gibber.</font>")
 		var/mob/M = G.affecting
 		if(M.client)
 			M.client.perspective = EYE_PERSPECTIVE
@@ -180,7 +179,7 @@
 		var/sourcenutriment = src.occupant.nutrition / 15
 		var/sourcetotalreagents = 0
 
-		if( istype(src.occupant, /mob/living/carbon/monkey/) || istype(src.occupant, /mob/living/carbon/alien/) || istype(src.occupant, /mob/living/simple_animal/hostile/giant_spider) ) // why are you gibbing aliens? oh well
+		if( istype(src.occupant, /mob/living/carbon/monkey/) || istype(src.occupant, /mob/living/carbon/alien/) ) // why are you gibbing aliens? oh well
 			totalslabs = 3
 			sourcetotalreagents = src.occupant.reagents.total_volume
 		else if( istype(src.occupant, /mob/living/simple_animal/cow) || istype(src.occupant, /mob/living/simple_animal/hostile/bear) )
@@ -204,7 +203,7 @@
 		if(src.occupant.client) // Gibbed a cow with a client in it? log that shit
 			src.occupant.attack_log += "\[[time_stamp()]\] Was gibbed by <b>[user]/[user.ckey]</b>"
 			user.attack_log += "\[[time_stamp()]\] Gibbed <b>[src.occupant]/[src.occupant.ckey]</b>"
-			log_attack("\[[time_stamp()]\] <b>[user]/[user.ckey]</b> gibbed <b>[src.occupant]/[src.occupant.ckey]</b>")
+			msg_admin_attack("\[[time_stamp()]\] <b>[key_name(user)]</b> gibbed <b>[key_name(src.occupant)]</b>")
 
 		src.occupant.death(1)
 		src.occupant.ghostize()

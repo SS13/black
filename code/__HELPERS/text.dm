@@ -34,32 +34,41 @@
 			index = findtext(t, char)
 	return t
 
-//Removes a few problematic characters
-/proc/sanitize_simple(var/t,var/list/repl_chars = list("\n"="#","\t"="#","ï¿½"="ï¿½","ÿ"="____255_"))
+//Sanitize for ß letter
+proc/sanitize_russian(var/msg)
+	var/index = findtext(msg, "ÿ")
+	while(index)
+		msg = copytext(msg, 1, index) + "&#255;" + copytext(msg, index+1)
+		index = findtext(msg, "ÿ")
+	return msg
+
+/proc/sanitize_multi(var/t,var/list/repl_chars = list("\n"="#","\t"="#","ï¿½"="ï¿½"))
+	t = sanitize_russian(t)
 	for(var/char in repl_chars)
 		var/index = findtext(t, char)
 		while(index)
 			t = copytext(t, 1, index) + repl_chars[char] + copytext(t, index+1)
 			index = findtext(t, char)
-	t = html_encode(t)
-	var/index = findtext(t, "____255_")
-	while(index)
-		t = copytext(t, 1, index) + "&#255;" + copytext(t, index+8)
-		index = findtext(t, "____255_")
 	return t
 
-/proc/sanitize_simple_uni(var/t,var/list/repl_chars = list("\n"="#","\t"="#","ÿ"="____255_"))
+//Removes a few problematic characters
+/proc/sanitize_simple(var/t,var/list/repl_chars = list("\n"="#","\t"="#","ï¿½"="ï¿½"))
 	for(var/char in repl_chars)
 		var/index = findtext(t, char)
 		while(index)
 			t = copytext(t, 1, index) + repl_chars[char] + copytext(t, index+1)
 			index = findtext(t, char)
-	t = html_encode(t)
-	var/index = findtext(t, "____255_")
-	while(index)
-		t = copytext(t, 1, index) + "&#1103;" + copytext(t, index+8)
-		index = findtext(t, "____255_")
-	return t
+	return html_encode(t)
+
+/proc/sanitize_simple_uni(var/t,var/list/repl_chars = list("\n"="#","\t"="#"))
+	for(var/char in repl_chars)
+		var/index = findtext(t, char)
+		while(index)
+			t = copytext(t, 1, index) + repl_chars[char] + copytext(t, index+1)
+			index = findtext(t, char)
+	return html_encode(t)
+
+
 
 //Runs byond's sanitization proc along-side sanitize_simple
 /proc/sanitize(var/t,var/list/repl_chars = null)
@@ -215,34 +224,11 @@ proc/checkhtml(var/t)
 /*
  * Text modification
  */
-
 /proc/replacetext(text, find, replacement)
-	var/find_len = length(find)
-	if(find_len < 1)	return text
-	. = ""
-	var/last_found = 1
-	while(1)
-		var/found = findtext(text, find, last_found, 0)
-		. += copytext(text, last_found, found)
-		if(found)
-			. += replacement
-			last_found = found + find_len
-			continue
-		return .
+	return list2text(text2list(text, find), replacement)
 
 /proc/replacetextEx(text, find, replacement)
-	var/find_len = length(find)
-	if(find_len < 1)	return text
-	. = ""
-	var/last_found = 1
-	while(1)
-		var/found = findtextEx(text, find, last_found, 0)
-		. += copytext(text, last_found, found)
-		if(found)
-			. += replacement
-			last_found = found + find_len
-			continue
-		return .
+	return list2text(text2listEx(text, find), replacement)
 
 //Adds 'u' number of zeros ahead of the text 't'
 /proc/add_zero(t, u)
@@ -309,27 +295,6 @@ proc/checkhtml(var/t)
 		return message
 	return copytext(message, 1, length + 1)
 
-/*
- * Misc
- */
-
-/proc/stringsplit(txt, character)
-	var/cur_text = txt
-	var/last_found = 1
-	var/found_char = findtext(cur_text,character)
-	var/list/list = list()
-	if(found_char)
-		var/fs = copytext(cur_text,last_found,found_char)
-		list += fs
-		last_found = found_char+length(character)
-		found_char = findtext(cur_text,character,last_found)
-	while(found_char)
-		var/found_string = copytext(cur_text,last_found,found_char)
-		last_found = found_char+length(character)
-		list += found_string
-		found_char = findtext(cur_text,character,last_found)
-	list += copytext(cur_text,last_found,length(cur_text)+1)
-	return list
 
 /proc/stringmerge(var/text,var/compare,replace = "*")
 //This proc fills in all spaces with the "replace" var (* by default) with whatever

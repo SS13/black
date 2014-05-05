@@ -1,177 +1,134 @@
-1337-Machine
-144-657/1
 1-Rover-1
 16-20
 7-Zark-7
 790
+AM
+AMEE
+ASTAR
 Adaptive Manipulator
 Allied Mastercomputer
 Alpha 5
 Alpha 6
 Alpha 7
-AM
-AMEE
 AmigoBot
-Amplitude
 Android
 Aniel
 Asimov
-Assistant
-ASTAR
 Astor
-Atari
 B-4
 B-9
 B.O.B.
 B166ER
-Backup Machine
 Bender
 Bishop
 Blitz
 Box
 Brackenridge
-Brominator
 C-3PO
-Captain Bot
 Cassandra One
 Cell
 Chii
 Chip
-Cluster Machine
 Computer
 Conky 2000
 Cutie
 Data
-Dave
-Decimus
 Dee Model
 Deep Thought
-Diffraction
-Doorknob
 Dor-15
 Dorfl
 Dot Matrix
 Duey
-E-Man
 E.D.I.
 ED-209
-ED-E
+E-Man
 Emma-2
-Entropy
 Erasmus
 Ez-27
+FRIEND COMPUTER
 Fagor
 Faith
-Fermion
-Festival
-Feynman
 Fi
-FRIEND COMPUTER
 Frost
 Fum
 Futura
 G2
-G.E.R.T.Y.
 George
 Gnut
-Goro
 Gort
-Gorrister
-Gwaed-E
 H.A.R.L.I.E.
 H.E.L.P.eR.
 H.E.R.B.I.E.
-Hadaly
 HAL 9000
-Han
+Hadaly
 Huey
-IAN
 Irona
-Ironhide
 Jay-Dub
 Jinx
 Johnny 5
 K-9
 KITT
 Klapaucius
-Klein–Gordon Equation
 Kryten 2X4B-523P
 L-76
 L-Ron
-Lepton
-Louie
 LUH 3417
-Maria
+Louie
 MARK13
+Maria
 Marvin
 Master Control Program
-Master Unit
 Max 404
 Maximillian
 Mechagodzilla
 Mechani-Kong
-Megatron
 Metalhead
-Momentum
 Mr. R.I.N.G.
-Mugsy3000
 NCH
 Necron-99
-Nintendo
 Norby
-Nordy
 OMM 0910
-Optimus
 Orange v 3.5
-Persival
-Pong
-Project 2501
 PTO
+Project 2501
 R.I.C. 2.0
 R2-D2
 R4-P17
-Reboot
 Revelation
 Ro-Man
 Robbie
-Robot Devil
 S.A.M.
 S.H.O.C.K.
 S.H.R.O.U.D.
 S.O.P.H.I.E.
 SEN 5241
-Setaur
 SHODAN
-Shrike
 SID 6.7
-Singulo
+Setaur
+Shrike
 Solo
-Soundwave
 Speedy
 Super 17
 Surgeon General Kraken
 T-1000
 T-800
 T-850
-Terminus
-Terminus
 THX 1138
+TWA
+Terminus
 Tidy
 Tik-Tok
 Tobor
 Trurl
-TWA
 ULTRABOT
 Ulysses
 Uniblab
 V.I.N.CENT.
 Voltes V
 W1k1
-Wetskrell.nt
 Wikipedia
 Windows 3.1
 X-5
-Xerox
 XERXES
 XR
 Yod
@@ -180,3 +137,11 @@ Z-2
 Z-3
 Zed
 Zord
+Mugsy3000
+Terminus
+Decimus
+Robot Devil
+Optimus
+Megatron
+Soundwave
+Ironhide

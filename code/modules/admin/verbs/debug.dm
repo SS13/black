@@ -273,7 +273,7 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 	if(istype(M, /mob/living/carbon/human))
 		log_admin("[key_name(src)] has made [M.key] a changeling.")
 		spawn(10)
-			M.absorbed_dna[M.real_name] = M.dna
+			M.absorbed_dna[M.real_name] = M.dna.Clone()
 			M.make_changeling()
 			if(M.mind)
 				M.mind.special_role = "Changeling"
@@ -547,8 +547,6 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 		"assassin",
 		"death commando",
 		"syndicate commando",
-		"centcom official",
-		"centcom commander",
 		"special ops officer",
 		"blue wizard",
 		"red wizard",
@@ -744,55 +742,6 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 		if("syndicate commando")
 			M.equip_syndicate_commando()
-
-		if("centcom official")
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/rank/centcom_officer(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/black(M), slot_shoes)
-			M.equip_to_slot_or_del(new /obj/item/clothing/gloves/black(M), slot_gloves)
-			M.equip_to_slot_or_del(new /obj/item/device/radio/headset/heads/hop(M), slot_l_ear)
-			M.equip_to_slot_or_del(new /obj/item/clothing/glasses/sunglasses(M), slot_glasses)
-			M.equip_to_slot_or_del(new /obj/item/weapon/gun/energy/gun(M), slot_belt)
-			M.equip_to_slot_or_del(new /obj/item/weapon/pen(M), slot_l_store)
-
-			var/obj/item/device/pda/heads/pda = new(M)
-			pda.owner = M.real_name
-			pda.ownjob = "CentCom Review Official"
-			pda.name = "PDA-[M.real_name] ([pda.ownjob])"
-
-			M.equip_to_slot_or_del(pda, slot_r_store)
-
-			M.equip_to_slot_or_del(new /obj/item/weapon/clipboard(M), slot_l_hand)
-
-			var/obj/item/weapon/card/id/W = new(M)
-			W.name = "[M.real_name]'s ID Card"
-			W.icon_state = "centcom"
-			W.access = get_all_accesses()
-			W.access += list("VIP Guest","Custodian","Thunderdome Overseer","Intel Officer","Medical Officer","Death Commando","Research Officer")
-			W.assignment = "CentCom Review Official"
-			W.registered_name = M.real_name
-			M.equip_to_slot_or_del(W, slot_wear_id)
-
-		if("centcom commander")
-			M.equip_to_slot_or_del(new /obj/item/clothing/under/rank/centcom_commander(M), slot_w_uniform)
-			M.equip_to_slot_or_del(new /obj/item/clothing/suit/armor/bulletproof(M), slot_wear_suit)
-			M.equip_to_slot_or_del(new /obj/item/clothing/shoes/swat(M), slot_shoes)
-			M.equip_to_slot_or_del(new /obj/item/clothing/gloves/swat(M), slot_gloves)
-			M.equip_to_slot_or_del(new /obj/item/device/radio/headset/heads/captain(M), slot_l_ear)
-			M.equip_to_slot_or_del(new /obj/item/clothing/glasses/eyepatch(M), slot_glasses)
-			M.equip_to_slot_or_del(new /obj/item/clothing/mask/cigarette/cigar/cohiba(M), slot_wear_mask)
-			M.equip_to_slot_or_del(new /obj/item/clothing/head/centhat(M), slot_head)
-			M.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/mateba(M), slot_belt)
-			M.equip_to_slot_or_del(new /obj/item/weapon/lighter/zippo(M), slot_r_store)
-			M.equip_to_slot_or_del(new /obj/item/ammo_magazine/a357(M), slot_l_store)
-
-			var/obj/item/weapon/card/id/W = new(M)
-			W.name = "[M.real_name]'s ID Card"
-			W.icon_state = "centcom"
-			W.access = get_all_accesses()
-			W.access += get_all_centcom_access()
-			W.assignment = "CentCom Commanding Officer"
-			W.registered_name = M.real_name
-			M.equip_to_slot_or_del(W, slot_wear_id)
 
 		if("nanotrasen representative")
 			M.equip_if_possible(new /obj/item/clothing/under/rank/centcom/representative(M), slot_w_uniform)
@@ -1026,14 +975,30 @@ But you can call procs that are of type /mob/living/carbon/human/proc/ for that 
 
 	switch(input("Which list?") in list("Players","Admins","Mobs","Living Mobs","Dead Mobs", "Clients"))
 		if("Players")
-			usr << dd_list2text(player_list,",")
+			usr << list2text(player_list,",")
 		if("Admins")
-			usr << dd_list2text(admins,",")
+			usr << list2text(admins,",")
 		if("Mobs")
-			usr << dd_list2text(mob_list,",")
+			usr << list2text(mob_list,",")
 		if("Living Mobs")
-			usr << dd_list2text(living_mob_list,",")
+			usr << list2text(living_mob_list,",")
 		if("Dead Mobs")
-			usr << dd_list2text(dead_mob_list,",")
+			usr << list2text(dead_mob_list,",")
 		if("Clients")
-			usr << dd_list2text(clients,",")
+			usr << list2text(clients,",")
+
+// DNA2 - Admin Hax
+/client/proc/cmd_admin_toggle_block(var/mob/M,var/block)
+	if(!ticker)
+		alert("Wait until the game starts")
+		return
+	if(istype(M, /mob/living/carbon))
+		M.dna.SetSEState(block,!M.dna.GetSEState(block))
+		domutcheck(M,null,MUTCHK_FORCED)
+		M.update_mutations()
+		var/state="[M.dna.GetSEState(block)?"on":"off"]"
+		var/blockname=assigned_blocks[block]
+		message_admins("[key_name_admin(src)] has toggled [M.key]'s [blockname] block [state]!")
+		log_admin("[key_name(src)] has toggled [M.key]'s [blockname] block [state]!")
+	else
+		alert("Invalid mob")
