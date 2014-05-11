@@ -74,8 +74,6 @@ datum/mind
 			current.mind = null
 		if(new_character.mind)		//remove any mind currently in our new body's mind variable
 			new_character.mind.current = null
-			
-		nanomanager.user_transferred(current, new_character) // transfer active NanoUI instances to new user
 
 		current = new_character		//link ourself to our new body
 		new_character.mind = src	//and link our new body to ourself
@@ -114,7 +112,6 @@ datum/mind
 		out += "Factions and special roles:<br>"
 
 		var/list/sections = list(
-			"implant",
 			"revolution",
 			"cult",
 			"wizard",
@@ -123,28 +120,22 @@ datum/mind
 			"traitor", // "traitorchan",
 			"monkey",
 			"malfunction",
+			"meme",
 		)
 		var/text = ""
-		var/mob/living/carbon/human/H = current
+
 		if (istype(current, /mob/living/carbon/human) || istype(current, /mob/living/carbon/monkey))
-			/** Impanted**/
-			if(istype(current, /mob/living/carbon/human))
-				if(H.is_loyalty_implanted(H)) 
-					text = "Loyalty Implant:<a href='?src=\ref[src];implant=remove'>Remove</a>|<b>Implanted</b></br>"
-				else
-					text = "Loyalty Implant:<b>No Implant</b>|<a href='?src=\ref[src];implant=add'>Implant him!</a></br>"
-			else
-				text = "Loyalty Implant: Don't implant that monkey!</br>"
-			sections["implant"] = text
 			/** REVOLUTION ***/
 			text = "revolution"
 			if (ticker.mode.config_tag=="revolution")
-				text += uppertext(text)
+				text = uppertext(text)
 			text = "<i><b>[text]</b></i>: "
-			if (istype(current, /mob/living/carbon/monkey) || H.is_loyalty_implanted(H))
-				text += "<b>LOYAL EMPLOYEE</b>|headrev|rev"
+			if (assigned_role in command_positions)
+				text += "<b>HEAD</b>|employee|headrev|rev"
+//			else if (assigned_role in list("Security Officer", "Detective", "Warden"))
+//				text += "head|<b>OFFICER</b>|employee|headre|rev"
 			else if (src in ticker.mode.head_revolutionaries)
-				text = "<a href='?src=\ref[src];revolution=clear'>employee</a>|<b>HEADREV</b>|<a href='?src=\ref[src];revolution=rev'>rev</a>"
+				text = "head|<a href='?src=\ref[src];revolution=clear'>employee</a>|<b>HEADREV</b>|<a href='?src=\ref[src];revolution=rev'>rev</a>"
 				text += "<br>Flash: <a href='?src=\ref[src];revolution=flash'>give</a>"
 
 				var/list/L = current.get_contents()
@@ -161,9 +152,9 @@ datum/mind
 				if (objectives.len==0)
 					text += "<br>Objectives are empty! <a href='?src=\ref[src];revolution=autoobjectives'>Set to kill all heads</a>."
 			else if (src in ticker.mode.revolutionaries)
-				text += "<a href='?src=\ref[src];revolution=clear'>employee</a>|<a href='?src=\ref[src];revolution=headrev'>headrev</a>|<b>REV</b>"
+				text += "head|<a href='?src=\ref[src];revolution=clear'>employee</a>|<a href='?src=\ref[src];revolution=headrev'>headrev</a>|<b>REV</b>"
 			else
-				text += "<b>EMPLOYEE</b>|<a href='?src=\ref[src];revolution=headrev'>headrev</a>|<a href='?src=\ref[src];revolution=rev'>rev</a>"
+				text += "head|<b>EMPLOYEE</b>|<a href='?src=\ref[src];revolution=headrev'>headrev</a>|<a href='?src=\ref[src];revolution=rev'>rev</a>"
 			sections["revolution"] = text
 
 			/** CULT ***/
@@ -171,17 +162,19 @@ datum/mind
 			if (ticker.mode.config_tag=="cult")
 				text = uppertext(text)
 			text = "<i><b>[text]</b></i>: "
-			if (istype(current, /mob/living/carbon/monkey) || H.is_loyalty_implanted(H))
-				text += "<B>LOYAL EMPLOYEE</B>|cultist"
+			if (assigned_role in command_positions)
+				text += "<b>HEAD</b>|employee|cultist"
+//			else if (assigned_role in list("Security Officer", "Detective", "Warden"))
+//				text += "head|<b>OFFICER</b>|employee|cultist"
 			else if (src in ticker.mode.cult)
-				text += "<a href='?src=\ref[src];cult=clear'>employee</a>|<b>CULTIST</b>"
+				text += "head|<a href='?src=\ref[src];cult=clear'>employee</a>|<b>CULTIST</b>"
 				text += "<br>Give <a href='?src=\ref[src];cult=tome'>tome</a>|<a href='?src=\ref[src];cult=amulet'>amulet</a>."
 /*
 				if (objectives.len==0)
 					text += "<br>Objectives are empty! Set to sacrifice and <a href='?src=\ref[src];cult=escape'>escape</a> or <a href='?src=\ref[src];cult=summon'>summon</a>."
 */
 			else
-				text += "<b>EMPLOYEE</b>|<a href='?src=\ref[src];cult=cultist'>cultist</a>"
+				text += "head|<b>EMPLOYEE</b>|<a href='?src=\ref[src];cult=cultist'>cultist</a>"
 			sections["cult"] = text
 
 			/** WIZARD ***/
@@ -240,16 +233,12 @@ datum/mind
 		if (ticker.mode.config_tag=="traitor" || ticker.mode.config_tag=="traitorchan")
 			text = uppertext(text)
 		text = "<i><b>[text]</b></i>: "
-		if(istype(current, /mob/living/carbon/human))
-			if (H.is_loyalty_implanted(H))
-				text +="traitor|<b>LOYAL EMPLOYEE</b>"
-			else
-				if (src in ticker.mode.traitors)
-					text += "<b>TRAITOR</b>|<a href='?src=\ref[src];traitor=clear'>Employee</a>"
-					if (objectives.len==0)
-						text += "<br>Objectives are empty! <a href='?src=\ref[src];traitor=autoobjectives'>Randomize</a>!"
-				else
-					text += "<a href='?src=\ref[src];traitor=traitor'>traitor</a>|<b>Employee</b>"
+		if (src in ticker.mode.traitors)
+			text += "<b>TRAITOR</b>|<a href='?src=\ref[src];traitor=clear'>loyal</a>"
+			if (objectives.len==0)
+				text += "<br>Objectives are empty! <a href='?src=\ref[src];traitor=autoobjectives'>Randomize</a>!"
+		else
+			text += "<a href='?src=\ref[src];traitor=traitor'>traitor</a>|<b>LOYAL</b>"
 		sections["traitor"] = text
 
 		/** MONKEY ***/
@@ -298,6 +287,24 @@ datum/mind
 						n_e_robots++
 				text += "<br>[n_e_robots] of [ai.connected_robots.len] slaved cyborgs are emagged. <a href='?src=\ref[src];silicon=unemagcyborgs'>Unemag</a>"
 			sections["malfunction"] = text
+
+
+		/** MEME ***/
+
+		text = "meme"
+		if (ticker.mode.config_tag=="meme")
+			text = uppertext(text)
+		text = "<i><b>[text]</b></i>: "
+		if (src in ticker.mode.memes)
+			text += "<b>YES</b>|<a href='?src=\ref[src];meme=clear'>no</a>"
+			if (objectives.len==0)
+				text += "<br>Objectives are empty! <a href='?src=\ref[src];meme=autoobjectives;simplemake=meme'>Randomize!</a>"
+			text += "<br><a href='?src=\ref[src];meme=move'>Move to selected human.</a>"
+		else
+			text += "<a href='?src=\ref[src];meme=meme'>yes</a>|<b>NO</b>"
+		sections["meme"] = text
+
+
 
 		if (ticker.mode.config_tag == "traitorchan")
 			if (sections["traitor"])
@@ -382,7 +389,7 @@ datum/mind
 				if(!def_value)//If it's a custom objective, it will be an empty string.
 					def_value = "custom"
 
-			var/new_obj_type = input("Select objective type:", "Objective type", def_value) as null|anything in list("assassinate", "debrain", "protect", "prevent", "harm", "brig", "hijack", "escape", "survive", "steal", "download", "nuclear", "capture", "absorb", "custom")
+			var/new_obj_type = input("Select objective type:", "Objective type", def_value) as null|anything in list("assassinate", "debrain", "protect", "prevent", "harm", "brig", "hijack", "escape", "survive", "steal", "download", "nuclear", "capture", "absorb", "meme_attune", "custom")
 			if (!new_obj_type) return
 
 			var/datum/objective/new_objective = null
@@ -450,7 +457,7 @@ datum/mind
 					if (!steal.select_target())
 						return
 
-				if("download","capture","absorb")
+				if("download","capture","absorb","meme_attune")
 					var/def_num
 					if(objective&&objective.type==text2path("/datum/objective/[new_obj_type]"))
 						def_num = objective.target_amount
@@ -469,6 +476,9 @@ datum/mind
 						if("absorb")
 							new_objective = new /datum/objective/absorb
 							new_objective.explanation_text = "Absorb [target_number] compatible genomes."
+						if("meme_attune")
+							new_objective = new /datum/objective/meme_attune
+							new_objective.explanation_text = "Attune [target_number] humans."
 					new_objective.owner = src
 					new_objective.target_amount = target_number
 
@@ -496,48 +506,6 @@ datum/mind
 			var/datum/objective/objective = locate(href_list["obj_completed"])
 			if(!istype(objective))	return
 			objective.completed = !objective.completed
-
-		else if(href_list["implant"])
-			var/mob/living/carbon/human/H = current
-			switch(href_list["implant"])
-				if("remove")
-					for(var/obj/item/weapon/implant/loyalty/I in H.contents)
-						for(var/datum/organ/external/organs in H.organs)
-							if(I in organs.implants)
-								I.Del()
-								break
-					H << "\blue <Font size =3><B>Your loyalty implant has been deactivated.</B></FONT>"
-				if("add")
-					var/obj/item/weapon/implant/loyalty/L = new/obj/item/weapon/implant/loyalty(H)
-					L.imp_in = H
-					L.implanted = 1
-					var/datum/organ/external/affected = H.organs_by_name["head"]
-					affected.implants += L
-					L.part = affected
-
-					H << "\red <Font size =3><B>You somehow have become the recepient of a loyalty transplant, and it just activated!</B></FONT>"
-					if(src in ticker.mode.revolutionaries)
-						special_role = null
-						ticker.mode.revolutionaries -= src
-						src << "\red <Font size = 3><B>The nanobots in the loyalty implant remove all thoughts about being a revolutionary.  Get back to work!</B></Font>"
-					if(src in ticker.mode.head_revolutionaries)
-						special_role = null
-						ticker.mode.head_revolutionaries -=src
-						src << "\red <Font size = 3><B>The nanobots in the loyalty implant remove all thoughts about being a revolutionary.  Get back to work!</B></Font>"
-					if(src in ticker.mode.cult)
-						ticker.mode.cult -= src
-						ticker.mode.update_cult_icons_removed(src)
-						special_role = null
-						var/datum/game_mode/cult/cult = ticker.mode
-						if (istype(cult))
-							cult.memoize_cult_objectives(src)
-						current << "\red <FONT size = 3><B>The nanobots in the loyalty implant remove all thoughts about being in a cult.  Have a productive day!</B></FONT>"
-						memory = ""
-					if(src in ticker.mode.traitors)
-						ticker.mode.traitors -= src
-						special_role = null
-						current << "\red <FONT size = 3><B>The nanobots in the loyalty implant remove all thoughts about being a traitor to Nanotrasen.  Have a nice day!</B></FONT>"
-						log_admin("[key_name_admin(usr)] has de-traitor'ed [current].")
 
 		else if (href_list["revolution"])
 			switch(href_list["revolution"])
@@ -573,7 +541,7 @@ datum/mind
 					if(src in ticker.mode.revolutionaries)
 						ticker.mode.revolutionaries -= src
 						ticker.mode.update_rev_icons_removed(src)
-						current << "\red <FONT size = 3><B>You have proved your devotion to revoltion! You are a head revolutionary now!</B></FONT>"
+						current << "\red <FONT size = 3><B>You have proved your devotion to revoltion! Yea are a head revolutionary now!</B></FONT>"
 					else if(!(src in ticker.mode.head_revolutionaries))
 						current << "\blue You are a member of the revolutionaries' leadership now!"
 					else
@@ -589,7 +557,6 @@ datum/mind
 								rev_obj.explanation_text = "Assassinate [O.target.name], the [O.target.assigned_role]."
 								objectives += rev_obj
 							ticker.mode.greet_revolutionary(src,0)
-					current.verbs += /mob/living/carbon/human/proc/RevConvert
 					ticker.mode.head_revolutionaries += src
 					ticker.mode.update_rev_icons_added(src)
 					special_role = "Head Revolutionary"
@@ -730,8 +697,55 @@ datum/mind
 					else
 						current.dna = changeling.absorbed_dna[1]
 						current.real_name = current.dna.real_name
-						current.UpdateAppearance()
+						updateappearance(current, current.dna.uni_identity)
 						domutcheck(current, null)
+
+		else if (href_list["meme"])
+			var/list/allowed_mob = list()
+			switch(href_list["meme"])
+				if("clear")
+					if(src in ticker.mode.memes)
+						ticker.mode.memes -= src
+						special_role = null
+						current:exit_host()
+						current << "<FONT color='red' size = 3><B>You grow weak and lose your powers! You are no longer a meme!</B></FONT>"
+						log_admin("[key_name_admin(usr)] has de-meme'ed [current].")
+						message_admins("[key_name_admin(usr)] has de-meme'ed [current].")
+						current.ghostize()
+
+				if("meme")
+					if(!(src in ticker.mode.memes))
+						ticker.mode.memes += src
+						special_role = "Meme"
+						current << "<B><font color='red'>You are a meme now!</font></B>"
+						log_admin("[key_name_admin(usr)] has meme'ed [current].")
+						message_admins("[key_name_admin(usr)] has meme'ed [current].")
+						if(!istype(current, /mob/living/parasite/meme))
+							current.change_mob_type( /mob/living/parasite/meme , null, null, 1)
+
+				if("autoobjectives")
+					ticker.mode.forge_meme_objectives(src)
+					usr << "\blue The objectives for meme [key] have been generated. You can edit them and anounce manually."
+					message_admins("[key_name_admin(usr)] generate random objectives for [current] (meme).")
+
+				if("move")
+					if(!istype(current, /mob/living/parasite/meme))
+						usr << "\red [current] isn't meme!"
+						return
+
+					for (var/mob/living/carbon/human/H in mob_list)
+						if(H.client && istype(H) && !H.parasites.len)
+							allowed_mob += H
+
+					if(allowed_mob.len == 0)
+						usr << "\red There is no hosts available now!"
+					else
+						allowed_mob += "Concel"
+						var/new_host = input ("Select new host for meme ([current]).", "New host", null) in allowed_mob
+						if (new_host == "Concel") return
+						current:enter_host(new_host)
+						message_admins("[key_name(current)] (meme) moved to [key_name(current:host)]")
+						log_admin("[key_name(src)] (meme) moved to [key_name(src:host)]")
 
 		else if (href_list["nuclear"])
 			switch(href_list["nuclear"])
@@ -806,8 +820,8 @@ datum/mind
 						special_role = "traitor"
 						current << "<B>\red You are a traitor!</B>"
 						log_admin("[key_name_admin(usr)] has traitor'ed [current].")
-						if(istype(current, /mob/living/silicon))
-							var/mob/living/silicon/A = current
+						if(isAI(current))
+							var/mob/living/silicon/ai/A = current
 							call(/datum/game_mode/proc/add_law_zero)(A)
 							A.show_laws()
 
@@ -1133,6 +1147,7 @@ datum/mind
 					rev_obj.explanation_text = "Assassinate [O.target.current.real_name], the [O.target.assigned_role]."
 					objectives += rev_obj
 				ticker.mode.greet_revolutionary(src,0)
+		current.verbs += /mob/living/carbon/human/proc/RevConvert
 		ticker.mode.head_revolutionaries += src
 		ticker.mode.update_rev_icons_added(src)
 		special_role = "Head Revolutionary"
@@ -1283,4 +1298,7 @@ datum/mind
 	mind.assigned_role = "Armalis"
 	mind.special_role = "Vox Raider"
 
-
+/mob/living/parasite/meme/mind_initialize()
+	..()
+	mind.assigned_role = "Meme"
+	mind.current.real_name = "Meme"

@@ -70,9 +70,73 @@
 	set hidden = 1
 	if(istype(mob, /mob/living/carbon))
 		mob:swap_hand()
-	if(istype(mob,/mob/living/silicon/robot))
+	if(istype(mob,/mob/living/silicon/robot))//Oh nested logic loops, is there anything you can't do? -Sieve
 		var/mob/living/silicon/robot/R = mob
-		R.cycle_modules()
+		if(!R.module_active)
+			if(!R.module_state_1)
+				if(!R.module_state_2)
+					if(!R.module_state_3)
+						return
+					else
+						R:inv1.icon_state = "inv1"
+						R:inv2.icon_state = "inv2"
+						R:inv3.icon_state = "inv3 +a"
+						R:module_active = R:module_state_3
+				else
+					R:inv1.icon_state = "inv1"
+					R:inv2.icon_state = "inv2 +a"
+					R:inv3.icon_state = "inv3"
+					R:module_active = R:module_state_2
+			else
+				R:inv1.icon_state = "inv1 +a"
+				R:inv2.icon_state = "inv2"
+				R:inv3.icon_state = "inv3"
+				R:module_active = R:module_state_1
+		else
+			if(R.module_active == R.module_state_1)
+				if(!R.module_state_2)
+					if(!R.module_state_3)
+						return
+					else
+						R:inv1.icon_state = "inv1"
+						R:inv2.icon_state = "inv2"
+						R:inv3.icon_state = "inv3 +a"
+						R:module_active = R:module_state_3
+				else
+					R:inv1.icon_state = "inv1"
+					R:inv2.icon_state = "inv2 +a"
+					R:inv3.icon_state = "inv3"
+					R:module_active = R:module_state_2
+			else if(R.module_active == R.module_state_2)
+				if(!R.module_state_3)
+					if(!R.module_state_1)
+						return
+					else
+						R:inv1.icon_state = "inv1 +a"
+						R:inv2.icon_state = "inv2"
+						R:inv3.icon_state = "inv3"
+						R:module_active = R:module_state_1
+				else
+					R:inv1.icon_state = "inv1"
+					R:inv2.icon_state = "inv2"
+					R:inv3.icon_state = "inv3 +a"
+					R:module_active = R:module_state_3
+			else if(R.module_active == R.module_state_3)
+				if(!R.module_state_1)
+					if(!R.module_state_2)
+						return
+					else
+						R:inv1.icon_state = "inv1"
+						R:inv2.icon_state = "inv2 +a"
+						R:inv3.icon_state = "inv3"
+						R:module_active = R:module_state_2
+				else
+					R:inv1.icon_state = "inv1 +a"
+					R:inv2.icon_state = "inv2"
+					R:inv3.icon_state = "inv3"
+					R:module_active = R:module_state_1
+			else
+				return
 	return
 
 
@@ -112,7 +176,7 @@
 
 
 /atom/movable/Move(NewLoc, direct)
-	if (direct & (direct - 1))
+	if (direct & direct - 1)
 		if (direct & 1)
 			if (direct & 4)
 				if (step(src, NORTH))
@@ -186,12 +250,6 @@
 		if(L.incorporeal_move)//Move though walls
 			Process_Incorpmove(direct)
 			return
-		if(mob.client)
-			if(mob.client.view != world.view)
-				if(locate(/obj/item/weapon/gun/energy/sniperrifle, mob.contents))		// If mob moves while zoomed in with sniper rifle, unzoom them.
-					var/obj/item/weapon/gun/energy/sniperrifle/s = locate() in mob
-					if(s.zoom)
-						s.zoom()
 
 	if(Process_Grab())	return
 
@@ -218,12 +276,9 @@
 
 		if(mob.restrained())//Why being pulled while cuffed prevents you from moving
 			for(var/mob/M in range(mob, 1))
-				if(M.pulling == mob)
-					if(!M.restrained() && M.stat == 0 && M.canmove && mob.Adjacent(M))
-						src << "\blue You're restrained! You can't move!"
-						return 0
-					else
-						M.stop_pulling()
+				if(M.pulling == mob && !M.restrained() && M.stat == 0 && M.canmove)
+					src << "\blue You're restrained! You can't move!"
+					return 0
 
 		if(mob.pinned.len)
 			src << "\blue You're pinned to a wall by [mob.pinned[1]]!"
@@ -235,9 +290,9 @@
 			if("run")
 				if(mob.drowsyness > 0)
 					move_delay += 6
-				move_delay += config.run_speed
+				move_delay += 1+config.run_speed
 			if("walk")
-				move_delay += config.walk_speed
+				move_delay += 7+config.walk_speed
 		move_delay += mob.movement_delay()
 
 		if(config.Tickcomp)

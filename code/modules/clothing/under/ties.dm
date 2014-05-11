@@ -1,5 +1,5 @@
 /obj/item/clothing/tie
-	name = "tie"
+	name = "blue tie"
 	desc = "A neosilk clip-on tie."
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "bluetie"
@@ -9,10 +9,10 @@
 	slot_flags = 0
 	w_class = 2.0
 
-/obj/item/clothing/tie/blue
-	name = "blue tie"
-	icon_state = "bluetie"
-	item_color = "bluetie"
+/obj/item/clothing/tie/black
+	name = "black tie"
+	icon_state = "blacktie"
+	item_color = "blacktie"
 
 /obj/item/clothing/tie/red
 	name = "red tie"
@@ -77,9 +77,14 @@
 	desc = "A bronze medal awarded for distinguished conduct. Whilst a great honor, this is most basic award given by Nanotrasen. It is often awarded by a captain to a member of his crew."
 
 /obj/item/clothing/tie/medal/bronze_heart
-	name = "bronze heart medal"
+	name = "purple heart medal"
 	desc = "A bronze heart-shaped medal awarded for sacrifice. It is often awarded posthumously or for severe injury in the line of duty."
 	icon_state = "bronze_heart"
+
+/obj/item/clothing/tie/medal/bronze_diamond
+	name = "distinguished EPRer medal"
+	desc = "A bronze diamond-shaped medal awarded for brave conduct during Emergency Reaction Protocols. Usually awarded to workers of emergency services whose actions ensured safety of other employees. "
+	icon_state = "bronze_diamond"
 
 /obj/item/clothing/tie/medal/nobel_science
 	name = "nobel sciences award"
@@ -104,6 +109,16 @@
 	desc = "A prestigious golden medal."
 	icon_state = "gold"
 	item_color = "gold"
+
+/obj/item/clothing/tie/medal/gold_diamond
+	name = "public service medal"
+	desc = "Rather common medal awarded for distinctive public service. Usually awarded to public transportation, waste management, postal service and town planning workers, alhtough there were few occurances when librarians recieved such."
+	icon_state = "gold_diamond"
+
+/obj/item/clothing/tie/medal/toy
+	name = "Major Tom`s Space Cowboy Super Authentic Faux Medal"
+	desc = "This faux medal is for true space cowboys who are cool and stuff! Ages 8 and up. Don`t swallow."
+	icon_state = "gold_faux"
 
 /obj/item/clothing/tie/medal/gold/captain
 	name = "medal of captaincy"
@@ -244,6 +259,22 @@
 	var/emagged = 0 //Emagging removes Sec check.
 	var/stored_name = null
 
+/obj/item/clothing/tie/holobadge/detective
+
+	name = "detective badge"
+	desc = "This shiny badge marks the holder as the one with the gun, you scum. Badge number is 108."
+	icon_state = "holobadge_detective"
+	item_color = "holobadge_detective"
+	slot_flags = SLOT_BELT
+
+/obj/item/clothing/tie/holobadge/forensic
+
+	name = "forensic badge"
+	desc = "A faded badge, backed with leather, that reads 'NT Security Force' across the front. It bears the emblem of the Forensic division."
+	icon_state = "holobadge_forensic"
+	item_color = "holobadge_forensic"
+	slot_flags = SLOT_BELT
+
 /obj/item/clothing/tie/holobadge/cord
 	icon_state = "holobadge-cord"
 	item_color = "holobadge-cord"
@@ -335,3 +366,14 @@
 	..()
 	new /obj/item/weapon/hatchet/unathiknife(hold)
 	new /obj/item/weapon/hatchet/unathiknife(hold)
+
+/obj/item/clothing/tie/toothnecklace
+	name = "tooth necklace"
+	desc = "A set of tooth hanging on a leather string. Wear this and boast to everyone about that time you killed a space shark with your bare hands, even if you didn`t."
+	icon_state = "tooth-necklace"
+	item_state = "tooth-necklace"
+	item_color = "tooth-necklace"
+	slot_flags = 0
+	flags = FPRINT|TABLEPASS
+	w_class = 1
+	slot_flags = SLOT_MASK

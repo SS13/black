@@ -12,7 +12,7 @@
 		health = 100
 		stat = CONSCIOUS
 	else
-		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - getHalLoss()
+		health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss() - halloss
 
 
 //This proc is used for mobs which are affected by pressure to calculate the amount of pressure that actually
@@ -25,7 +25,7 @@
 /mob/living/proc/burn_skin(burn_amount)
 	if(istype(src, /mob/living/carbon/human))
 		//world << "DEBUG: burn_skin(), mutations=[mutations]"
-		if(mShock in src.mutations) //shockproof
+		if(MSHOCK in src.mutations) //shockproof
 			return 0
 		if (COLD_RESISTANCE in src.mutations) //fireproof
 			return 0
@@ -187,6 +187,12 @@
 			if(istype(G.gift, /obj/item/weapon/storage))
 				L += get_contents(G.gift)
 
+		for(var/obj/item/clothing/suit/storage/S in src.contents)//Check for labcoats and jackets
+			L += get_contents(S)
+
+		for(var/obj/item/clothing/tie/storage/S in src.contents)//Check for holsters
+			L += get_contents(S)
+
 		for(var/obj/item/smallDelivery/D in src.contents) //Check for package wrapped items
 			L += D.wrapped
 			if(istype(D.wrapped, /obj/item/weapon/storage)) //this should never happen
@@ -249,8 +255,6 @@
 /mob/living/proc/restore_all_organs()
 	return
 
-
-
 /mob/living/proc/revive()
 	rejuvenate()
 	buckled = initial(src.buckled)
@@ -280,6 +284,7 @@
 	blinded = 0
 	eye_blind = 0
 	eye_blurry = 0
+	eye_stat = 0
 	ear_deaf = 0
 	ear_damage = 0
 	heal_overall_damage(getBruteLoss(), getFireLoss())
@@ -423,347 +428,3 @@
 	if(update_slimes)
 		for(var/mob/living/carbon/slime/M in view(1,src))
 			M.UpdateFeed(src)
-
-/mob/living/verb/resist()
-	set name = "Resist"
-	set category = "IC"
-
-	if(!isliving(usr) || usr.next_move > world.time)
-		return
-	usr.next_move = world.time + 20
-
-	var/mob/living/L = usr
-
-	//Getting out of someone's inventory.
-	if(istype(src.loc,/obj/item/weapon/holder))
-		var/obj/item/weapon/holder/H = src.loc
-		src.loc = get_turf(src.loc)
-		del(H)
-		return
-
-	//Resisting control by an alien mind.
-	if(istype(src.loc,/mob/living/simple_animal/borer))
-		var/mob/living/simple_animal/borer/B = src.loc
-		var/mob/living/captive_brain/H = src
-
-		H << "\red <B>You begin doggedly resisting the parasite's control (this will take approximately sixty seconds).</B>"
-		B.host << "\red <B>You feel the captive mind of [src] begin to resist your control.</B>"
-
-		spawn(rand(350,450)+B.host.brainloss)
-
-			if(!B || !B.controlling)
-				return
-
-			B.host.adjustBrainLoss(rand(5,10))
-			H << "\red <B>With an immense exertion of will, you regain control of your body!</B>"
-			B.host << "\red <B>You feel control of the host brain ripped from your grasp, and retract your probosci before the wild neural impulses can damage you.</b>"
-			B.controlling = 0
-
-			B.ckey = B.host.ckey
-			B.host.ckey = H.ckey
-
-			H.ckey = null
-			H.name = "host brain"
-			H.real_name = "host brain"
-
-			verbs -= /mob/living/carbon/proc/release_control
-			verbs -= /mob/living/carbon/proc/punish_host
-			verbs -= /mob/living/carbon/proc/spawn_larvae
-
-			return
-
-	//resisting grabs (as if it helps anyone...)
-	if ((!( L.stat ) && L.canmove && !( L.restrained() )))
-		var/resisting = 0
-		for(var/obj/O in L.requests)
-			L.requests.Remove(O)
-			del(O)
-			resisting++
-		for(var/obj/item/weapon/grab/G in usr.grabbed_by)
-			resisting++
-			if (G.state == 1)
-				del(G)
-			else
-				if (G.state == 2)
-					if (prob(25))
-						for(var/mob/O in viewers(L, null))
-							O.show_message(text("\red [] has broken free of []'s grip!", L, G.assailant), 1)
-						del(G)
-				else
-					if (G.state == 3)
-						if (prob(5))
-							for(var/mob/O in viewers(usr, null))
-								O.show_message(text("\red [] has broken free of []'s headlock!", L, G.assailant), 1)
-							del(G)
-		if(resisting)
-			for(var/mob/O in viewers(usr, null))
-				O.show_message(text("\red <B>[] resists!</B>", L), 1)
-
-
-	//unbuckling yourself
-	if(L.buckled && (L.last_special <= world.time) )
-		if(iscarbon(L))
-			var/mob/living/carbon/C = L
-			if( C.handcuffed )
-				C.next_move = world.time + 100
-				C.last_special = world.time + 100
-				C << "\red You attempt to unbuckle yourself. (This will take around 2 minutes and you need to stand still)"
-				for(var/mob/O in viewers(L))
-					O.show_message("\red <B>[usr] attempts to unbuckle themself!</B>", 1)
-				spawn(0)
-					if(do_after(usr, 1200))
-						if(!C.buckled)
-							return
-						for(var/mob/O in viewers(C))
-							O.show_message("\red <B>[usr] manages to unbuckle themself!</B>", 1)
-						C << "\blue You successfully unbuckle yourself."
-						C.buckled.manual_unbuckle(C)
-		else
-			L.buckled.manual_unbuckle(L)
-
-	//Breaking out of a locker?
-	else if( src.loc && (istype(src.loc, /obj/structure/closet)) )
-		var/breakout_time = 2 //2 minutes by default
-
-		var/obj/structure/closet/C = L.loc
-		if(C.opened)
-			return //Door's open... wait, why are you in it's contents then?
-		if(istype(L.loc, /obj/structure/closet/secure_closet))
-			var/obj/structure/closet/secure_closet/SC = L.loc
-			if(!SC.locked && !SC.welded)
-				return //It's a secure closet, but isn't locked. Easily escapable from, no need to 'resist'
-		else
-			if(!C.welded)
-				return //closed but not welded...
-		//	else Meh, lets just keep it at 2 minutes for now
-		//		breakout_time++ //Harder to get out of welded lockers than locked lockers
-
-		//okay, so the closet is either welded or locked... resist!!!
-		usr.next_move = world.time + 100
-		L.last_special = world.time + 100
-		L << "\red You lean on the back of \the [C] and start pushing the door open. (this will take about [breakout_time] minutes)"
-		for(var/mob/O in viewers(usr.loc))
-			O.show_message("\red <B>The [L.loc] begins to shake violently!</B>", 1)
-
-
-		spawn(0)
-			if(do_after(usr,(breakout_time*60*10))) //minutes * 60seconds * 10deciseconds
-				if(!C || !L || L.stat != CONSCIOUS || L.loc != C || C.opened) //closet/user destroyed OR user dead/unconcious OR user no longer in closet OR closet opened
-					return
-
-				//Perform the same set of checks as above for weld and lock status to determine if there is even still a point in 'resisting'...
-				if(istype(L.loc, /obj/structure/closet/secure_closet))
-					var/obj/structure/closet/secure_closet/SC = L.loc
-					if(!SC.locked && !SC.welded)
-						return
-				else
-					if(!C.welded)
-						return
-
-				//Well then break it!
-				if(istype(usr.loc, /obj/structure/closet/secure_closet))
-					var/obj/structure/closet/secure_closet/SC = L.loc
-					SC.desc = "It appears to be broken."
-					SC.icon_state = SC.icon_off
-					flick(SC.icon_broken, SC)
-					sleep(10)
-					flick(SC.icon_broken, SC)
-					sleep(10)
-					SC.broken = 1
-					SC.locked = 0
-					usr << "\red You successfully break out!"
-					for(var/mob/O in viewers(L.loc))
-						O.show_message("\red <B>\the [usr] successfully broke out of \the [SC]!</B>", 1)
-					if(istype(SC.loc, /obj/structure/bigDelivery)) //Do this to prevent contents from being opened into nullspace (read: bluespace)
-						var/obj/structure/bigDelivery/BD = SC.loc
-						BD.attack_hand(usr)
-					SC.open()
-				else
-					C.welded = 0
-					usr << "\red You successfully break out!"
-					for(var/mob/O in viewers(L.loc))
-						O.show_message("\red <B>\the [usr] successfully broke out of \the [C]!</B>", 1)
-					if(istype(C.loc, /obj/structure/bigDelivery)) //nullspace ect.. read the comment above
-						var/obj/structure/bigDelivery/BD = C.loc
-						BD.attack_hand(usr)
-					C.open()
-
-	//breaking out of handcuffs
-	else if(iscarbon(L))
-		var/mob/living/carbon/CM = L
-		if(CM.handcuffed && CM.canmove && (CM.last_special <= world.time))
-			CM.next_move = world.time + 100
-			CM.last_special = world.time + 100
-			if(isalienadult(CM) || (HULK in usr.mutations))//Don't want to do a lot of logic gating here.
-				usr << "\red You attempt to break your handcuffs. (This will take around 5 seconds and you need to stand still)"
-				for(var/mob/O in viewers(CM))
-					O.show_message(text("\red <B>[] is trying to break the handcuffs!</B>", CM), 1)
-				spawn(0)
-					if(do_after(CM, 50))
-						if(!CM.handcuffed || CM.buckled)
-							return
-						for(var/mob/O in viewers(CM))
-							O.show_message(text("\red <B>[] manages to break the handcuffs!</B>", CM), 1)
-						CM << "\red You successfully break your handcuffs."
-						CM.say(pick(";RAAAAAAAARGH!", ";HNNNNNNNNNGGGGGGH!", ";GWAAAAAAAARRRHHH!", "NNNNNNNNGGGGGGGGHH!", ";AAAAAAARRRGH!" ))
-						del(CM.handcuffed)
-						CM.handcuffed = null
-						CM.update_inv_handcuffed()
-			else
-				var/obj/item/weapon/handcuffs/HC = CM.handcuffed
-				var/breakouttime = 1200 //A default in case you are somehow handcuffed with something that isn't an obj/item/weapon/handcuffs type
-				var/displaytime = 2 //Minutes to display in the "this will take X minutes."
-				if(istype(HC)) //If you are handcuffed with actual handcuffs... Well what do I know, maybe someone will want to handcuff you with toilet paper in the future...
-					breakouttime = HC.breakouttime
-					displaytime = breakouttime / 600 //Minutes
-				CM << "\red You attempt to remove \the [HC]. (This will take around [displaytime] minutes and you need to stand still)"
-				for(var/mob/O in viewers(CM))
-					O.show_message( "\red <B>[usr] attempts to remove \the [HC]!</B>", 1)
-				spawn(0)
-					if(do_after(CM, breakouttime))
-						if(!CM.handcuffed || CM.buckled)
-							return // time leniency for lag which also might make this whole thing pointless but the server
-						for(var/mob/O in viewers(CM))//                                         lags so hard that 40s isn't lenient enough - Quarxink
-							O.show_message("\red <B>[CM] manages to remove the handcuffs!</B>", 1)
-						CM << "\blue You successfully remove \the [CM.handcuffed]."
-						CM.drop_from_inventory(CM.handcuffed)
-						CM.handcuffed = null
-						CM.update_inv_handcuffed()
-
-		else if(CM.legcuffed && CM.canmove && (CM.last_special <= world.time))
-			CM.next_move = world.time + 100
-			CM.last_special = world.time + 100
-			if(isalienadult(CM) || (HULK in usr.mutations))//Don't want to do a lot of logic gating here.
-				usr << "\red You attempt to break your legcuffs. (This will take around 5 seconds and you need to stand still)"
-				for(var/mob/O in viewers(CM))
-					O.show_message(text("\red <B>[] is trying to break the legcuffs!</B>", CM), 1)
-				spawn(0)
-					if(do_after(CM, 50))
-						if(!CM.legcuffed || CM.buckled)
-							return
-						for(var/mob/O in viewers(CM))
-							O.show_message(text("\red <B>[] manages to break the legcuffs!</B>", CM), 1)
-						CM << "\red You successfully break your legcuffs."
-						CM.say(pick(";RAAAAAAAARGH!", ";HNNNNNNNNNGGGGGGH!", ";GWAAAAAAAARRRHHH!", "NNNNNNNNGGGGGGGGHH!", ";AAAAAAARRRGH!" ))
-						del(CM.legcuffed)
-						CM.legcuffed = null
-						CM.update_inv_legcuffed()
-			else
-				var/obj/item/weapon/legcuffs/HC = CM.legcuffed
-				var/breakouttime = 1200 //A default in case you are somehow legcuffed with something that isn't an obj/item/weapon/legcuffs type
-				var/displaytime = 2 //Minutes to display in the "this will take X minutes."
-				if(istype(HC)) //If you are legcuffed with actual legcuffs... Well what do I know, maybe someone will want to legcuff you with toilet paper in the future...
-					breakouttime = HC.breakouttime
-					displaytime = breakouttime / 600 //Minutes
-				CM << "\red You attempt to remove \the [HC]. (This will take around [displaytime] minutes and you need to stand still)"
-				for(var/mob/O in viewers(CM))
-					O.show_message( "\red <B>[usr] attempts to remove \the [HC]!</B>", 1)
-				spawn(0)
-					if(do_after(CM, breakouttime))
-						if(!CM.legcuffed || CM.buckled)
-							return // time leniency for lag which also might make this whole thing pointless but the server
-						for(var/mob/O in viewers(CM))//                                         lags so hard that 40s isn't lenient enough - Quarxink
-							O.show_message("\red <B>[CM] manages to remove the legcuffs!</B>", 1)
-						CM << "\blue You successfully remove \the [CM.legcuffed]."
-						CM.drop_from_inventory(CM.legcuffed)
-						CM.legcuffed = null
-						CM.update_inv_legcuffed()
-
-/mob/living/verb/lay_down()
-	set name = "Rest"
-	set category = "IC"
-
-	resting = !resting
-	src << "\blue You are now [resting ? "resting" : "getting up"]"
-
-/mob/living/proc/handle_ventcrawl(var/obj/machinery/atmospherics/unary/vent_pump/vent_found = null) // -- TLE -- Merged by Carn
-	if(stat)
-		src << "You must be conscious to do this!"
-		return
-	if(lying)
-		src << "You can't vent crawl while you're stunned!"
-		return
-
-	if(vent_found) // one was passed in, probably from vent/AltClick()
-		if(vent_found.welded)
-			src << "That vent is welded shut."
-			return
-		if(!vent_found.Adjacent(src))
-			return // don't even acknowledge that
-	else
-		for(var/obj/machinery/atmospherics/unary/vent_pump/v in range(1,src))
-			if(!v.welded)
-				if(v.Adjacent(src))
-					vent_found = v
-	if(!vent_found)
-		src << "You'll need a non-welded vent to crawl into!"
-		return
-
-	if(!vent_found.network || !vent_found.network.normal_members.len)
-		src << "This vent is not connected to anything."
-		return
-
-	var/list/vents = list()
-	for(var/obj/machinery/atmospherics/unary/vent_pump/temp_vent in vent_found.network.normal_members)
-		if(temp_vent.welded)
-			continue
-		if(temp_vent in loc)
-			continue
-		var/turf/T = get_turf(temp_vent)
-
-		if(!T || T.z != loc.z)
-			continue
-
-		var/i = 1
-		var/index = "[T.loc.name]\[[i]\]"
-		while(index in vents)
-			i++
-			index = "[T.loc.name]\[[i]\]"
-		vents[index] = temp_vent
-	if(!vents.len)
-		src << "\red There are no available vents to travel to, they could be welded."
-		return
-
-	var/obj/selection = input("Select a destination.", "Duct System") as null|anything in sortAssoc(vents)
-	if(!selection)	return
-
-	if(!vent_found.Adjacent(src))
-		src << "Never mind, you left."
-		return
-
-	for(var/obj/item/carried_item in contents)//If the monkey got on objects.
-		if( !istype(carried_item, /obj/item/weapon/implant) && !istype(carried_item, /obj/item/clothing/mask/facehugger) )//If it's not an implant or a facehugger
-			src << "\red You can't be carrying items or have items equipped when vent crawling!"
-			return
-	if(isslime(src))
-		var/mob/living/carbon/slime/S = src
-		if(S.Victim)
-			src << "\red You'll have to let [S.Victim] go or finish eating \him first."
-			return
-
-	var/obj/machinery/atmospherics/unary/vent_pump/target_vent = vents[selection]
-	if(!target_vent)
-		return
-
-	for(var/mob/O in viewers(src, null))
-		O.show_message(text("<B>[src] scrambles into the ventillation ducts!</B>"), 1)
-	loc = target_vent
-
-	var/travel_time = round(get_dist(loc, target_vent.loc) / 2)
-
-	spawn(travel_time)
-
-		if(!target_vent)	return
-		for(var/mob/O in hearers(target_vent,null))
-			O.show_message("You hear something squeezing through the ventilation ducts.",2)
-
-		sleep(travel_time)
-
-		if(!target_vent)	return
-		if(target_vent.welded)			//the vent can be welded while alien scrolled through the list or travelled.
-			target_vent = vent_found 	//travel back. No additional time required.
-			src << "\red The vent you were heading to appears to be welded."
-		loc = target_vent.loc
-		var/area/new_area = get_area(loc)
-		if(new_area)
-			new_area.Entered(src)

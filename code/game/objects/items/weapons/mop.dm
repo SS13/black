@@ -21,7 +21,6 @@
 obj/item/weapon/mop/proc/clean(turf/simulated/A)
 	if(reagents.has_reagent("water", 1))
 		A.clean_blood()
-		A.dirt = 0
 		for(var/obj/effect/O in A)
 			if(istype(O,/obj/effect/rune) || istype(O,/obj/effect/decal/cleanable) || istype(O,/obj/effect/overlay))
 				del(O)
@@ -29,8 +28,7 @@ obj/item/weapon/mop/proc/clean(turf/simulated/A)
 	reagents.remove_any(1)			//reaction() doesn't use up the reagents
 
 
-/obj/item/weapon/mop/afterattack(atom/A, mob/user, proximity)
-	if(!proximity) return
+/obj/item/weapon/mop/afterattack(atom/A, mob/user)
 	if(istype(A, /turf/simulated) || istype(A, /obj/effect/decal/cleanable) || istype(A, /obj/effect/overlay) || istype(A, /obj/effect/rune))
 		if(reagents.total_volume < 1)
 			user << "<span class='notice'>Your mop is dry!</span>"

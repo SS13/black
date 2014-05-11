@@ -132,40 +132,6 @@
 	plant_type = 0
 	growthstages = 1
 
-/obj/item/seeds/shandseed
-	name = "pack of s'rendarr's hand seeds"
-	desc = "These seeds grow into a helpful herb called S'Rendarr's Hand, native to Ahdomai."
-	icon_state = "seed-shand"
-	mypath = "/obj/item/seeds/shandseed"
-	species = "shand"
-	plantname = "S'Rendarr's Hand"
-	productname = "/obj/item/stack/medical/bruise_pack/tajaran"
-	lifespan = 50
-	endurance = 25
-	maturation = 3
-	production = 5
-	yield = 4
-	potency = 10
-	plant_type = 0
-	growthstages = 3
-
-/obj/item/seeds/mtearseed
-	name = "pack of messa's tear seeds"
-	desc = "These seeds grow into a helpful herb called Messa's Tear, native to Ahdomai."
-	icon_state = "seed-mtear"
-	mypath = "/obj/item/seeds/mtearseed"
-	species = "mtear"
-	plantname = "Messa's Tear"
-	productname = "/obj/item/stack/medical/ointment/tajaran"
-	lifespan = 50
-	endurance = 25
-	maturation = 3
-	production = 5
-	yield = 4
-	potency = 10
-	plant_type = 0
-	growthstages = 3
-
 /obj/item/seeds/berryseed
 	name = "pack of berry seeds"
 	desc = "These seeds grow into berry bushes."
@@ -1169,8 +1135,8 @@
 		if(istype(W, /obj/item/weapon/circular_saw) || istype(W, /obj/item/weapon/hatchet) || (istype(W, /obj/item/weapon/twohanded/fireaxe) && W:wielded) || istype(W, /obj/item/weapon/melee/energy))
 			user.show_message("<span class='notice'>You make planks out of the [src]!</span>", 1)
 			for(var/i=0,i<2,i++)
-				var/obj/item/stack/sheet/wood/NG = new (user.loc)
-				for (var/obj/item/stack/sheet/wood/G in user.loc)
+				var/obj/item/stack/sheet/mineral/wood/NG = new (user.loc)
+				for (var/obj/item/stack/sheet/mineral/wood/G in user.loc)
 					if(G==NG)
 						continue
 					if(G.amount>=G.max_amount)
@@ -1327,7 +1293,7 @@
 	name = "weed-spray"
 	icon_state = "weedspray"
 	item_state = "spray"
-	flags = TABLEPASS | OPENCONTAINER | FPRINT | NOBLUDGEON
+	flags = TABLEPASS | OPENCONTAINER | FPRINT | USEDELAY
 	slot_flags = SLOT_BELT
 	throwforce = 4
 	w_class = 2.0
@@ -1346,7 +1312,7 @@
 	name = "pest-spray"
 	icon_state = "pestspray"
 	item_state = "spray"
-	flags = TABLEPASS | OPENCONTAINER | FPRINT | NOBLUDGEON
+	flags = TABLEPASS | OPENCONTAINER | FPRINT | USEDELAY
 	slot_flags = SLOT_BELT
 	throwforce = 4
 	w_class = 2.0
@@ -1365,7 +1331,7 @@
 	icon = 'icons/obj/weapons.dmi'
 	icon_state = "hoe"
 	item_state = "hoe"
-	flags = FPRINT | TABLEPASS | CONDUCT | NOBLUDGEON
+	flags = FPRINT | TABLEPASS | CONDUCT | USEDELAY
 	force = 5.0
 	throwforce = 7.0
 	w_class = 2.0

@@ -96,7 +96,7 @@
 			itemcount++
 
 	for(var/mob/M in src.loc)
-		if(itemcount >= storage_capacity)
+		if( (itemcount + 11) >= storage_capacity)
 			break
 		if(istype (M, /mob/dead/observer))
 			continue
@@ -108,7 +108,7 @@
 			M.client.eye = src
 
 		M.loc = src
-		itemcount++
+		itemcount += 11
 
 	src.icon_state = src.icon_closed
 	src.opened = 0
@@ -181,8 +181,6 @@
 	if(src.opened)
 		if(istype(W, /obj/item/weapon/grab))
 			src.MouseDrop_T(W:affecting, user)      //act like they were dragged onto the closet
-		if(istype(W,/obj/item/tk_grab))
-			return 0
 		if(istype(W, /obj/item/weapon/weldingtool))
 			var/obj/item/weapon/weldingtool/WT = W
 			if(!WT.remove_fuel(0,user))
@@ -256,12 +254,6 @@
 /obj/structure/closet/attack_hand(mob/user as mob)
 	src.add_fingerprint(user)
 	src.toggle(user)
-
-// tk grab then use on self
-/obj/structure/closet/attack_self_tk(mob/user as mob)
-	src.add_fingerprint(user)
-	if(!src.toggle())
-		usr << "<span class='notice'>It won't budge!</span>"
 
 /obj/structure/closet/verb/verb_toggleopen()
 	set src in oview(1)

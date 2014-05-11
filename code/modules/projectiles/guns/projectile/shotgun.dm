@@ -6,7 +6,7 @@
 	max_shells = 4
 	w_class = 4.0
 	force = 10
-	flags =  FPRINT | TABLEPASS | CONDUCT
+	flags =  FPRINT | TABLEPASS | CONDUCT | USEDELAY
 	slot_flags = SLOT_BACK
 	caliber = "shotgun"
 	origin_tech = "combat=4;materials=2"
@@ -39,6 +39,7 @@
 		if(current_shell)//We have a shell in the chamber
 			current_shell.loc = get_turf(src)//Eject casing
 			current_shell = null
+			playsound(M, 'sound/weapons/shotgunshelldrop.ogg', 50, 1)
 			if(in_chamber)
 				in_chamber = null
 		if(!loaded.len)	return 0
@@ -66,7 +67,7 @@
 	max_shells = 2
 	w_class = 4.0
 	force = 10
-	flags =  FPRINT | TABLEPASS | CONDUCT
+	flags =  FPRINT | TABLEPASS | CONDUCT | USEDELAY
 	slot_flags = SLOT_BACK
 	caliber = "shotgun"
 	origin_tech = "combat=3;materials=1"
@@ -103,7 +104,8 @@
 		for(var/obj/item/ammo_casing/shotgun/shell in src)	//This feels like a hack.	//don't code at 3:30am kids!!
 			if(shell in loaded)
 				loaded -= shell
-			shell.loc = get_turf(src.loc)
+				shell.loc = get_turf(src.loc)
+				playsound(src, 'sound/weapons/shotgunshelldrop.ogg', 60, 1)
 
 		user << "<span class='notice'>You break \the [src].</span>"
 		update_icon()
@@ -135,3 +137,32 @@
 				name = "sawn-off shotgun"
 				desc = "Omar's coming!"
 				user << "<span class='warning'>You shorten the barrel of \the [src]!</span>"
+		if(istype(A, /obj/item/weapon/reagent_containers/food/snacks/grown/potato))
+			user.visible_message("<span class='danger'>[user] begins stuffing potatoes into the barrel of \the [src]!</span>")
+			user << "<span class='notice'>You begin stuffing potatoes in the barrel \the [src].</span>"
+			if(do_after(user, 30))
+				potato = 1
+				del(A)
+		if(istype(A, /obj/item/stack/rods))
+			user.visible_message("<span class='danger'>[user] begins cleaning the barrel of \the [src]!</span>")
+			user << "<span class='notice'>You begin cleaning the barrel of \the [src].</span>"
+			if(do_after(user, 30))
+				if (potato)
+					potato = 0
+					user.visible_message("<span class='danger'>A potato falls out of the barrel!</span>")
+					new /obj/item/weapon/reagent_containers/food/snacks/grown/potato(src.loc)
+
+				else
+					potato = 0
+
+
+/obj/item/weapon/gun/projectile/shotgun/doublebarrel/shorty
+	name = "shorty shotgun"
+	desc = "A short version of double-barreled shotgun. Favored by outlaws and back alley troublemakers."
+	icon_state = "cerber"
+	item_state = "gun"
+	max_shells = 2
+
+	flags =  FPRINT | TABLEPASS | CONDUCT | USEDELAY
+	slot_flags = SLOT_BELT
+	caliber = "shotgun"

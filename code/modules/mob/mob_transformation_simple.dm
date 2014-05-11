@@ -28,7 +28,12 @@
 	else
 		M = new new_type( src.loc )
 
-	if(!M || !ismob(M))
+	if(!M)
+		usr << "Sorry, we can't spawn mob ([new_type]) in change_mob_type()."
+		del(M)
+		return
+
+	if(!ismob(M))
 		usr << "Type path is not a mob (new_type = [new_type]) in change_mob_type(). Contact a coder."
 		del(M)
 		return
@@ -41,7 +46,7 @@
 		M.real_name = src.real_name
 
 	if(src.dna)
-		M.dna = src.dna.Clone()
+		M.dna = src.dna
 
 	if(mind)
 		mind.transfer_to(M)

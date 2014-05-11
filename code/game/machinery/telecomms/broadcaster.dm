@@ -288,10 +288,7 @@ var/message_delay = 0 // To make sure restarting the recentmessages list is kept
 
 		if(istype(R, /mob/new_player)) // we don't want new players to hear messages. rare but generates runtimes.
 			continue
-			
-		// Ghosts hearing all radio chat don't want to hear syndicate intercepts, they're duplicates
-		if(data == 3 && istype(R, /mob/dead/observer) && R.client && (R.client.prefs.toggles & CHAT_GHOSTRADIO))
-			continue
+
 
 		// --- Check for compression ---
 		if(compression > 0)
@@ -336,19 +333,19 @@ var/message_delay = 0 // To make sure restarting the recentmessages list is kept
 				freq_text = "#unkn"
 			if(COMM_FREQ)
 				freq_text = "Command"
-			if(SCI_FREQ)
+			if(1351)
 				freq_text = "Science"
-			if(MED_FREQ)
+			if(1355)
 				freq_text = "Medical"
-			if(ENG_FREQ)
+			if(1357)
 				freq_text = "Engineering"
-			if(SEC_FREQ)
+			if(1359)
 				freq_text = "Security"
-			if(SUP_FREQ)
+			if(1347)
 				freq_text = "Supply"
-			if(1341)
+			if(1441)
 				freq_text = "Special Ops"
-			if(1345)
+			if(1443)
 				freq_text = "Response Team"
 		//There's probably a way to use the list var of channels in code\game\communications.dm to make the dept channels non-hardcoded, but I wasn't in an experimentive mood. --NEO
 

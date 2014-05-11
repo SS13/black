@@ -40,11 +40,12 @@
 
 
 /obj/item/weapon/storage/firstaid/regular
-	icon_state = "firstaid"
-
 	New()
 		..()
 		if (empty) return
+
+		icon_state = "firstaid"
+
 		new /obj/item/stack/medical/bruise_pack(src)
 		new /obj/item/stack/medical/bruise_pack(src)
 		new /obj/item/stack/medical/bruise_pack(src)
@@ -56,7 +57,7 @@
 
 /obj/item/weapon/storage/firstaid/toxin
 	name = "toxin first aid"
-	desc = "Used to treat when you have a high amoutn of toxins in your body."
+	desc = "Used to treat when you have a high amount of toxins in your body."
 	icon_state = "antitoxin"
 	item_state = "firstaid-toxin"
 
@@ -72,6 +73,27 @@
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
+		new /obj/item/device/healthanalyzer( src )
+		return
+
+
+/obj/item/weapon/storage/firstaid/radiation
+	name = "radiation first aid"
+	desc = "Used to treat when you have been heavily irradiated."
+	icon_state = "radfirstaid4"
+	item_state = "firstaid-radiation"
+
+	New()
+		..()
+		if (empty) return
+
+		icon_state = pick("radfirstaid","radfirstaid2","radfirstaid3", "radfirstaid4")
+
+		new /obj/item/weapon/reagent_containers/pill/arithrazine( src )
+		new /obj/item/weapon/reagent_containers/pill/arithrazine( src )
+		new /obj/item/weapon/reagent_containers/pill/hyronalin( src )
+		new /obj/item/weapon/reagent_containers/pill/hyronalin( src )
+		new /obj/item/weapon/reagent_containers/pill/hyronalin( src )
 		new /obj/item/device/healthanalyzer( src )
 		return
 
@@ -120,10 +142,10 @@
 	icon = 'icons/obj/chemical.dmi'
 	item_state = "contsolid"
 	w_class = 2.0
-	can_hold = list("/obj/item/weapon/reagent_containers/pill","/obj/item/weapon/dice","/obj/item/weapon/paper")
+	can_hold = list("/obj/item/weapon/reagent_containers/pill","/obj/item/weapon/dice","/obj/item/weapon/paper", "obj/item/ammo_casing","/obj/item/weapon/coin","/obj/item/weapon/cigbutt","/obj/item/weapon/match")
 	allow_quick_gather = 1
 	use_to_pickup = 1
-	storage_slots = 14
+	storage_slots = 10
 
 /obj/item/weapon/storage/pill_bottle/MouseDrop(obj/over_object as obj) //Quick pillbottle fix. -Agouri
 
@@ -149,7 +171,7 @@
 	return
 
 /obj/item/weapon/storage/pill_bottle/kelotane
-	name = "bottle of kelotane pills"
+	name = "Pill bottle (kelotane)"
 	desc = "Contains pills used to treat burns."
 
 	New()
@@ -163,7 +185,7 @@
 		new /obj/item/weapon/reagent_containers/pill/kelotane( src )
 
 /obj/item/weapon/storage/pill_bottle/antitox
-	name = "bottle of anti-toxin pills"
+	name = "Pill bottle (Anti-toxin)"
 	desc = "Contains pills used to counter toxins."
 
 	New()
@@ -177,7 +199,7 @@
 		new /obj/item/weapon/reagent_containers/pill/antitox( src )
 
 /obj/item/weapon/storage/pill_bottle/inaprovaline
-	name = "bottle of inaprovaline pills"
+	name = "Pill bottle (inaprovaline)"
 	desc = "Contains pills used to stabilize patients."
 
 	New()
@@ -192,11 +214,17 @@
 
 
 /obj/item/weapon/storage/pill_bottle/dice
-	name = "pack of dice"
-	desc = "It's a small container with dice inside."
+	name = "bag of dice"
+	desc = "Contains all the luck you'll ever need."
+	icon = 'icons/obj/dice.dmi'
+	icon_state = "dicebag"
 
 	New()
 		..()
+		new /obj/item/weapon/dice/d4( src )
 		new /obj/item/weapon/dice( src )
+		new /obj/item/weapon/dice/d8( src )
+		new /obj/item/weapon/dice/d10( src )
+		new /obj/item/weapon/dice/d00( src )
+		new /obj/item/weapon/dice/d12( src )
 		new /obj/item/weapon/dice/d20( src )
-

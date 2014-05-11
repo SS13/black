@@ -86,7 +86,7 @@
 		src << "<span class='warning'>This creature's DNA is ruined beyond useability!</span>"
 		return
 
-	if(!G.state == GRAB_KILL)
+	if(!G.killing)
 		src << "<span class='warning'>We must have a tighter grip to absorb this creature.</span>"
 		return
 
@@ -184,10 +184,10 @@
 	changeling.chem_charges -= 5
 	src.visible_message("<span class='warning'>[src] transforms!</span>")
 	changeling.geneticdamage = 30
-	src.dna = chosen_dna.Clone()
+	src.dna = chosen_dna
 	src.real_name = chosen_dna.real_name
 	src.flavor_text = ""
-	src.UpdateAppearance()
+	updateappearance(src, src.dna.uni_identity)
 	domutcheck(src, null)
 
 	src.verbs -= /mob/proc/changeling_transform
@@ -204,10 +204,6 @@
 
 	var/datum/changeling/changeling = changeling_power(1,0,0)
 	if(!changeling)	return
-
-	if(src.has_brain_worms())
-		src << "<span class='warning'>We cannot perform this ability at the present time!</span>"
-		return
 
 	var/mob/living/carbon/C = src
 	changeling.chem_charges--
@@ -236,7 +232,7 @@
 	del(animation)
 
 	var/mob/living/carbon/monkey/O = new /mob/living/carbon/monkey(src)
-	O.dna = C.dna.Clone()
+	O.dna = C.dna
 	C.dna = null
 
 	for(var/obj/item/W in C)
@@ -289,7 +285,7 @@
 	changeling.chem_charges--
 	C.remove_changeling_powers()
 	C.visible_message("<span class='warning'>[C] transforms!</span>")
-	C.dna = chosen_dna.Clone()
+	C.dna = chosen_dna
 
 	var/list/implants = list()
 	for (var/obj/item/weapon/implant/I in C) //Still preserving implants
@@ -318,11 +314,11 @@
 			W.layer = initial(W.layer)
 
 	var/mob/living/carbon/human/O = new /mob/living/carbon/human( src )
-	if (C.dna.GetUIState(DNA_UI_GENDER))
+	if (isblockon(getblock(C.dna.uni_identity, 11,3),11))
 		O.gender = FEMALE
 	else
 		O.gender = MALE
-	O.dna = C.dna.Clone()
+	O.dna = C.dna
 	C.dna = null
 	O.real_name = chosen_dna.real_name
 
@@ -331,7 +327,7 @@
 
 	O.loc = C.loc
 
-	O.UpdateAppearance()
+	updateappearance(O,O.dna.uni_identity)
 	domutcheck(O, null)
 	O.setToxLoss(C.getToxLoss())
 	O.adjustBruteLoss(C.getBruteLoss())
@@ -374,24 +370,24 @@
 		if(changeling_power(20,1,100,DEAD))
 			// charge the changeling chemical cost for stasis
 			changeling.chem_charges -= 20
-
+			
 			// restore us to health
 			C.rejuvenate()
-
+			
 			// remove our fake death flag
 			C.status_flags &= ~(FAKEDEATH)
-
+			
 			// let us move again
 			C.update_canmove()
-
+			
 			// re-add out changeling powers
-			C.make_changeling()
-
+			C.make_changeling()		
+			
 			// sending display messages
 			C << "<span class='notice'>We have regenerated.</span>"
 			C.visible_message("<span class='warning'>[src] appears to wake from the dead, having healed all wounds.</span>")
-
-
+			
+			
 	feedback_add_details("changeling_powers","FD")
 	return 1
 
@@ -721,9 +717,9 @@ var/list/datum/dna/hivemind_bank = list()
 		src << "<span class='warning'>Our sting appears ineffective against its DNA.</span>"
 		return 0
 	T.visible_message("<span class='warning'>[T] transforms!</span>")
-	T.dna = chosen_dna.Clone()
+	T.dna = chosen_dna
 	T.real_name = chosen_dna.real_name
-	T.UpdateAppearance()
+	updateappearance(T, T.dna.uni_identity)
 	domutcheck(T, null)
 	feedback_add_details("changeling_powers","TS")
 	return 1

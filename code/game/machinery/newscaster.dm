@@ -95,6 +95,10 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 	luminosity = 0
 	anchored = 1
 
+	blob_act()
+		if(prob(80))
+			del(src)
+
 
 /obj/machinery/newscaster/security_unit                   //Security unit
 	name = "Security Newscaster"
@@ -409,10 +413,10 @@ var/list/obj/machinery/newscaster/allCasters = list() //Global list that will co
 				dat+="<FONT COLOR='green'>Wanted issue for [src.channel_name] successfully edited.</FONT><BR><BR>"
 				dat+="<BR><A href='?src=\ref[src];setScreen=[0]'>Return</A><BR>"
 			if(20)
-				dat+="<FONT COLOR='green'>Printing successful. Please receive your newspaper from the bottom of the machine.</FONT><BR><BR>"
+				dat+="<FONT COLOR='green'>Printing successfull. Please receive your newspaper from the bottom of the machine.</FONT><BR><BR>"
 				dat+="<A href='?src=\ref[src];setScreen=[0]'>Return</A>"
 			if(21)
-				dat+="<FONT COLOR='maroon'>Unable to print newspaper. Insufficient paper. Please notify maintenance personnel to refill machine storage.</FONT><BR><BR>"
+				dat+="<FONT COLOR='maroon'>Unable to print newspaper. Insufficient paper. Please notify maintenance personnell to refill machine storage.</FONT><BR><BR>"
 				dat+="<A href='?src=\ref[src];setScreen=[0]'>Return</A>"
 			else
 				dat+="I'm sorry to break your immersion. This shit's bugged. Report this bug to Agouri, polyxenitopalidou@gmail.com"
@@ -901,7 +905,7 @@ obj/item/weapon/newspaper/attackby(obj/item/weapon/W as obj, mob/user as mob)
 			user << "<FONT COLOR='blue'>There's already a scribble in this page... You wouldn't want to make things too cluttered, would you?</FONT>"
 		else
 			var/s = strip_html( input(user, "Write something", "Newspaper", "") )
-			s = copytext(sanitize_multi(s), 1, MAX_MESSAGE_LEN)
+			s = copytext(sanitize(s), 1, MAX_MESSAGE_LEN)
 			if (!s)
 				return
 			if (!in_range(src, usr) && src.loc != usr)

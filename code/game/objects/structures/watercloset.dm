@@ -153,7 +153,7 @@
 	if(I.type == /obj/item/device/analyzer)
 		user << "<span class='notice'>The water temperature seems to be [watertemp].</span>"
 	if(istype(I, /obj/item/weapon/wrench))
-		user << "<span class='notice'>You begin to adjust the temperature valve with \the [I].</span>"
+		user << "<span class='notice'>You begin to adjust the temperature valve with the [I].</span>"
 		if(do_after(user, 50))
 			switch(watertemp)
 				if("normal")
@@ -162,8 +162,7 @@
 					watertemp = "boiling"
 				if("boiling")
 					watertemp = "normal"
-			user.visible_message("<span class='notice'>[user] adjusts the shower with \the [I].</span>", "<span class='notice'>You adjust the shower with \the [I].</span>")
-			add_fingerprint(user)
+			user.visible_message("<span class='notice'>[user] adjusts the shower with the [I].</span>", "<span class='notice'>You adjust the shower with the [I].</span>")
 
 /obj/machinery/shower/update_icon()	//this is terribly unreadable, but basically it makes the shower mist up
 	overlays.Cut()					//once it's been on for a while, in addition to handling the water overlay.
@@ -311,6 +310,12 @@
 	icon_state = "rubberducky"
 	item_state = "rubberducky"
 
+/obj/item/weapon/bikehorn/blackducky
+	name = "black ducky"
+	desc = "Mysterious black duck, think you can cheat at any time."
+	icon = 'icons/obj/watercloset.dmi'
+	icon_state = "duck"
+	item_state = "bgloves"
 
 
 /obj/structure/sink
@@ -325,20 +330,19 @@
 	if(isrobot(M) || isAI(M))
 		return
 
-	if(!Adjacent(M))
-		return
-
 	if(busy)
 		M << "\red Someone's already washing here."
 		return
 
+	var/turf/location = M.loc
+	if(!isturf(location)) return
 	usr << "\blue You start washing your hands."
 
 	busy = 1
 	sleep(40)
 	busy = 0
 
-	if(!Adjacent(M)) return		//Person has moved away from the sink
+	if(M.loc != location) return		//Person has moved away from the sink
 
 	M.clean_blood()
 	if(ishuman(M))

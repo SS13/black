@@ -35,6 +35,7 @@
 	icon_state = "night"
 	item_state = "glasses"
 	origin_tech = "magnets=2"
+	vision_flags = SEE_TURFS
 	darkness_view = 3
 
 /obj/item/clothing/glasses/eyepatch
@@ -128,7 +129,7 @@
 	desc = "Covers the eyes, preventing sight."
 	icon_state = "blindfold"
 	item_state = "blindfold"
-	//vision_flags = BLIND  	// This flag is only supposed to be used if it causes permanent blindness, not temporary because of glasses
+	vision_flags = BLIND
 
 /obj/item/clothing/glasses/sunglasses/prescription
 	name = "prescription sunglasses"

@@ -1,10 +1,10 @@
 //States for airlock_control
-#define AIRLOCK_STATE_WAIT			0
+#define AIRLOCK_STATE_WAIT		0
 #define AIRLOCK_STATE_DEPRESSURIZE	1
 #define AIRLOCK_STATE_PRESSURIZE	2
 
 #define AIRLOCK_TARGET_INOPEN		-1
-#define AIRLOCK_TARGET_NONE			0
+#define AIRLOCK_TARGET_NONE		0
 #define AIRLOCK_TARGET_OUTOPEN		1
 
 datum/computer/file/embedded_program/smart_airlock_controller

@@ -28,7 +28,7 @@
 			brainmob = new(src)
 			brainmob.name = H.real_name
 			brainmob.real_name = H.real_name
-			brainmob.dna = H.dna.Clone()
+			brainmob.dna = H.dna
 			brainmob.timeofhostdeath = H.timeofdeath
 			if(H.mind)
 				H.mind.transfer_to(brainmob)
@@ -96,3 +96,8 @@
 	else
 		..()
 	return
+
+/obj/item/brain/alien
+	name = "alien brain"
+	desc = "A piece of juicy greenish meat found in xenomorph`s cranium."
+	icon_state = "alienbrain"

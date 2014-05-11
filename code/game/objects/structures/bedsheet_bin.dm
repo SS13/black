@@ -92,7 +92,21 @@ LINEN BINS
 	icon_state = "sheetbrown"
 	item_color = "brown"
 
+/obj/item/weapon/bedsheet/prison
+	icon_state = "sheetprison"
+	item_color = "orange"
 
+/obj/item/weapon/bedsheet/love
+	icon_state = "sheetlove"
+	item_color = "red"
+
+/obj/item/weapon/bedsheet/centcom
+	icon_state = "sheetcentcom"
+	item_color = "green"
+
+/obj/item/weapon/bedsheet/syndie
+	icon_state = "sheetsyndie"
+	item_color = "brown"
 
 
 /obj/structure/bedsheetbin
@@ -163,29 +177,5 @@ LINEN BINS
 			hidden.loc = user.loc
 			user << "<span class='notice'>[hidden] falls out of [B]!</span>"
 			hidden = null
-
-
-	add_fingerprint(user)
-
-/obj/structure/bedsheetbin/attack_tk(mob/user as mob)
-	if(amount >= 1)
-		amount--
-
-		var/obj/item/weapon/bedsheet/B
-		if(sheets.len > 0)
-			B = sheets[sheets.len]
-			sheets.Remove(B)
-
-		else
-			B = new /obj/item/weapon/bedsheet(loc)
-
-		B.loc = loc
-		user << "<span class='notice'>You telekinetically remove [B] from [src].</span>"
-		update_icon()
-
-		if(hidden)
-			hidden.loc = loc
-			hidden = null
-
 
 	add_fingerprint(user)

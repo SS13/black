@@ -17,8 +17,7 @@ var/global/list/cached_icons = list()
 	flags = FPRINT | OPENCONTAINER
 	var/paint_type = ""
 
-	afterattack(turf/simulated/target, mob/user, proximity)
-		if(!proximity) return
+	afterattack(turf/simulated/target, mob/user , flag)
 		if(istype(target) && reagents.total_volume > 5)
 			for(var/mob/O in viewers(user))
 				O.show_message("\red \The [target] has been splashed with something by [user]!", 1)
@@ -53,7 +52,7 @@ var/global/list/cached_icons = list()
 		paint_type = "yellow"
 
 	violet
-		icon_state = "paint_violet"
+		icon_state = "paint_red"
 		paint_type = "violet"
 
 	black
@@ -68,8 +67,7 @@ var/global/list/cached_icons = list()
 		paint_type = "remover"
 /*
 /obj/item/weapon/paint
-	gender= PLURAL
-	name = "paint"
+	name = "Paint Can"
 	desc = "Used to recolor floors and walls. Can not be removed by the janitor."
 	icon = 'icons/obj/items.dmi'
 	icon_state = "paint_neutral"
@@ -78,44 +76,43 @@ var/global/list/cached_icons = list()
 	w_class = 3.0
 
 /obj/item/weapon/paint/red
-	name = "red paint"
+	name = "Red paint"
 	color = "FF0000"
 	icon_state = "paint_red"
 
 /obj/item/weapon/paint/green
-	name = "green paint"
+	name = "Green paint"
 	color = "00FF00"
 	icon_state = "paint_green"
 
 /obj/item/weapon/paint/blue
-	name = "blue paint"
+	name = "Blue paint"
 	color = "0000FF"
 	icon_state = "paint_blue"
 
 /obj/item/weapon/paint/yellow
-	name = "yellow paint"
+	name = "Yellow paint"
 	color = "FFFF00"
 	icon_state = "paint_yellow"
 
 /obj/item/weapon/paint/violet
-	name = "violet paint"
+	name = "Violet paint"
 	color = "FF00FF"
 	icon_state = "paint_violet"
 
 /obj/item/weapon/paint/black
-	name = "black paint"
+	name = "Black paint"
 	color = "333333"
 	icon_state = "paint_black"
 
 /obj/item/weapon/paint/white
-	name = "white paint"
+	name = "White paint"
 	color = "FFFFFF"
 	icon_state = "paint_white"
 
 
 /obj/item/weapon/paint/anycolor
-	gender= PLURAL
-	name = "any color"
+	name = "Any color"
 	icon_state = "paint_neutral"
 
 	attack_self(mob/user as mob)
@@ -142,8 +139,7 @@ var/global/list/cached_icons = list()
 		return
 
 
-/obj/item/weapon/paint/afterattack(turf/target, mob/user as mob, proximity)
-	if(!proximity) return
+/obj/item/weapon/paint/afterattack(turf/target, mob/user as mob)
 	if(!istype(target) || istype(target, /turf/space))
 		return
 	var/ind = "[initial(target.icon)][color]"
@@ -158,8 +154,7 @@ var/global/list/cached_icons = list()
 	return
 
 /obj/item/weapon/paint/paint_remover
-	gender =  PLURAL
-	name = "paint remover"
+	name = "Paint remover"
 	icon_state = "paint_neutral"
 
 	afterattack(turf/target, mob/user as mob)

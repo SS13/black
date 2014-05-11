@@ -20,7 +20,7 @@
 	if (istype(W, /obj/item/stack/rods))
 		if (W:amount >= 4)
 			new /obj/item/weapon/table_parts/reinforced( user.loc )
-			user << "\blue You reinforce the [name]."
+			user << "\blue You reinforce thae [name]."
 			W:use(4)
 			del(src)
 		else if (W:amount < 4)
@@ -53,7 +53,17 @@
  */
 /obj/item/weapon/table_parts/wood/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/wrench))
-		new /obj/item/stack/sheet/wood( user.loc )
+		new /obj/item/stack/sheet/mineral/wood( user.loc )
+		del(src)
+
+	if (istype(W, /obj/item/stack/tile/grass))
+		var/obj/item/stack/tile/grass/Grass = W
+		if(Grass.amount > 1)
+			Grass.amount -= 1
+		else
+			del(Grass)
+		new /obj/item/weapon/table_parts/poker( src.loc )
+		visible_message("<span class='notice'>[user] adds grass to the wooden table parts</span>") //Grass, huh? Gotta come up with something better.
 		del(src)
 
 /obj/item/weapon/table_parts/wood/attack_self(mob/user as mob)
@@ -61,6 +71,26 @@
 	user.drop_item()
 	del(src)
 	return
+
+/*
+ * Poker Table Parts
+ *
+
+/obj/item/weapon/table_parts/poker
+	icon_state = "poker_tableparts"
+
+/obj/item/weapon/table_parts/poker/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (istype(W, /obj/item/weapon/wrench))
+		new /obj/item/stack/sheet/mineral/wood( user.loc )
+		new /obj/item/stack/tile/grass( user.loc )
+		del(src)
+
+/obj/item/weapon/table_parts/poker/attack_self(mob/user as mob)
+	new /obj/structure/table/poker( user.loc )
+	user.drop_item()
+	del(src)
+	return */
+
 
 /*
  * Rack Parts

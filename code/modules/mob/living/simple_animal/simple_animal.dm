@@ -55,6 +55,10 @@
 	var/wall_smash = 0 //if they can smash walls
 
 	var/speed = 0 //LETS SEE IF I CAN SET SPEEDS FOR SIMPLE MOBS WITHOUT DESTROYING EVERYTHING. Higher speed is slower, negative speed is faster
+	//Hot simple_animal baby making vars
+	var/childtype = null
+	var/scan_ready = 1
+	var/species //Sorry, no spider+corgi buttbabies.
 
 /mob/living/simple_animal/New()
 	..()
@@ -236,6 +240,12 @@
 
 /mob/living/simple_animal/bullet_act(var/obj/item/projectile/Proj)
 	if(!Proj)	return
+	// FUCK mice. - N3X
+	if(ismouse(src) && (Proj.stun+Proj.weaken+Proj.paralyze+Proj.agony)>5)
+		var/mob/living/simple_animal/mouse/M=src
+		M << "\red What would probably not kill a human completely overwhelms your tiny body."
+		M.splat()
+		return 0
 	adjustBruteLoss(Proj.damage)
 	return 0
 
@@ -262,7 +272,7 @@
 
 			grabbed_by += G
 			G.synch()
-			G.affecting = src
+
 			LAssailant = M
 
 			for(var/mob/O in viewers(src, null))
@@ -298,7 +308,6 @@
 
 			grabbed_by += G
 			G.synch()
-			G.affecting = src
 			LAssailant = M
 
 			playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
@@ -370,11 +379,8 @@
 			user << "\blue this [src] is dead, medical items won't bring it back to life."
 	if(meat_type && (stat == DEAD))	//if the animal has a meat, and if it is dead.
 		if(istype(O, /obj/item/weapon/kitchenknife) || istype(O, /obj/item/weapon/butch))
-			new meat_type (get_turf(src))
-			if(prob(95))
-				del(src)
-				return
-			gib()
+			harvest()
+
 	else
 		if(O.force)
 			var/damage = O.force
@@ -390,6 +396,45 @@
 				if ((M.client && !( M.blinded )))
 					M.show_message("\red [user] gently taps [src] with the [O]. ")
 
+
+
+/mob/living/simple_animal/revive()
+	health = maxHealth
+	..()
+
+/mob/living/simple_animal/proc/make_babies() // <3 <3 <3
+	if(gender != FEMALE || stat || !scan_ready || !childtype || !species)
+		return
+	scan_ready = 0
+	spawn(400)
+		scan_ready = 1
+	var/alone = 1
+	var/mob/living/simple_animal/partner
+	var/children = 0
+	for(var/mob/M in oview(7, src))
+		if(M.stat != CONSCIOUS) //Check if it's concious FIRSTER.
+			continue
+		else if(istype(M, childtype)) //Check for children FIRST.
+			children++
+		else if(istype(M, species))
+			if(M.client)
+				continue
+			else if(!istype(M, childtype) && M.gender == MALE) //Better safe than sorry ;_;
+				partner = M
+		else if(istype(M, /mob/))
+			alone = 0
+			continue
+	if(alone && partner && children < 3)
+		new childtype(loc)
+
+// Harvest an animal's delicious byproducts
+/mob/living/simple_animal/proc/harvest()
+	new meat_type (get_turf(src))
+	if(prob(95))
+		del(src)
+		return
+	gib()
+	return
 
 
 /mob/living/simple_animal/movement_delay()

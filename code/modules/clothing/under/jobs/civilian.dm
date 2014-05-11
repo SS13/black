@@ -8,6 +8,13 @@
 	item_color = "ba_suit"
 	flags = FPRINT | TABLEPASS
 
+/obj/item/clothing/under/rank/bartender/red
+	desc = "It looks like it could use less flair."
+	name = "bartender's uniform"
+	icon_state = "ba_suitred"
+	item_state = "ba_suitred"
+	item_color = "ba_suitred"
+
 
 /obj/item/clothing/under/rank/captain //Alright, technically not a 'civilian' but its better then giving a .dm file for a single define.
 	desc = "It's a blue jumpsuit with some gold markings denoting the rank of \"Captain\"."
@@ -96,6 +103,13 @@
 	item_color = "internalaffairs"
 	flags = FPRINT | TABLEPASS
 
+/obj/item/clothing/under/rank/internalaffairsfem
+	desc = "Somewhat sexy, yet professional female attire of an Internal Affairs Agent. The pantyhose has <i>absolutely</i> no ladders."
+	name = "Internal Affairs female uniform"
+	icon_state = "internalaffairsfem"
+	item_state = "internalaffairsfem"
+	item_color = "internalaffairsfem"
+	flags = FPRINT | TABLEPASS
 
 /obj/item/clothing/under/rank/janitor
 	desc = "It's the official uniform of the station's janitor. It has minor protection from biohazards."
@@ -171,6 +185,14 @@
 	icon_state = "mime"
 	item_state = "mime"
 	item_color = "mime"
+	flags = FPRINT | TABLEPASS
+
+/obj/item/clothing/under/spacearmy
+	name = "Military jumpsuit"
+	desc = "It`s a camo! Yeah space camo!"
+	icon_state = "spacearmy"
+	item_state = "spacearmy"
+	item_color = "spacearmy"
 	flags = FPRINT | TABLEPASS
 
 /obj/item/clothing/under/rank/miner

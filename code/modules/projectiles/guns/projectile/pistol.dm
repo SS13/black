@@ -10,12 +10,26 @@
 	ammo_type = "/obj/item/ammo_casing/c45"
 
 
+/obj/item/weapon/gun/projectile/colt1911
+	name = "\improper m1911"
+	desc = "M1911 is a single-action, semi-automatic, recoil-operated pistol chambered for the .45 ACP cartridge. True classic."
+	icon_state = "m1911firearm"
+	max_shells = 7
+	caliber = ".45"
+	origin_tech = "combat=4;materials=2;syndicate=3"
+	ammo_type = "/obj/item/ammo_casing/c45"
+	load_method = 2
+	New()
+		..()
+		empty_mag = new /obj/item/ammo_magazine/a50/empty(src)
+		update_icon()
+		return
 
 /obj/item/weapon/gun/projectile/deagle
 	name = "desert eagle"
 	desc = "A robust handgun that uses .50 AE ammo"
 	icon_state = "deagle"
-	force = 14.0
+	force = 12.0
 	max_shells = 7
 	caliber = ".50"
 	ammo_type ="/obj/item/ammo_casing/a50"
@@ -85,7 +99,7 @@
 		return
 
 /obj/item/weapon/gun/projectile/pistol
-	name = "\improper Stechtkin pistol"
+	name = "\improper Makarov pistol"
 	desc = "A small, easily concealable gun. Uses 9mm rounds."
 	icon_state = "pistol"
 	w_class = 2
@@ -137,12 +151,58 @@
 		return
 	..()
 
-/obj/item/weapon/gun/projectile/pistol/update_icon()
+/obj/item/weapon/gun/projectile/pistol/update_icon(obj/item/I as obj)
 	..()
 	if(silenced)
 		icon_state = "pistol-silencer"
 	else
 		icon_state = "pistol"
+
+/obj/item/weapon/gun/projectile/pistol/beretta
+	name = "\improper Beretta"
+	desc = "A small, easily concealable gun. Uses 9mm rounds."
+	icon_state = "Beretta"
+	max_shells = 15
+
+
+/obj/item/weapon/gun/projectile/pistol/walther
+	name = "Walther pistol"
+	desc = "A small, precise gun, PPK model. A certain dictator shot himself with the same model. Uses 9mm rounds."
+	icon_state = "walther"
+
+/obj/item/weapon/gun/projectile/pistol/walther/update_icon(obj/item/I as obj)
+	..()
+	if(silenced)
+		icon_state = "walther-silencer"
+	else
+		icon_state = "walther"
+
+/obj/item/weapon/gun/projectile/SW
+	name = "\improper Smith & Wesson"
+	desc = "A small, easily concealable gun. Uses 9mm rounds."
+	icon_state = "S&W"
+	max_shells = 6
+	caliber = "357"
+	origin_tech = "combat=4;materials=2;syndicate=3"
+	ammo_type = "/obj/item/ammo_casing/a357/SW"
+
+	New()
+		..()
+		empty_mag = new /obj/item/ammo_magazine/a357/SW/empty(src)
+		update_icon()
+		return
+
+
+	afterattack(atom/target as mob|obj|turf|area, mob/living/user as mob|obj, flag)
+		..()
+		if(!loaded.len && empty_mag)
+			empty_mag.loc = get_turf(src.loc)
+			empty_mag = null
+			update_icon()
+		return
+	/obj/item/weapon/gun/projectile/pistol/beretta/update_icon(obj/item/I as obj)
+		..()
+		icon_state = "Beretta"
 
 /obj/item/weapon/silencer
 	name = "silencer"

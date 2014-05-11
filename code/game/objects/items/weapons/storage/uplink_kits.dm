@@ -9,7 +9,6 @@
 				new /obj/item/clothing/shoes/syndigaloshes(src)
 				return
 
-			if ("stealth")
 			if("stealth")
 				new /obj/item/weapon/gun/energy/crossbow(src)
 				new /obj/item/weapon/pen/paralysis(src)
@@ -69,12 +68,12 @@
 				return
 
 /obj/item/weapon/storage/box/syndie_kit
-	name = "box"
+	name = "Box"
 	desc = "A sleek, sturdy box"
 	icon_state = "box_of_doom"
 
 /obj/item/weapon/storage/box/syndie_kit/imp_freedom
-	name = "boxed freedom implant (with injector)"
+	name = "Freedom Implant (with injector)"
 
 /obj/item/weapon/storage/box/syndie_kit/imp_freedom/New()
 	..()
@@ -100,7 +99,7 @@
 	return
 
 /obj/item/weapon/storage/box/syndie_kit/imp_uplink
-	name = "boxed uplink implant (with injector)"
+	name = "Uplink Implant (with injector)"
 
 /obj/item/weapon/storage/box/syndie_kit/imp_uplink/New()
 	..()
@@ -110,7 +109,7 @@
 	return
 
 /obj/item/weapon/storage/box/syndie_kit/space
-	name = "boxed space suit and helmet"
+	name = "Space Suit and Helmet"
 
 /obj/item/weapon/storage/box/syndie_kit/space/New()
 	..()
