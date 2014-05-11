@@ -1,3 +1,33 @@
+//Species modification item.
+
+/obj/item/weapon/modkit/tajaran
+	name = "hardsuit modification kit"
+	desc = "A kit containing all the needed tools and parts to modify a hardsuit for another species. This one looks like it's meant for Tajara."
+	icon = 'icons/obj/custom_items.dmi'
+	icon_state = "royce_kit"
+
+/obj/item/clothing/head/helmet/space/rig/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I,/obj/item/weapon/modkit/tajaran))
+		user.drop_item()
+		playsound(src.loc, 'sound/items/Screwdriver.ogg', 100, 1)
+		user << "\red You painstakingly modify [src] to make it more suitable for a Tajaran user."
+		new /obj/item/clothing/head/helmet/space/rig/tajara(user.loc)
+		del(I)
+		del(src)
+		return
+	..()
+
+/obj/item/clothing/suit/space/rig/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I,/obj/item/weapon/modkit/tajaran))
+		user.drop_item()
+		playsound(src.loc, 'sound/items/Screwdriver.ogg', 100, 1)
+		user << "\red You painstakingly modify [src] to make it more suitable for a Tajaran user."
+		new /obj/item/clothing/suit/space/rig/tajara(user.loc)
+		del(I)
+		del(src)
+		return
+	..()
+
 //Regular rig suits
 /obj/item/clothing/head/helmet/space/rig
 	name = "engineering hardsuit helmet"
@@ -24,10 +54,6 @@
 
 		if(on)	user.SetLuminosity(user.luminosity + brightness_on)
 		else	user.SetLuminosity(user.luminosity - brightness_on)
-
-		if(istype(user,/mob/living/carbon/human))
-			var/mob/living/carbon/human/H = user
-			H.update_inv_head()
 
 	pickup(mob/user)
 		if(on)
@@ -94,7 +120,7 @@
 	armor = list(melee = 60, bullet = 50, laser = 30,energy = 15, bomb = 35, bio = 100, rad = 60)
 	siemens_coefficient = 0.6
 	var/obj/machinery/camera/camera
-	species_restricted = list("exclude","Vox")
+
 /obj/item/clothing/head/helmet/space/rig/syndi/attack_self(mob/user)
 	if(camera)
 		..(user)
@@ -120,8 +146,52 @@
 	armor = list(melee = 60, bullet = 50, laser = 30, energy = 15, bomb = 35, bio = 100, rad = 60)
 	allowed = list(/obj/item/device/flashlight,/obj/item/weapon/tank,/obj/item/weapon/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/weapon/melee/baton,/obj/item/weapon/melee/energy/sword,/obj/item/weapon/handcuffs)
 	siemens_coefficient = 0.6
-	species_restricted = list("exclude","Vox")
 
+
+/obj/item/clothing/head/helmet/space/rig/syndi/unathi
+	name = "blood-red hardsuit helmet"
+	desc = "An advanced helmet designed for work in special operations. Property of Gorlex Marauders. This one is for unathi."
+	icon_state = "rig0-syndi-unathi"
+	item_state = "syndi_helm-unathi"
+	item_color = "syndi-unathi"
+	species_restricted = list("exclude","Tajaran","Diona","Vox", "Human", "Skrell")
+
+/obj/item/clothing/suit/space/rig/syndi/unathi
+	icon_state = "rig-syndi-unathi"
+	name = "blood-red hardsuit"
+	desc = "An advanced suit that protects against injuries during special operations. Property of Gorlex Marauders.This one is for unathi."
+	item_state = "syndi_hardsuit-unathi"
+	species_restricted = list("exclude","Tajaran","Diona","Vox", "Human", "Skrell")
+
+/obj/item/clothing/head/helmet/space/rig/syndi/skrell
+	name = "blood-red hardsuit helmet"
+	desc = "An advanced helmet designed for work in special operations. Property of Gorlex Marauders. This one is for skrell."
+	icon_state = "rig0-syndi-skrell"
+	item_state = "syndi_helm-skrell"
+	item_color = "syndi-skrell"
+	species_restricted = list("exclude","Tajaran","Diona","Vox", "Human", "Unathi")
+
+/obj/item/clothing/suit/space/rig/syndi/skrell
+	icon_state = "rig-syndi-skrell"
+	name = "blood-red hardsuit"
+	desc = "An advanced suit that protects against injuries during special operations. Property of Gorlex Marauders. This one is for skrell."
+	item_state = "syndi_hardsuit-skrell"
+	species_restricted = list("exclude","Tajaran","Diona","Vox", "Human", "Unathi")
+
+/obj/item/clothing/head/helmet/space/rig/syndi/tajaran
+	name = "blood-red hardsuit helmet"
+	desc = "An advanced helmet designed for work in special operations. Property of Gorlex Marauders. This one is for tajaran."
+	icon_state = "rig0-syndi-taj"
+	item_state = "syndi_helm-taj"
+	item_color = "syndi-taj"
+	species_restricted = list("exclude","Skrell","Diona","Vox", "Human", "Unathi")
+
+/obj/item/clothing/suit/space/rig/syndi/tajaran
+	icon_state = "rig-syndi-taj"
+	name = "blood-red hardsuit"
+	desc = "An advanced suit that protects against injuries during special operations. Property of Gorlex Marauders.This one is for tajaran."
+	item_state = "syndi_hardsuit-taj"
+	species_restricted = list("exclude","Skrell","Diona","Vox", "Human", "Unathi")
 
 //Wizard Rig
 /obj/item/clothing/head/helmet/space/rig/wizard
@@ -180,6 +250,61 @@
 	armor = list(melee = 60, bullet = 10, laser = 30, energy = 5, bomb = 45, bio = 100, rad = 10)
 	allowed = list(/obj/item/weapon/gun,/obj/item/device/flashlight,/obj/item/weapon/tank,/obj/item/weapon/melee/baton)
 	siemens_coefficient = 0.7
+
+	//Security VGstation
+/obj/item/clothing/head/helmet/space/rig/security/alt
+	name = "security hardsuit helmet"
+	desc = "A special helmet designed for work in a hazardous, low pressure environment. Has an additional layer of armor."
+	icon_state = "rig0-altsec"
+	item_state = "altsec"
+
+/obj/item/clothing/suit/space/rig/security/alt
+	icon_state = "rig-altsec"
+	name = "security hardsuit"
+	desc = "A special suit that protects against hazardous, low pressure environments. Has an additional layer of armor."
+	item_state = "rig-altsec"
+
+	//Mongol
+/obj/item/clothing/head/helmet/space/rig/security/mongol
+	name = "mongol hardsuit helmet"
+	icon_state = "rig0_mongol"
+	item_state = "mongol"
+	item_color = "mongol"
+
+/obj/item/clothing/suit/space/rig/security/mongol
+	name = "mongol hardsuit"
+	icon_state = "rig_mongol"
+	item_state = "rig_mongol"
+
+	//Samurai
+/obj/item/clothing/suit/space/rig/security/samurai
+	name = "samurai hardsuit"
+	icon_state = "rig_samurai"
+	item_state = "rig_samurai"
+
+/obj/item/clothing/head/helmet/space/rig/samurai
+	name = "samurai hardsuit helmet"
+	icon_state = "rig0_samurai_helm"
+	item_state = "rig0_samurai_helm"
+	item_color = "samurai_helm"
+
+//HoS` personal
+
+/obj/item/clothing/suit/space/rig/securityhosrig
+	icon_state = "rig_hos"
+	name = "head of security hardsuit"
+	desc = "A special suit that protects against hazardous, low pressure environments. This one is somewhat sturdier than usual, handmade for security chief himself."
+	item_state = "rig_hos"
+	armor = list(melee = 25, bullet = 30, laser = 40, energy = 25, bomb = 45, bio = 100, rad = 10)
+	allowed = list(/obj/item/weapon/gun,/obj/item/device/flashlight,/obj/item/weapon/tank,/obj/item/weapon/melee/baton)
+	siemens_coefficient = 0.7
+
+
+/obj/item/clothing/head/helmet/space/rig/secutityhoshelm
+	name = "head of security hardsuit helmet"
+	desc = "A special suit that protects against hazardous, low pressure environments. This one is somewhat sturdier than usual, handmade for security chief himself."
+	icon_state = "rig0-hos"
+	item_state = "rig0-hos"
 
 
 //Atmospherics Rig (BS12)

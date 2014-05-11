@@ -2,7 +2,7 @@
  * Contains:
  *		Bartender
  *		Janitor
- *		Lawyer
+ *		Lawyer (IAAs)
  */
 
 /*
@@ -22,7 +22,7 @@
 	new /obj/item/clothing/head/hairflower
 	new /obj/item/clothing/under/sl_suit(src)
 	new /obj/item/clothing/under/sl_suit(src)
-	new /obj/item/clothing/under/rank/bartender(src)
+	new /obj/item/clothing/under/rank/bartender/red(src)
 	new /obj/item/clothing/under/rank/bartender(src)
 	new /obj/item/clothing/under/dress/dress_saloon
 	new /obj/item/clothing/suit/wcoat(src)
@@ -54,9 +54,11 @@
 	new /obj/item/device/lightreplacer(src)
 	new /obj/item/weapon/storage/bag/trash(src)
 	new /obj/item/clothing/shoes/galoshes(src)
+	if(prob(50))
+		new /obj/item/weapon/storage/belt/janitor(src)
 
 /*
- * Lawyer
+ * Lawyer (IAAs)
  */
 /obj/structure/closet/lawcloset
 	name = "legal closet"
@@ -65,12 +67,29 @@
 	icon_closed = "blue"
 
 /obj/structure/closet/lawcloset/New()
-	new /obj/item/clothing/under/lawyer/female(src)
+	//new /obj/item/clothing/under/lawyer/female(src)
 	new /obj/item/clothing/under/lawyer/black(src)
 	new /obj/item/clothing/under/lawyer/red(src)
 	new /obj/item/clothing/under/lawyer/bluesuit(src)
 	new /obj/item/clothing/suit/storage/lawyer/bluejacket(src)
 	new /obj/item/clothing/under/lawyer/purpsuit(src)
 	new /obj/item/clothing/suit/storage/lawyer/purpjacket(src)
-	new /obj/item/clothing/shoes/brown(src)
+	new /obj/item/clothing/under/rank/internalaffairsfem(src)
+	new /obj/item/clothing/under/rank/internalaffairs(src)
+	new /obj/item/clothing/suit/storage/internalaffairs(src)
+
+/obj/structure/closet/internalffairs
+	name = "internal affairs closet"
+	desc = "It's a storage unit for internal affairs apparel."
+	icon_state = "black"
+	icon_closed = "black"
+
+/obj/structure/closet/internalffairs/New()
+	new /obj/item/clothing/under/rank/internalaffairs(src)
+	new /obj/item/clothing/under/rank/internalaffairs(src)
+	new /obj/item/clothing/under/rank/internalaffairsfem(src)
+	new /obj/item/clothing/under/rank/internalaffairsfem(src)
+	new /obj/item/clothing/suit/storage/internalaffairs(src)
+	new /obj/item/clothing/suit/storage/internalaffairs(src)
+	new /obj/item/clothing/shoes/black(src)
 	new /obj/item/clothing/shoes/black(src)

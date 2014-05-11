@@ -1,6 +1,6 @@
 
 /obj/item/clothing/suit/armor
-	allowed = list(/obj/item/weapon/gun/energy,/obj/item/weapon/reagent_containers/spray/pepper,/obj/item/weapon/gun/projectile,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/weapon/melee/baton,/obj/item/weapon/handcuffs)
+	allowed = list(/obj/item/weapon/gun/energy,/obj/item/weapon/reagent_containers/spray/pepper,/obj/item/weapon/gun/projectile,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/weapon/melee/baton,/obj/item/weapon/handcuffs, /obj/item/weapon/reagent_containers/food/snacks/donut)
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
 	flags = FPRINT | TABLEPASS
 
@@ -20,6 +20,11 @@
 	flags = FPRINT | TABLEPASS | ONESIZEFITSALL
 	armor = list(melee = 50, bullet = 15, laser = 50, energy = 10, bomb = 25, bio = 0, rad = 0)
 
+/obj/item/clothing/suit/armor/vest/ronin
+	name = "ronin armor"
+	icon_state = "armor_ronin"
+	item_state = "armor_ronin"
+
 /obj/item/clothing/suit/armor/vest/security
 	name = "security armor"
 	desc = "An armored vest that protects against some damage. This one has NanoTrasen corporate badge."
@@ -32,6 +37,12 @@
 	icon_state = "warden_jacket"
 	item_state = "armor"
 
+/obj/item/clothing/suit/armor/vest/captain
+	name = "elite armor vest"
+	desc = "An armor vest reinforced with special alloy plates and decorated with captainship insignia. Worn by honored officers or batalion commanders only."
+	icon_state = "capcarapace"
+	item_state = "armor"
+	armor = list(melee = 55, bullet = 25, laser = 35, energy = 20, bomb = 25, bio = 0, rad = 0)
 
 /obj/item/clothing/suit/armor/riot
 	name = "Riot Suit"
@@ -54,6 +65,21 @@
 	armor = list(melee = 10, bullet = 80, laser = 10, energy = 10, bomb = 0, bio = 0, rad = 0)
 	siemens_coefficient = 0.7
 
+/obj/item/clothing/suit/armor/tactical
+	name = "Tactical Vest"
+	desc = "Tactical vest for tactical specialists to carry out tactical maneuvers. Can protect from small firearms fire."
+	icon_state = "tacticalvest"
+	item_state = "armor"
+	blood_overlay_type = "armor"
+	armor = list(melee = 30, bullet = 60, laser = 20, energy = 20, bomb = 0, bio = 0, rad = 0)
+	siemens_coefficient = 0.7
+
+/obj/item/clothing/suit/armor/tactical/green
+	name = "Tactical Vest"
+	desc = "Tactical vest for tactical specialists to carry out tactical maneuvers in woodlands, hence this one comes in tactical green. Can protect from small firearms fire."
+	icon_state = "tacticalvestgreen"
+	item_state = "armor"
+
 /obj/item/clothing/suit/armor/laserproof
 	name = "Ablative Armor Vest"
 	desc = "A vest that excels in protecting the wearer against energy projectiles."
@@ -62,6 +88,27 @@
 	blood_overlay_type = "armor"
 	armor = list(melee = 10, bullet = 10, laser = 80, energy = 50, bomb = 0, bio = 0, rad = 0)
 	siemens_coefficient = 0
+
+
+/obj/item/clothing/suit/armor/tacticalheavy
+	name = "heavy armor suit"
+	desc = "A heavily armored suit reinforced with kevlar plating and micro-webbing. This makes the wearer a true tank."
+	icon_state = "heavyarmor"
+	item_state = "heavyarmor"
+	gas_transfer_coefficient = 0.01
+	permeability_coefficient = 0.01
+	flags = FPRINT | TABLEPASS
+	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|FEET|ARMS|HANDS
+	allowed = list(/obj/item/weapon/gun,/obj/item/ammo_magazine,/obj/item/ammo_casing,/obj/item/weapon/melee/baton,/obj/item/weapon/melee/classic_baton/,/obj/item/weapon/handcuffs,/obj/item/weapon/tank/emergency_oxygen)
+	slowdown = 1
+	armor = list(melee = 60, bullet = 80, laser = 50,energy = 25, bomb = 50, bio = 0, rad = 0)
+	flags_inv = HIDEGLOVES|HIDESHOES|HIDEJUMPSUIT
+	cold_protection = UPPER_TORSO | LOWER_TORSO | LEGS | FEET | ARMS | HANDS
+	min_cold_protection_temperature = SPACE_SUIT_MIN_COLD_PROTECITON_TEMPERATURE
+
+/obj/item/clothing/suit/armor/tacticalheavy/orange
+	item_state = "heavyarmororange"
+	icon_state = "heavyarmororange"
 
 /obj/item/clothing/suit/armor/swat
 	name = "swat suit"
@@ -98,7 +145,7 @@
 	blood_overlay_type = "armor"
 	flags = FPRINT | TABLEPASS | ONESIZEFITSALL
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO
-	armor = list(melee = 50, bullet = 15, laser = 50, energy = 10, bomb = 25, bio = 0, rad = 0)
+	armor = list(melee = 30, bullet = 15, laser = 30, energy = 10, bomb = 25, bio = 0, rad = 0)
 
 
 //Reactive armor
@@ -137,8 +184,6 @@
 	src.icon_state = "reactiveoff"
 	src.item_state = "reactiveoff"
 	..()
-
-
 //All of the armor below is mostly unused
 
 

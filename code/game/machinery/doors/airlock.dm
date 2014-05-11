@@ -94,6 +94,30 @@ Airlock index -> wire color are { 9, 4, 6, 7, 5, 8, 1, 2, 3 }.
 	var/obj/item/weapon/airlock_electronics/electronics = null
 	var/hasShocked = 0 //Prevents multiple shocks from happening
 
+
+/obj/machinery/door/airlock/New()
+	. = ..()
+	if(density)
+		layer = 3.2 //Above most items if closed
+		explosion_resistance = initial(explosion_resistance)
+		update_heat_protection(get_turf(src))
+	else
+		layer = 2.7 //Under all objects if opened. 2.7 due to tables being at 2.6
+		explosion_resistance = 0
+
+
+	if(width > 1)
+		if(dir in list(EAST, WEST))
+			bound_width = width * world.icon_size
+			bound_height = world.icon_size
+		else
+			bound_width = world.icon_size
+			bound_height = width * world.icon_size
+
+	update_nearby_tiles(need_rebuild=1)
+	return
+
+
 /obj/machinery/door/airlock/command
 	name = "Airlock"
 	icon = 'icons/obj/doors/Doorcom.dmi'
@@ -112,6 +136,21 @@ Airlock index -> wire color are { 9, 4, 6, 7, 5, 8, 1, 2, 3 }.
 /obj/machinery/door/airlock/medical
 	name = "Airlock"
 	icon = 'icons/obj/doors/Doormed.dmi'
+	assembly_type = /obj/structure/door_assembly/door_assembly_med
+
+/obj/machinery/door/airlock/cult
+	name = "Airlock"
+	icon = 'icons/obj/doors/Doorcult.dmi'
+	assembly_type = /obj/structure/door_assembly/door_assembly_com
+
+/obj/machinery/door/airlock/cult/norune
+	name = "Airlock"
+	icon = 'icons/obj/doors/Doorcultnorune.dmi'
+	assembly_type = /obj/structure/door_assembly/door_assembly_com
+
+/obj/machinery/door/airlock/genetics
+	name = "Airlock"
+	icon = 'icons/obj/doors/Doorgen.dmi'
 	assembly_type = /obj/structure/door_assembly/door_assembly_med
 
 /obj/machinery/door/airlock/maintenance
@@ -159,12 +198,27 @@ Airlock index -> wire color are { 9, 4, 6, 7, 5, 8, 1, 2, 3 }.
 	opacity = 1
 	assembly_type = /obj/structure/door_assembly/door_assembly_mhatch
 
+/obj/machinery/door/airlock/armoury
+	name = "Secure Armoury Section"
+	icon = 'icons/obj/doors/Doorhatcharmoury.dmi'
+	opacity = 1
+	assembly_type = /obj/structure/door_assembly/door_assembly_mhatch
+
 /obj/machinery/door/airlock/glass_command
 	name = "Maintenance Hatch"
 	icon = 'icons/obj/doors/Doorcomglass.dmi'
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_com
 	glass = 1
+
+
+/obj/machinery/door/airlock/glass_grey
+	name = "Maintenance Hatch"
+	icon = 'icons/obj/doors/Doorweapglass.dmi'
+	opacity = 0
+	assembly_type = /obj/structure/door_assembly/door_assembly_com
+	glass = 1
+
 
 /obj/machinery/door/airlock/glass_engineering
 	name = "Maintenance Hatch"
@@ -183,6 +237,20 @@ Airlock index -> wire color are { 9, 4, 6, 7, 5, 8, 1, 2, 3 }.
 /obj/machinery/door/airlock/glass_medical
 	name = "Maintenance Hatch"
 	icon = 'icons/obj/doors/Doormedglass.dmi'
+	opacity = 0
+	assembly_type = /obj/structure/door_assembly/door_assembly_med
+	glass = 1
+
+/obj/machinery/door/airlock/glass_chemical
+	name = "Maintenance Hatch"
+	icon = 'icons/obj/doors/Doorchemglass.dmi'
+	opacity = 0
+	assembly_type = /obj/structure/door_assembly/door_assembly_med
+	glass = 1
+
+obj/machinery/door/airlock/glass_genetics
+	name = "Maintenance Hatch"
+	icon = 'icons/obj/doors/Doorgenglass.dmi'
 	opacity = 0
 	assembly_type = /obj/structure/door_assembly/door_assembly_med
 	glass = 1
@@ -319,6 +387,9 @@ Airlock index -> wire color are { 9, 4, 6, 7, 5, 8, 1, 2, 3 }.
 	name = "High Tech Security Airlock"
 	icon = 'icons/obj/doors/hightechsecurity.dmi'
 	assembly_type = /obj/structure/door_assembly/door_assembly_highsecurity
+
+/obj/machinery/door/airlock/highsecurity/black
+	icon = 'icons/obj/doors/hightechsyndie.dmi'
 
 /*
 About the new airlock wires panel:

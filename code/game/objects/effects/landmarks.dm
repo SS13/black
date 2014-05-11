@@ -140,10 +140,30 @@
 	new /obj/item/clothing/glasses/sunglasses/blindfold(src.loc)
 	del(src)
 
+/obj/effect/landmark/costume/maido/New()
+	new /obj/item/clothing/under/maid(src.loc)
+	new /obj/item/clothing/gloves/white(src.loc)
+	var/CHOICE = pick( /obj/item/clothing/head/kitty , /obj/item/clothing/head/rabbitears )
+	new CHOICE(src.loc)
+	del(src)
+
 /obj/effect/landmark/costume/butler/New()
 	new /obj/item/clothing/suit/wcoat(src.loc)
 	new /obj/item/clothing/under/suit_jacket(src.loc)
 	new /obj/item/clothing/head/that(src.loc)
+	del(src)
+
+/obj/effect/landmark/costume/mexican/New()
+	new /obj/item/clothing/suit/poncho(src.loc)
+	new /obj/item/clothing/head/sombrero(src.loc)
+	del(src)
+
+/obj/effect/landmark/costume/vonkarma/New()
+	new /obj/item/clothing/suit/prosecutor_jacket(src.loc)
+	new /obj/item/clothing/under/prosecutor_suit(src.loc)
+	new /obj/item/weapon/melee/scourge(src.loc)
+	new /obj/item/clothing/shoes/jackboots(src.loc)
+	new	/obj/item/clothing/gloves/black(src.loc)
 	del(src)
 
 /obj/effect/landmark/costume/scratch/New()
@@ -158,6 +178,17 @@
 	new /obj/item/clothing/under/kilt(src.loc)
 	new /obj/item/clothing/head/beret(src.loc)
 	del(src)
+
+/obj/effect/landmark/costume/mikuru/New()
+	new /obj/item/clothing/under/mikururabbit(src.loc)
+	new /obj/item/clothing/head/collectable/mikururabbitears(src.loc)
+	del(src)
+
+/obj/effect/landmark/costume/haruhisuzumiya/New()
+	new /obj/item/clothing/under/suzumiyarabbit(src.loc)
+	new /obj/item/clothing/head/collectable/suzumiyarabbitears(src.loc)
+	del(src)
+
 
 /obj/effect/landmark/costume/prig/New()
 	new /obj/item/clothing/suit/wcoat(src.loc)

@@ -29,6 +29,14 @@
 	flags = FPRINT|TABLEPASS
 	siemens_coefficient = 0.9
 
+/obj/item/clothing/head/mongolhat
+	name = "Mongolian Hat"
+	desc = "Nobody expects the mongols!"
+	icon_state = "mongolhat"
+	item_state = "mongolhat"
+	flags = FPRINT|TABLEPASS
+	siemens_coefficient = 0.9
+
 /obj/item/clothing/head/redcoat
 	name = "redcoat's hat"
 	icon_state = "redcoat"
@@ -96,6 +104,14 @@
 	flags = FPRINT|TABLEPASS
 	flags_inv = 0
 
+/obj/item/clothing/head/fez
+	name = "fez"
+	desc = "Mama, ben bir hirsiz olacagim!"
+	icon_state = "fez"
+	item_state = "fez"
+	flags = FPRINT|TABLEPASS
+	flags_inv = 0
+
 /obj/item/clothing/head/cardborg
 	name = "cardborg helmet"
 	desc = "A helmet made out of a box."
@@ -137,6 +153,13 @@
 	name = "flat cap"
 	desc = "A working man's cap."
 	icon_state = "flat_cap"
+	item_state = "detective"
+	siemens_coefficient = 0.9
+
+/obj/item/clothing/head/sombrero
+	name = "el sombrero"
+	desc = "Asistente me esta' griefing! Ayu'dame!"
+	icon_state = "sombrero"
 	item_state = "detective"
 	siemens_coefficient = 0.9
 
@@ -188,19 +211,12 @@
 	desc = "The ultimate in summer fashion."
 	flags = FPRINT|TABLEPASS
 
-/obj/item/clothing/head/fedora
-	name = "\improper fedora"
-	icon_state = "fedora"
-	item_state = "fedora"
-	desc = "A sharp, stylish hat."
-	flags = FPRINT|TABLEPASS
+/obj/item/clothing/head/trilby
+	name = "\improper trilby hat"
+	icon_state = "trilbyhat"
+	item_state = "trilbyhat"
+	desc = "Indeed a sharp, stylish hat perfect for attending horse racing, sir."
 
-/obj/item/clothing/head/feathertrilby
-	name = "\improper feather trilby"
-	icon_state = "feather_trilby"
-	item_state = "feather_trilby"
-	desc = "A sharp, stylish hat with a feather."
-	flags = FPRINT|TABLEPASS
 
 /obj/item/clothing/head/fez
 	name = "\improper fez"
@@ -224,6 +240,7 @@
 	desc = "Bkaw!"
 	icon_state = "chickenhead"
 	item_state = "chickensuit"
+	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE
 	flags = FPRINT | TABLEPASS | BLOCKHAIR
 	siemens_coefficient = 2.0
 
@@ -235,6 +252,14 @@
 	flags = FPRINT | TABLEPASS | BLOCKHAIR
 	siemens_coefficient = 2.0
 
+/obj/item/clothing/head/monkeypelt
+	name = "monkey pelt hat"
+	desc = "What kind of minster would wear this?"
+	icon_state = "monkeypelt"
+	item_state = "monkeypelt"
+	flags = FPRINT | TABLEPASS | BLOCKHAIR
+	siemens_coefficient = 2.0
+
 /obj/item/clothing/head/xenos
 	name = "xenos helmet"
 	icon_state = "xenos"
@@ -243,3 +268,32 @@
 	flags = FPRINT | TABLEPASS | BLOCKHAIR
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE
 	siemens_coefficient = 2.0
+
+/obj/item/clothing/head/sheik
+	name = "sheik hat"
+	icon_state = "sheik"
+	item_state = "sheik"
+	flags = FPRINT | TABLEPASS | BLOCKHAIR
+	flags_inv = HIDEEARS
+	siemens_coefficient = 2.0
+
+/obj/item/clothing/head/fedora
+	name = "fedora"
+	icon_state = "fedora"
+	item_state = "fedora"
+	desc = "A really cool hat if you're a mobster. A really lame hat if you're not."
+	action_button_name = "Tip Fedora"
+
+/obj/item/clothing/head/fedora/attack_self(mob/user)
+	fedoraproc(user)
+
+/obj/item/clothing/head/fedora/proc/fedoraproc(mob/user)
+	if(user.canmove && !user.stat && !user.restrained())
+		user.visible_message("[user] tips their fedora.")
+
+/obj/item/clothing/head/fedora/verb/fedoratip()
+	set category = "Object"
+	set name = "Tip Fedora"
+	set src in usr
+
+	fedoraproc(usr)

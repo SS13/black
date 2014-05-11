@@ -84,12 +84,6 @@ datum
 			required_reagents = list("oxygen" = 1, "carbon" = 1, "sugar" = 1)
 			result_amount = 3
 
-		cocksitizite
-			name = "Cocksitizite"
-			id = "cocksitizite"
-			result = "cocksitizite"
-			required_reagents = list("dexalin" = 1, "bicaridine" = 1 )
-
 		anti_toxin
 			name = "Anti-Toxin (Dylovene)"
 			id = "anti_toxin"
@@ -111,34 +105,19 @@ datum
 			required_reagents = list("inaprovaline" = 1, "ethanol" = 1, "oxygen" = 1)
 			result_amount = 3
 
-		paracetamol
-			name = "Paracetamol"
-			id = "paracetamol"
-			result = "paracetamol"
-			required_reagents = list("tramadol" = 1, "sugar" = 1, "water" = 1)
-			result_amount = 3
-
 		oxycodone
 			name = "Oxycodone"
 			id = "oxycodone"
 			result = "oxycodone"
-			required_reagents = list("ethanol" = 1, "tramadol" = 1)
-			required_catalysts = list("plasma" = 1)
+			required_reagents = list("ethanol" = 1, "tramadol" = 1, "plasma" = 1)
 			result_amount = 1
 
-		//cyanide
-		//	name = "Cyanide"
-		//	id = "cyanide"
-		//	result = "cyanide"
-		//	required_reagents = list("hydrogen" = 1, "carbon" = 1, "nitrogen" = 1)
-		//	result_amount = 1
-
-		water //I can't believe we never had this.
-			name = "Water"
-			id = "water"
-			result = null
-			required_reagents = list("oxygen" = 2, "hydrogen" = 1)
-			result_amount = 1
+		cyanide
+			name = "Cyanide"
+			id = "cyanide"
+			result = "cyanide"
+			required_reagents = list("hydrogen" = 3, "carbon" = 3, "sodiumchloride" = 2, "ammonia" = 2)
+			result_amount = 4
 
 		thermite
 			name = "Thermite"
@@ -210,14 +189,6 @@ datum
 			required_reagents = list("silicon" = 1, "carbon" = 1)
 			result_amount = 2
 
-		peridaxon
-			name = "Peridaxon"
-			id = "peridaxon"
-			result = "peridaxon"
-			required_reagents = list("bicaridine" = 2, "clonexadone" = 2)
-			required_catalysts = list("plasma" = 5)
-			result_amount = 2
-
 		virus_food
 			name = "Virus Food"
 			id = "virusfood"
@@ -258,7 +229,7 @@ datum
 			name = "Dexalin"
 			id = "dexalin"
 			result = "dexalin"
-			required_reagents = list("oxygen" = 2, "plasma" = 0.1)
+			required_reagents = list("oxygen" = 2)
 			required_catalysts = list("plasma" = 5)
 			result_amount = 1
 
@@ -308,7 +279,7 @@ datum
 			name = "Clonexadone"
 			id = "clonexadone"
 			result = "clonexadone"
-			required_reagents = list("cryoxadone" = 1, "sodium" = 1, "plasma" = 0.1)
+			required_reagents = list("cryoxadone" = 1, "sodium" = 1)
 			required_catalysts = list("plasma" = 5)
 			result_amount = 2
 
@@ -346,6 +317,13 @@ datum
 			result = "glycerol"
 			required_reagents = list("cornoil" = 3, "sacid" = 1)
 			result_amount = 1
+
+		ester
+			name = "Ester"
+			id = "ester"
+			result = "ester"
+			required_reagents = list("glycerol" = 4, "sodiumchloride" = 3, "ammonia" = 2)
+			result_amount = 5
 
 		nitroglycerin
 			name = "Nitroglycerin"
@@ -462,7 +440,7 @@ datum
 			secondary = 1
 			on_reaction(var/datum/reagents/holder, var/created_volume)
 				var/location = get_turf(holder.my_atom)
-				var/datum/effect/effect/system/smoke_spread/chem/S = new /datum/effect/effect/system/smoke_spread/chem
+				var/datum/effect/effect/system/chem_smoke_spread/S = new /datum/effect/effect/system/chem_smoke_spread
 				S.attach(location)
 				S.set_up(holder, 10, 0, location)
 				playsound(location, 'sound/effects/smoke.ogg', 50, 1, -3)
@@ -479,27 +457,6 @@ datum
 			result = "chloralhydrate"
 			required_reagents = list("ethanol" = 1, "chlorine" = 3, "water" = 1)
 			result_amount = 1
-
-		potassium_chloride
-			name = "Potassium Chloride"
-			id = "potassium_chloride"
-			result = "potassium_chloride"
-			required_reagents = list("sodiumchloride" = 1, "potassium" = 1)
-			result_amount = 2
-
-		potassium_chlorophoride
-			name = "Potassium Chlorophoride"
-			id = "potassium_chlorophoride"
-			result = "potassium_chlorophoride"
-			required_reagents = list("potassium_chloride" = 1, "plasma" = 1, "chloral_hydrate" = 1)
-			result_amount = 4
-
-		stoxin
-			name = "Sleep Toxin"
-			id = "stoxin"
-			result = "stoxin"
-			required_reagents = list("chloralhydrate" = 1, "sugar" = 4)
-			result_amount = 5
 
 		zombiepowder
 			name = "Zombie Powder"
@@ -520,7 +477,7 @@ datum
 			id = "mindbreaker"
 			result = "mindbreaker"
 			required_reagents = list("silicon" = 1, "hydrogen" = 1, "anti_toxin" = 1)
-			result_amount = 3
+			result_amount = 5
 
 		lipozine
 			name = "Lipozine"
@@ -1432,6 +1389,18 @@ datum
 				new /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel(location)
 				return
 
+		soap
+			name = "soap"
+			id = "soap"
+			result = null
+			required_reagents = list("ester" = 40)
+			required_catalysts = list("enzyme" = 10)
+			result_amount = 1
+			on_reaction(var/datum/reagents/holder, var/created_volume)
+				var/location = get_turf(holder.my_atom)
+				new /obj/item/weapon/soap/homemade(location)
+				return
+
 		syntiflesh
 			name = "Syntiflesh"
 			id = "syntiflesh"
@@ -1543,6 +1512,14 @@ datum
 			required_catalysts = list("enzyme" = 5)
 			result_amount = 10
 
+		limoncello
+			name = "Limoncello"
+			id = "limoncello"
+			result = "Limoncello"
+			required_reagents = list("lemonjuice" = 10, "vodka" = 10)
+			required_catalysts = list("enzyme" = 5)
+			result_amount = 20
+
 		bluecuracao
 			name = "Blue Curacao"
 			id = "bluecuracao"
@@ -1566,6 +1543,7 @@ datum
 			required_reagents = list("potato" = 10)
 			required_catalysts = list("enzyme" = 5)
 			result_amount = 10
+
 		sake
 			name = "Sake"
 			id = "sake"
@@ -1589,6 +1567,13 @@ datum
 			required_reagents = list("gin" = 2, "tonic" = 1)
 			result_amount = 3
 
+		kingsmen
+			name = "All The King`s Men"
+			id = "kingsmen"
+			result = "kingsmen"
+			required_reagents = list("wine" = 2, "tequilla" = 1, "beer" = 1)
+			result_amount = 4
+
 		cuba_libre
 			name = "Cuba Libre"
 			id = "cubalibre"
@@ -1610,6 +1595,20 @@ datum
 			required_reagents = list("vodka" = 2, "vermouth" = 1)
 			result_amount = 3
 
+		vodkaroyale
+			name = "Vodka Royale"
+			id = "vodkaroyale"
+			result = "vodkaroyale"
+			required_reagents = list("vodka" = 1, "prosecco" = 2)
+			result_amount = 3
+
+		tiniroyale
+			name = "Tini Royale"
+			id = "tiniroyale"
+			result = "tiniroyale"
+			required_reagents = list("vermouth" = 1, "prosecco" = 2)
+			result_amount = 3
+
 		white_russian
 			name = "White Russian"
 			id = "whiterussian"
@@ -1617,12 +1616,69 @@ datum
 			required_reagents = list("blackrussian" = 3, "cream" = 2)
 			result_amount = 5
 
+		greenstar
+			name = "Green Star"
+			id = "greenstar"
+			result = "greenstar"
+			required_reagents = list("rum" = 2, "melonliquor" = 2, "spacemountainwind" =1)
+			result_amount = 5
+
+		icecoffee
+			name = "Rhode Island Ice Coffee"
+			id = "icecoffee"
+			result = "icecoffee"
+			required_reagents = list("kahlua" = 1, "vodka" = 1, "cognac" = 1, "milk" = 2)
+			result_amount = 4
+
 		whiskey_cola
 			name = "Whiskey Cola"
 			id = "whiskeycola"
 			result = "whiskeycola"
 			required_reagents = list("whiskey" = 2, "cola" = 1)
 			result_amount = 3
+
+		bourbon_cola
+			name = "Bourbon Cola"
+			id = "bourboncola"
+			result = "bourboncola"
+			required_reagents = list("bourbon" = 2, "cola" = 1)
+			result_amount = 3
+
+		rossini
+			name = "Rossini"
+			id = "rossini"
+			result = "rossini"
+			required_reagents = list("prosecco" = 2, "blood" = 1)
+			result_amount = 3
+
+		limoncellomartini
+			name = "Limoncello Martini"
+			id = "limoncellomartini"
+			result = "limoncellomartini"
+			required_reagents = list("limoncello" = 2, "gin" = 1, "vodka" = 1)
+			result_amount = 4
+
+		panache
+			name = "Limoncello Panache"
+			id = "panache"
+			result = "panache"
+			required_reagents = list("limoncello" = 1, "tonic" = 1, "beer" = 2)
+			result_amount = 4
+
+		wardenswife
+			name = "Warden`s Wife"
+			id = "wardenswife"
+			result = "wardenswife"
+			required_reagents = list("prosecco" = 1, "wine" = 1, "bourbon" = 1)
+			result_amount = 3
+
+		kirpetillant
+			name = "Kir Petillant"
+			id = "kirpetillant"
+			result = "kirpetillant"
+			required_reagents = list("prosecco" = 2, "berryjuice" = 1)
+			result_amount = 3
+
 
 		screwdriver
 			name = "Screwdriver"
@@ -1694,6 +1750,13 @@ datum
 			required_reagents = list ("beer" = 1, "ale" = 2)
 			result_amount = 3
 
+		assistantshighball
+			name = "Assistant`s Highball"
+			id = "assistantshighball"
+			result = "assistantshighball"
+			required_reagents = list ("bourbon" = 1, "ale" = 3)
+			result_amount = 4
+
 		hooch
 			name = "Hooch"
 			id = "hooch"
@@ -1715,6 +1778,41 @@ datum
 			required_reagents = list("irishcream" = 1, "kahlua" = 1, "cognac" = 1)
 			result_amount = 3
 
+		b53
+			name = "B-53"
+			id = "b53"
+			result = "b53"
+			required_reagents = list("irishcream" = 1, "kahlua" = 1, "absinthe" = 1)
+			result_amount = 3
+
+		evelynwhite
+			name = "Evelyn White"
+			id = "evelynwhite"
+			result = "evelynwhite"
+			required_reagents = list("irishcream" = 1, "kahlua" = 1, "melonliqor" = 1)
+			result_amount = 3
+
+		schlagerloko
+			name = "Schlagerloko"
+			id = "schlagerloko"
+			result = "schlagerloko"
+			required_reagents = list("goldschlager" = 1, "thirteenloko" = 2)
+			result_amount = 3
+
+		vodkaredwing
+			name = "Vodka Red Wing"
+			id = "vodkaredwing"
+			result = "vodkaredwing"
+			required_reagents = list("vodka" = 1, "redwing" = 2)
+			result_amount = 3
+
+		spacemonkey
+			name = "Space Monkey"
+			id = "spacemonkey"
+			result = "spacemonkey"
+			required_reagents = list("banana" = 1, "space_up" = 1, "vodka" = 1)
+			result_amount = 3
+
 		atomicbomb
 			name = "Atomic Bomb"
 			id = "atomicbomb"
@@ -1729,6 +1827,20 @@ datum
 			required_reagents = list("tequilla" = 2, "limejuice" = 1)
 			result_amount = 3
 
+		bluemargarita
+			name = "Blue Margarita"
+			id = "bluemargarita"
+			result = "blumargarita"
+			required_reagents = list("tequilla" = 2, "limejuice" = 1, "bluecuracao" = 1)
+			result_amount = 4
+
+		sidecar
+			name = "Sidecar"
+			id = "sidecar"
+			result = "sidecar"
+			required_reagents = list("cognac" = 2, "lemonjuice" = 1)
+			result_amount = 3
+
 		longislandicedtea
 			name = "Long Island Iced Tea"
 			id = "longislandicedtea"
@@ -1736,12 +1848,12 @@ datum
 			required_reagents = list("vodka" = 1, "gin" = 1, "tequilla" = 1, "cubalibre" = 1)
 			result_amount = 4
 
-		icedtea
-			name = "Long Island Iced Tea"
-			id = "longislandicedtea"
-			result = "longislandicedtea"
-			required_reagents = list("vodka" = 1, "gin" = 1, "tequilla" = 1, "cubalibre" = 1)
-			result_amount = 4
+		blueislandicedtea
+			name = "Blue Island Iced Tea"
+			id = "blueislandicedtea"
+			result = "blueislandicedtea"
+			required_reagents = list("longislandicedtea" = 2, "bluecuracao" = 1)
+			result_amount = 3
 
 		threemileisland
 			name = "Three Mile Island Iced Tea"
@@ -1756,6 +1868,20 @@ datum
 			result = "whiskeysoda"
 			required_reagents = list("whiskey" = 2, "sodawater" = 1)
 			result_amount = 3
+
+		bourbonsoda
+			name = "Bourbon Soda"
+			id = "bourbonsoda"
+			result = "bourbonsoda"
+			required_reagents = list("bourbon" = 2, "sodawater" = 1)
+			result_amount = 3
+
+		oldfashioned
+			name = "Old Fashioned"
+			id = "oldfashioned"
+			result = "oldfashioned"
+			required_reagents = list("bourbon" = 2, "water" = 1, "sugar" = 2)
+			result_amount = 5
 
 		black_russian
 			name = "Black Russian"
@@ -1792,12 +1918,47 @@ datum
 			required_reagents = list("gin" = 2, "sodawater" = 1, "limejuice" = 1)
 			result_amount = 4
 
+		planterspunch
+			name = "Planter`s Punch"
+			id = "planterspunch"
+			result = "planterspunch"
+			required_reagents = list("rum" = 2, "lemonjuice" = 1, "limejuice" = 1)
+			result_amount = 4
+
+		mojito
+			name = "Mojito"
+			id = "mojito"
+			result = "mojito"
+			required_reagents = list("rum" = 2, "sodawater" = 1, "limejuice" = 1)
+			result_amount = 4
+
+		daiquiri
+			name = "Daiquiri"
+			id = "daiquiri"
+			result = "daiquiri"
+			required_reagents = list("rum" = 2, "sugar" = 1, "limejuice" = 1)
+			result_amount = 4
+
+		melondaiquiri
+			name = "Melon Daiquiri"
+			id = "melondaiquiri"
+			result = "melondaiquiri"
+			required_reagents = list("rum" = 2, "sugar" = 1, "limejuice" = 1, "melonliquor" = 1)
+			result_amount = 5
+
 		bahama_mama
 			name = "Bahama mama"
 			id = "bahama_mama"
 			result = "bahama_mama"
 			required_reagents = list("rum" = 2, "orangejuice" = 2, "limejuice" = 1, "ice" = 1)
 			result_amount = 6
+
+		bluelagoon
+			name = "Blue Lagoon"
+			id = "bluelagoon"
+			result = "bluelagoon"
+			required_reagents = list("vodka" = 2, "bluecuracao" = 1, "limejuice" = 1, "lemonade" = 1)
+			result_amount = 5
 
 		singulo
 			name = "Singulo"
@@ -1840,14 +2001,6 @@ datum
 			result = "barefoot"
 			required_reagents = list("berryjuice" = 1, "cream" = 1, "vermouth" = 1)
 			result_amount = 3
-
-		grapesoda
-			name = "Grape Soda"
-			id = "grapesoda"
-			result = "grapesoda"
-			required_reagents = list("grapejuice" = 2, "cola" = 1)
-			result_amount = 3
-
 
 
 ////DRINKS THAT REQUIRED IMPROVED SPRITES BELOW:: -Agouri/////
@@ -1908,6 +2061,34 @@ datum
 			result = "cafe_latte"
 			required_reagents = list("coffee" = 1, "milk" = 1)
 			result_amount = 2
+
+		milkshake_banana
+			name = "Banana Milkshake"
+			id = "milkshake_banana"
+			result = "milkshake_banana"
+			required_reagents = list("cream" = 1, "milk" = 2, "banana" = 1, "ice" = 1)
+			result_amount = 4
+
+		milkshake_berry
+			name = "Berry Milkshake"
+			id = "milkshake_berry"
+			result = "milkshake_berry"
+			required_reagents = list("cream" = 1, "milk" = 2, "berryjuice" = 1, "ice" = 1)
+			result_amount = 4
+
+		milkshake_coffee
+			name = "Coffee Milkshake"
+			id = "milkshake_coffee"
+			result = "milkshake_coffee"
+			required_reagents = list("cream" = 1, "milk" = 2, "coffee" = 1, "ice" = 1)
+			result_amount = 4
+
+		milkshake_tomato
+			name = "Bloody Mary Jr."
+			id = "milkshake_tomato"
+			result = "milkshake_tomato"
+			required_reagents = list("cream" = 1, "milk" = 2, "tomatojuice" = 1, "ice" = 1)
+			result_amount = 4
 
 		acidspit
 			name = "Acid Spit"
@@ -2014,11 +2195,25 @@ datum
 			required_reagents = list("nothing" = 1, "gin" = 1)
 			result_amount = 2
 
+		elpresidente
+			name = "El Presidente"
+			id = "elpresidente"
+			result = "elpresidente"
+			required_reagents = list("rum" = 1, "gin" = 1, "grenadine" = 1)
+			result_amount = 3
+
 		lemonade
 			name = "Lemonade"
 			id = "lemonade"
 			result = "lemonade"
 			required_reagents = list("lemonjuice" = 1, "sugar" = 1, "water" = 1)
+			result_amount = 3
+
+		lynchburg
+			name = "Lynchburg Lemonade"
+			id = "lynchburg"
+			result = "lynchburg"
+			required_reagents = list("lemonade" = 1, "bourbon" = 1, "space_up" = 2)
 			result_amount = 3
 
 		kiraspecial
@@ -2055,3 +2250,4 @@ datum
 			result = "suidream"
 			required_reagents = list("space_up" = 2, "bluecuracao" = 1, "melonliquor" = 1)
 			result_amount = 4
+

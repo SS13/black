@@ -119,25 +119,6 @@ var/global/floorIsLava = 0
 			else
 				body += "<A href='?src=\ref[src];makeanimal=\ref[M]'>Animalize</A> | "
 
-			// DNA2 - Admin Hax
-			if(iscarbon(M))
-				body += "<br><br>"
-				body += "<b>DNA Blocks:</b><br><table border='0'><tr><th>&nbsp;</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th>"
-				var/bname
-				for(var/block=1;block<=DNA_SE_LENGTH;block++)
-					if(((block-1)%5)==0)
-						body += "</tr><tr><th>[block-1]</th>"
-					bname = assigned_blocks[block]
-					body += "<td>"
-					if(bname)
-						var/bstate=M.dna.GetSEState(block)
-						var/bcolor="[(bstate)?"#006600":"#ff0000"]"
-						body += "<A href='?src=\ref[src];togmutate=\ref[M];block=[block]' style='color:[bcolor];'>[bname]</A><sub>[block]</sub>"
-					else
-						body += "[block]"
-					body+="</td>"
-				body += "</tr></table>"
-
 			body += {"<br><br>
 				<b>Rudimentary transformation:</b><font size=2><br>These transformations only create a new mob type and copy stuff over. They do not take into account MMIs and similar mob-specific things. The buttons in 'Transformations' are preferred, when possible.</font><br>
 				<A href='?src=\ref[src];simplemake=observer;mob=\ref[M]'>Observer</A> |
@@ -161,6 +142,7 @@ var/global/floorIsLava = 0
 				<A href='?src=\ref[src];simplemake=constructbuilder;mob=\ref[M]'>Builder</A> ,
 				<A href='?src=\ref[src];simplemake=constructwraith;mob=\ref[M]'>Wraith</A> \]
 				<A href='?src=\ref[src];simplemake=shade;mob=\ref[M]'>Shade</A> |
+				<A href='?src=\ref[src];simplemake=meme;mob=\ref[M]'>Meme</A>
 				<br>
 			"}
 
@@ -600,8 +582,7 @@ var/global/floorIsLava = 0
 			<A href='?src=\ref[src];secretsfun=gravanomalies'>Spawn a gravitational anomaly (aka lagitational anomolag)</A><BR>
 			<A href='?src=\ref[src];secretsfun=timeanomalies'>Spawn wormholes</A><BR>
 			<A href='?src=\ref[src];secretsfun=goblob'>Spawn blob</A><BR>
-			<A href='?src=\ref[src];secretsfun=aliens'>Trigger a Xenomorph infestation</A><BR>
-			<A href='?src=\ref[src];secretsfun=borers'>Trigger a Cortical Borer infestation</A><BR>
+			<A href='?src=\ref[src];secretsfun=aliens'>Trigger an Alien infestation</A><BR>
 			<A href='?src=\ref[src];secretsfun=alien_silent'>Spawn an Alien silently</A><BR>
 			<A href='?src=\ref[src];secretsfun=spiders'>Trigger a Spider infestation</A><BR>
 			<A href='?src=\ref[src];secretsfun=spaceninja'>Send in a space ninja</A><BR>
@@ -639,6 +620,7 @@ var/global/floorIsLava = 0
 			<A href='?src=\ref[src];secretsfun=eagles'>Egalitarian Station Mode</A><BR>
 			<A href='?src=\ref[src];secretsfun=moveadminshuttle'>Move Administration Shuttle</A><BR>
 			<A href='?src=\ref[src];secretsfun=moveferry'>Move Ferry</A><BR>
+			<A href='?src=\ref[src];secretsfun=movesmugglersship'>Move Smugglers Shuttle</A><BR>
 			<A href='?src=\ref[src];secretsfun=movealienship'>Move Alien Dinghy</A><BR>
 			<A href='?src=\ref[src];secretsfun=moveminingshuttle'>Move Mining Shuttle</A><BR>
 			<A href='?src=\ref[src];secretsfun=blackout'>Break all lights</A><BR>
@@ -705,7 +687,7 @@ var/global/floorIsLava = 0
 	set desc="Announce your desires to the world"
 	if(!check_rights(0))	return
 
-	var/message = sanitize_multi(input("Global message to send:", "Admin Announce", null, null) as message)
+	var/message = sanitize_uni(input("Global message to send:", "Admin Announce", null, null)  as message)
 	if(message)
 		if(!check_rights(R_SERVER,0))
 			message = adminscrub(message,500)
@@ -715,7 +697,7 @@ var/global/floorIsLava = 0
 
 /datum/admins/proc/toggleooc()
 	set category = "Server"
-	set desc="Globally Toggles OOC"
+	set desc="Toggle dis bitch"
 	set name="Toggle OOC"
 	ooc_allowed = !( ooc_allowed )
 	if (ooc_allowed)
@@ -999,11 +981,7 @@ var/global/floorIsLava = 0
 		if(!chosen)
 			return
 
-	if(ispath(chosen,/turf))
-		var/turf/T = get_turf(usr.loc)
-		T.ChangeTurf(chosen)
-	else
-		new chosen(usr.loc)
+	new chosen(usr.loc)
 
 	log_admin("[key_name(usr)] spawned [chosen] at ([usr.x],[usr.y],[usr.z])")
 	feedback_add_details("admin_verb","SA") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
@@ -1173,4 +1151,25 @@ proc/move_alien_ship()
 		alien_ship_location = 0
 	else
 		alien_ship_location = 1
+	return
+
+
+/**********************Smugglers Shuttle**************************/
+
+var/smugglers_shuttle_location = 0 // 0 = centcom 13, 1 = asteroid base
+
+proc/move_smugglers_shuttle()
+	var/area/fromArea
+	var/area/toArea
+	if (smugglers_shuttle_location == 1)
+		fromArea = locate(/area/shuttle/smuggler/base)
+		toArea = locate(/area/shuttle/smuggler/centcom)
+	else
+		fromArea = locate(/area/shuttle/smuggler/centcom)
+		toArea = locate(/area/shuttle/smuggler/base)
+	fromArea.move_contents_to(toArea)
+	if (smugglers_shuttle_location)
+		smugglers_shuttle_location = 0
+	else
+		smugglers_shuttle_location = 1
 	return

@@ -6,6 +6,11 @@
 	icon = 'icons/obj/trash.dmi'
 	w_class = 1.0
 	desc = "This is rubbish."
+	New()
+		..()
+		src.pixel_x = rand(-10.0, 10)
+		src.pixel_y = rand(-10.0, 10)
+
 	raisins
 		name = "4no raisins"
 		icon_state= "4no_raisins"
@@ -18,6 +23,9 @@
 	chips
 		name = "Chips"
 		icon_state = "chips"
+	chipsmonkey
+		name = "Monkey Chips"
+		icon_state = "chipsmonkey"
 	popcorn
 		name = "Popcorn"
 		icon_state = "popcorn"
@@ -45,6 +53,12 @@
 	tray
 		name = "Tray"
 		icon_state = "tray"
+	cannedmeat
+		name = "Empty meat can"
+		icon_state = "cannedmeat_open"
+	cannedtuna
+		name = "Empty carp can"
+		icon_state = "cannedtuna_open"
 	candle
 		name = "candle"
 		icon = 'icons/obj/candle.dmi'
@@ -52,6 +66,11 @@
 	liquidfood
 		name = "\improper \"LiquidFood\" ration"
 		icon_state = "liquidfood"
+	can
+		name = "crushed can"
+		icon = 'icons/obj/janitor.dmi'
+		icon_state = "cola"
+		//icon_state = pick("cola", "tonic", "grapesoda", "ice_tea_can", "dr_gibb", "redwing", "starkist", "space-up", "lemon-lime", "space_mountain_wind")
 
 /obj/item/trash/attack(mob/M as mob, mob/living/user as mob)
 	return

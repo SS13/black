@@ -6,7 +6,6 @@
 	var/const/meteordelay = 2000
 	var/nometeors = 1
 	required_players = 0
-	votable = 0
 
 	uplink_welcome = "EVIL METEOR Uplink Console:"
 	uplink_uses = 10

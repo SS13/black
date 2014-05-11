@@ -67,7 +67,7 @@
 
 
 /obj/item/weapon/storage/lockbox/loyalty
-	name = "lockbox of loyalty implants"
+	name = "Lockbox (Loyalty Implants)"
 	req_access = list(access_security)
 
 	New()
@@ -79,10 +79,31 @@
 
 
 /obj/item/weapon/storage/lockbox/clusterbang
-	name = "lockbox of clusterbangs"
+	name = "lockbox (clusterbang)"
 	desc = "You have a bad feeling about opening this."
 	req_access = list(access_security)
 
 	New()
 		..()
 		new /obj/item/weapon/grenade/flashbang/clusterbang(src)
+
+
+/obj/item/weapon/storage/lockbox/medal
+	name = "medal box"
+	desc = "A locked box used to store medals of honor."
+	icon_state = "medalbox+l"
+	item_state = "medalbox"
+	req_access = list(access_captain)
+	icon_locked = "medalbox+l"
+	icon_closed = "medalbox"
+	icon_broken = "medalbox+b"
+
+	New()
+		..()
+		new /obj/item/clothing/tie/medal/silver/valor(src)
+		new /obj/item/clothing/tie/medal/bronze_heart(src)
+		new /obj/item/clothing/tie/medal/conduct(src)
+		new /obj/item/clothing/tie/medal/conduct(src)
+		new /obj/item/clothing/tie/medal/conduct(src)
+		new	/obj/item/clothing/tie/medal/gold_diamond(src)
+		new /obj/item/clothing/tie/medal/silver/security(src)

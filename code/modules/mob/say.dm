@@ -22,10 +22,10 @@
 		usr << "\red Speech is currently admin-disabled."
 		return
 
-	message = trim(copytext(sanitize_multi(message), 1, MAX_MESSAGE_LEN))
+	message = trim(copytext(sanitize(message), 1, MAX_MESSAGE_LEN))
 
 	if(use_me)
-		usr.emote("me",usr.emote_type,message)
+		usr.emote("me",1,message)
 	else
 		usr.emote(message)
 
@@ -37,14 +37,14 @@
 		usr << "\red Speech is currently admin-disabled."
 		return
 
+	if(client && !(client.prefs.toggles & CHAT_DEAD))
+		usr << "\red You have deadchat muted."
+		return
+
 	if(!src.client.holder)
 		if(!dsay_allowed)
 			src << "\red Deadchat is globally muted"
 			return
-
-	if(client && !(client.prefs.toggles & CHAT_DEAD))
-		usr << "\red You have deadchat muted."
-		return
 
 	if(mind && mind.name)
 		name = "[mind.name]"
@@ -71,7 +71,7 @@
 	if(!other)
 		return 1
 	//Universal speak makes everything understandable, for obvious reasons.
-	else if(other.universal_speak || src.universal_speak || src.universal_understand)
+	else if(other.universal_speak || src.universal_speak)
 		return 1
 	else if (src.stat == 2)
 		return 1
@@ -88,7 +88,7 @@
 		else
 			return 0
 
-	else if(other.universal_speak || src.universal_speak || src.universal_understand)
+	else if(other.universal_speak || src.universal_speak)
 		return 1
 	else if(isAI(src) && ispAI(other))
 		return 1
@@ -103,28 +103,30 @@
 		//tcomms code is still runtiming somewhere here
 	var/ending = copytext(text, length(text))
 
-	var/speech_verb = "says"
-	var/speech_style = "body"
+	var/speechverb = "<span class='say_quote'>"
 
 	if (speaking)
-		speech_verb = speaking.speech_verb
-		speech_style = speaking.colour
+		speechverb = "[speaking.speech_verb]</span>, \"<span class='[speaking.colour]'>"
 	else if(speak_emote && speak_emote.len)
-		speech_verb = pick(speak_emote)
+		speechverb = "[pick(speak_emote)], \""
 	else if (src.stuttering)
-		speech_verb = "stammers"
+		speechverb = "stammers, \""
 	else if (src.slurring)
-		speech_verb = "slurrs"
+		speechverb = "slurrs, \""
 	else if (ending == "?")
-		speech_verb = "asks"
+		speechverb = "asks, \""
 	else if (ending == "!")
-		speech_verb = "exclaims"
+		speechverb = "exclaims, \""
 	else if(isliving(src))
 		var/mob/living/L = src
 		if (L.getBrainLoss() >= 60)
-			speech_verb = "gibbers"
+			speechverb = "gibbers, \""
+		else
+			speechverb = "says, \""
+	else
+		speechverb = "says, \""
 
-	return "<span class='say_quote'>[speech_verb],</span> \"<span class='[speech_style]'>[text]</span>\""
+	return "[speechverb][text]</span>\""
 
 /mob/proc/emote(var/act, var/type, var/message)
 	if(act == "me")

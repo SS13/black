@@ -149,6 +149,10 @@ datum/pipeline
 			air.merge(air_sample)
 			//turf_air already modified by equalize_gases()
 
+		if(istype(target) && !target.processing)
+			if(target.air)
+				if(target.air.check_tile_graphic())
+					target.update_visuals(target.air)
 		if(network)
 			network.update = 1
 

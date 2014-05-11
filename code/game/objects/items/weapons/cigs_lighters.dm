@@ -114,9 +114,8 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	return
 
 
-/obj/item/clothing/mask/cigarette/afterattack(obj/item/weapon/reagent_containers/glass/glass, mob/user as mob, proximity)
+/obj/item/clothing/mask/cigarette/afterattack(obj/item/weapon/reagent_containers/glass/glass, mob/user as mob)
 	..()
-	if(!proximity) return
 	if(istype(glass))	//you can dip cigarettes into beakers
 		var/transfered = glass.reagents.trans_to(src, chem_volume)
 		if(transfered)	//if reagents were transfered, show the message
@@ -157,7 +156,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	var/turf/location = get_turf(src)
 	smoketime--
 	if(smoketime < 1)
-		die()
+		new type_butt(location)
+		processing_objects.Remove(src)
+		if(ismob(loc))
+			var/mob/living/M = loc
+			M << "<span class='notice'>Your [name] goes out.</span>"
+			M.u_equip(src)	//un-equip it so the overlays can update
+			M.update_inv_wear_mask(0)
+		del(src)
 		return
 	if(location)
 		location.hotspot_expose(700, 5)
@@ -175,27 +181,19 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 /obj/item/clothing/mask/cigarette/attack_self(mob/user as mob)
 	if(lit == 1)
 		user.visible_message("<span class='notice'>[user] calmly drops and treads on the lit [src], putting it out instantly.</span>")
-		die()
+		var/turf/T = get_turf(src)
+		new type_butt(T)
+		processing_objects.Remove(src)
+		del(src)
 	return ..()
 
 
-/obj/item/clothing/mask/cigarette/proc/die()
-	var/turf/T = get_turf(src)
-	var/obj/item/butt = new type_butt(T)
-	transfer_fingerprints_to(butt)
-	if(ismob(loc))
-		var/mob/living/M = loc
-		M << "<span class='notice'>Your [name] goes out.</span>"
-		M.u_equip(src)	//un-equip it so the overlays can update
-		M.update_inv_wear_mask(0)
-	processing_objects.Remove(src)
-	del(src)
 
 ////////////
 // CIGARS //
 ////////////
 /obj/item/clothing/mask/cigarette/cigar
-	name = "premium cigar"
+	name = "Premium Cigar"
 	desc = "A brown roll of tobacco and... well, you're not quite sure. This thing's huge!"
 	icon_state = "cigaroff"
 	icon_on = "cigaron"
@@ -207,14 +205,14 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	chem_volume = 20
 
 /obj/item/clothing/mask/cigarette/cigar/cohiba
-	name = "\improper Cohiba Robusto cigar"
+	name = "Cohiba Robusto Cigar"
 	desc = "There's little more you could want from a cigar."
 	icon_state = "cigar2off"
 	icon_on = "cigar2on"
 	icon_off = "cigar2off"
 
 /obj/item/clothing/mask/cigarette/cigar/havana
-	name = "premium Havanian cigar"
+	name = "Premium Havanian Cigar"
 	desc = "A cigar fit for only the best for the best."
 	icon_state = "cigar2off"
 	icon_on = "cigar2on"
@@ -229,12 +227,6 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	icon_state = "cigbutt"
 	w_class = 1
 	throwforce = 1
-
-/obj/item/weapon/cigbutt/New()
-	..()
-	pixel_x = rand(-10,10)
-	pixel_y = rand(-10,10)
-	transform = turn(transform,rand(0,360))
 
 /obj/item/weapon/cigbutt/cigarbutt
 	name = "cigar butt"
@@ -335,23 +327,34 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 	slot_flags = SLOT_BELT
 	attack_verb = list("burnt", "singed")
 	var/lit = 0
+	var/spamcheck = 0
 
 /obj/item/weapon/lighter/zippo
-	name = "\improper Zippo lighter"
+	name = "Zippo lighter"
 	desc = "The zippo."
 	icon_state = "zippo"
 	item_state = "zippo"
 	icon_on = "zippoon"
 	icon_off = "zippo"
 
+/obj/item/weapon/lighter/zippo/gold
+	name = "Zippo lighter"
+	desc = "The zippo."
+	icon_state = "goldzippo"
+	item_state = "zippo"
+	icon_on = "goldzippoon"
+	icon_off = "goldzippo"
+
 /obj/item/weapon/lighter/random
 	New()
-		var/color = pick("r","c","y","g")
+		var/color = pick("r","c","y","g","b","w","m","o")
 		icon_on = "lighter-[color]-on"
 		icon_off = "lighter-[color]"
 		icon_state = icon_off
 
 /obj/item/weapon/lighter/attack_self(mob/living/user)
+	if (spamcheck)	return
+
 	if(user.r_hand == src || user.l_hand == src)
 		if(!lit)
 			lit = 1
@@ -378,8 +381,13 @@ CIGARETTE PACKETS ARE IN FANCY.DM
 			else
 				user.visible_message("<span class='notice'>[user] quietly shuts off the [src].")
 
+
 			user.SetLuminosity(user.luminosity - 2)
 			processing_objects.Remove(src)
+			spamcheck = 1
+			spawn(20)
+				spamcheck = 0
+
 	else
 		return ..()
 	return

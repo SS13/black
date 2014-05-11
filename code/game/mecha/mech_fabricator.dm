@@ -23,13 +23,14 @@
 										"diamond"=0,
 										"plasma"=0,
 										"uranium"=0,
-										//"bananium"=0 No need to state what it can no longer hold
+										"bananium"=0
 										)
 	var/res_max_amount = 200000
 	var/datum/research/files
 	var/id
 	var/sync = 0
 	var/part_set
+	var/eject_dir = 2 //This is Guap's
 	var/obj/being_built
 	var/list/queue = list()
 	var/processing_queue = 0
@@ -90,7 +91,7 @@
 						/obj/item/mecha_parts/part/durand_right_leg,
 						/obj/item/mecha_parts/part/durand_armour
 					),
-	/*"H.O.N.K"=list(
+	"H.O.N.K"=list(
 						/obj/item/mecha_parts/chassis/honker,
 						/obj/item/mecha_parts/part/honker_torso,
 						/obj/item/mecha_parts/part/honker_head,
@@ -98,7 +99,7 @@
 						/obj/item/mecha_parts/part/honker_right_arm,
 						/obj/item/mecha_parts/part/honker_left_leg,
 						/obj/item/mecha_parts/part/honker_right_leg
-						), No need for HONK stuff*/
+						),
 	"Exosuit Equipment"=list(
 						/obj/item/mecha_parts/mecha_equipment/tool/hydraulic_clamp,
 						/obj/item/mecha_parts/mecha_equipment/tool/drill,
@@ -112,9 +113,9 @@
 						///obj/item/mecha_parts/mecha_equipment/jetpack, //TODO MECHA JETPACK SPRITE MISSING
 						/obj/item/mecha_parts/mecha_equipment/weapon/energy/taser,
 						/obj/item/mecha_parts/mecha_equipment/weapon/ballistic/lmg,
-						///obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/banana_mortar/mousetrap_mortar, HONK-related mech part
-						///obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/banana_mortar, Also HONK-related
-						///obj/item/mecha_parts/mecha_equipment/weapon/honker Thirdly HONK-related
+						/obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/banana_mortar/mousetrap_mortar, //HONK-related mech part
+						/obj/item/mecha_parts/mecha_equipment/weapon/ballistic/missile_rack/banana_mortar, //Also HONK-related
+						/obj/item/mecha_parts/mecha_equipment/weapon/honker //Thirdly HONK-related
 						),
 
 	"Robotic Upgrade Modules" = list(
@@ -178,8 +179,8 @@
 	T = 0
 	for(var/obj/item/weapon/stock_parts/manipulator/Ml in component_parts)
 		T += Ml.rating
-	if(T>= 1)
-		T -= 1
+	if(T>= 2)
+		T -= 2
 	diff = round(initial(time_coeff) - (initial(time_coeff)*(T))/25,0.01)
 	if(time_coeff!=diff)
 		time_coeff = diff
@@ -373,7 +374,7 @@
 	src.overlays -= "fab-active"
 	src.desc = initial(src.desc)
 	if(being_built)
-		src.being_built.Move(get_step(src,SOUTH))
+		src.being_built.Move(get_step(src,eject_dir))
 		src.visible_message("\icon[src] <b>[src]</b> beeps, \"The following has been completed: [src.being_built] is built\".")
 		src.being_built = null
 	src.updateUsrDialog()
@@ -502,7 +503,7 @@
 		temp = "Updating local R&D database..."
 		src.updateUsrDialog()
 		sleep(30) //only sleep if called by user
-	for(var/obj/machinery/computer/rdconsole/RDC in get_area(src))
+	for(var/obj/machinery/computer/rdconsole/RDC in range(10, src))
 		if(!RDC.sync)
 			continue
 		for(var/datum/tech/T in RDC.files.known_tech)
@@ -518,7 +519,7 @@
 			temp += "<a href='?src=\ref[src];clear_temp=1'>Return</a>"
 			src.updateUsrDialog()
 		if(i || tech_output)
-			src.visible_message("\icon[src] <b>[src]</b> beeps, \"Successfully synchronized with R&D server. New data processed.\"")
+			src.visible_message("\icon[src] <b>[src]</b> beeps, \"Succesfully synchronized with R&D server. New data processed.\"")
 	return
 
 /obj/machinery/mecha_part_fabricator/proc/get_resource_cost_w_coeff(var/obj/item/part as obj,var/resource as text, var/roundto=1)
@@ -681,8 +682,8 @@
 			type = /obj/item/stack/sheet/mineral/plasma
 		if("uranium")
 			type = /obj/item/stack/sheet/mineral/uranium
-		/*if("bananium")
-			type = /obj/item/stack/sheet/mineral/clown Sorry, but no more clown mechs, even if you do manage to get to the clown planet.*/
+		if("bananium")
+			type = /obj/item/stack/sheet/mineral/clown
 		else
 			return 0
 	var/result = 0
@@ -740,9 +741,9 @@
 			if(src.resources["diamond"] >= 2000)
 				var/obj/item/stack/sheet/mineral/diamond/G = new /obj/item/stack/sheet/mineral/diamond(src.loc)
 				G.amount = round(src.resources["diamond"] / G.perunit)
-			/*if(src.resources["bananium"] >= 2000)
+			if(src.resources["bananium"] >= 2000)
 				var/obj/item/stack/sheet/mineral/clown/G = new /obj/item/stack/sheet/mineral/clown(src.loc)
-				G.amount = round(src.resources["bananium"] / G.perunit) Sorry, but no bananium allowed*/
+				G.amount = round(src.resources["bananium"] / G.perunit)
 			del(src)
 			return 1
 		else
@@ -766,8 +767,8 @@
 			material = "metal"
 		if(/obj/item/stack/sheet/glass)
 			material = "glass"
-		/*if(/obj/item/stack/sheet/mineral/clown)
-			material = "bananium"*/
+		if(/obj/item/stack/sheet/mineral/clown)
+			material = "bananium"
 		if(/obj/item/stack/sheet/mineral/uranium)
 			material = "uranium"
 		else

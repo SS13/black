@@ -224,6 +224,24 @@
 					icon_state = "wood_tabledir2"
 				if(6)
 					icon_state = "wood_tabledir3"
+
+		else if(istype(src,/obj/structure/table/poker))
+			switch(table_type)
+				if(0)
+					icon_state = "pokertable"
+				if(1)
+					icon_state = "pokertable_1tileendtable"
+				if(2)
+					icon_state = "pokertable_1tilethick"
+				if(3)
+					icon_state = "pokertable_dir"
+				if(4)
+					icon_state = "pokertable_middle"
+				if(5)
+					icon_state = "pokertable_dir2"
+				if(6)
+					icon_state = "pokertable_dir3"
+
 		else
 			switch(table_type)
 				if(0)
@@ -288,15 +306,10 @@
 		user.say(pick(";RAAAAAAAARGH!", ";HNNNNNNNNNGGGGGGH!", ";GWAAAAAAAARRRHHH!", "NNNNNNNNGGGGGGGGHH!", ";AAAAAAARRRGH!" ))
 		destroy()
 
-/obj/structure/table/attack_tk() // no telehulk sorry
-	return
-
 /obj/structure/table/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if(air_group || (height==0)) return 1
 	if(istype(mover,/obj/item/projectile))
 		return (check_cover(mover,target))
-	if(locate(/obj/structure/table, mover.loc))
-		return 1
 	if(istype(mover) && mover.checkpass(PASSTABLE))
 		return 1
 	if (flipped)
@@ -305,12 +318,7 @@
 		else
 			return 1
 	return 0
-/*
-/obj/structure/table/Bump()
-	if(locate(/obj/structure/table, usr.loc))
-		return 0
-	return ..()
-*/
+
 //checks if projectile 'P' from turf 'from' can hit whatever is behind the table. Returns 1 if it can, 0 if bullet stops.
 /obj/structure/table/proc/check_cover(obj/item/projectile/P, turf/from)
 	var/turf/cover = flipped ? get_turf(src) : get_step(loc, get_dir(from, loc))
@@ -339,8 +347,6 @@
 	return 1
 
 /obj/structure/table/CheckExit(atom/movable/O as mob|obj, target as turf)
-	if(locate(/obj/structure/table, O.loc))
-		return 1
 	if(istype(O) && O.checkpass(PASSTABLE))
 		return 1
 	if (flipped)
@@ -380,7 +386,7 @@
 				G.affecting.loc = src.loc
 				G.affecting.Weaken(5)
 				visible_message("\red [G.assailant] puts [G.affecting] on \the [src].")
-				del(W)
+			del(W)
 			return
 
 	if (istype(W, /obj/item/weapon/wrench))
@@ -529,6 +535,16 @@
 	icon_state = "wood_table"
 	parts = /obj/item/weapon/table_parts/wood
 	health = 50
+
+
+/obj/structure/table/poker //No specialties, Just a mapping object.
+	name = "gambling table"
+	desc = "A seedy table for seedy dealings in seedy places."
+	icon_state = "pokertable"
+	parts = /obj/item/weapon/table_parts/wood
+	health = 50
+
+
 /*
  * Reinforced tables
  */
@@ -650,35 +666,17 @@
 		user.say(pick(";RAAAAAAAARGH!", ";HNNNNNNNNNGGGGGGH!", ";GWAAAAAAAARRRHHH!", "NNNNNNNNGGGGGGGGHH!", ";AAAAAAARRRGH!" ))
 		destroy()
 
-	if(usr.a_intent == "disarm" && get_dist(usr, src) <= 1 && !usr.buckled)
-		if(prob(60))
-			visible_message("<span class='notice'>[user] climbs on the [src].</span>")
-			usr.loc = src.loc
-			pass_flags |= PASSTABLE
-//			spawn(60)
-
-		else
-			sleep(10)
-			visible_message("<span class='warning'>[user] slipped off the edge of the [src].</span>")
-			usr.weakened += 3
-
-
 /obj/structure/rack/attack_paw(mob/user)
 	if(HULK in user.mutations)
 		user.say(pick(";RAAAAAAAARGH!", ";HNNNNNNNNNGGGGGGH!", ";GWAAAAAAAARRRHHH!", "NNNNNNNNGGGGGGGGHH!", ";AAAAAAARRRGH!" ))
 		visible_message("<span class='danger'>[user] smashes [src] apart!</span>")
 		destroy()
 
-
 /obj/structure/rack/attack_alien(mob/user)
 	visible_message("<span class='danger'>[user] slices [src] apart!</span>")
 	destroy()
-
 
 /obj/structure/rack/attack_animal(mob/living/simple_animal/user)
 	if(user.wall_smash)
 		visible_message("<span class='danger'>[user] smashes [src] apart!</span>")
 		destroy()
-
-/obj/structure/rack/attack_tk() // no telehulk sorry
-	return

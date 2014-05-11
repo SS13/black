@@ -25,11 +25,11 @@
 #define AALARM_WIRE_IDSCAN		1	//Added wires
 #define AALARM_WIRE_POWER		2
 #define AALARM_WIRE_SYPHON		3
-#define AALARM_WIRE_AI_CONTROL	4
+#define AALARM_WIRE_AI_CONTROL		4
 #define AALARM_WIRE_AALARM		5
 
-#define AALARM_MODE_SCRUBBING	1
-#define AALARM_MODE_REPLACEMENT	2 //like scrubbing, but faster.
+#define AALARM_MODE_SCRUBBING		1
+#define AALARM_MODE_REPLACEMENT		2 //like scrubbing, but faster.
 #define AALARM_MODE_PANIC		3 //constantly sucks all air
 #define AALARM_MODE_CYCLE		4 //sucks off all air, then refill and switches to scrubbing
 #define AALARM_MODE_FILL		5 //emergency fill
@@ -39,7 +39,7 @@
 #define AALARM_SCREEN_VENT		2
 #define AALARM_SCREEN_SCRUB		3
 #define AALARM_SCREEN_MODE		4
-#define AALARM_SCREEN_SENSORS	5
+#define AALARM_SCREEN_SENSORS		5
 
 #define AALARM_REPORT_TIMEOUT 100
 
@@ -97,6 +97,9 @@
 
 	var/list/TLV = list()
 
+	blob_act()
+		if(prob(50))
+			del(src)
 
 /obj/machinery/alarm/server/New()
 	..()
@@ -184,10 +187,10 @@
 		var/datum/gas_mixture/gas
 		gas = location.remove_air(0.25*environment.total_moles)
 		var/heat_capacity = gas.heat_capacity()
-		var/energy_used = min( abs( heat_capacity*(gas.temperature - target_temperature) ), MAX_ENERGY_CHANGE)
+		var/energy_used = max( abs( heat_capacity*(gas.temperature - target_temperature) ), MAX_ENERGY_CHANGE)
 
-		//Use power.  Assuming that each power unit represents 1000 watts....
-		use_power(energy_used/1000, ENVIRON)
+		//Use power.  Assuming that each power unit represents 11 watts....
+		use_power(energy_used, ENVIRON)
 
 		//We need to cool ourselves.
 		if(environment.temperature > target_temperature)
@@ -1511,7 +1514,7 @@ FIRE ALARM
 		pixel_x = (dir & 3)? 0 : (dir == 4 ? -24 : 24)
 		pixel_y = (dir & 3)? (dir ==1 ? -24 : 24) : 0
 
-	if(z == 1 || z == 5)
+	if(z == 1)
 		if(security_level)
 			src.overlays += image('icons/obj/monitors.dmi', "overlay_[get_security_level()]")
 		else

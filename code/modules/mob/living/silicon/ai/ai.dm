@@ -95,7 +95,6 @@ var/list/ai_list = list()
 		/mob/living/silicon/ai/proc/ai_statuschange, /mob/living/silicon/ai/proc/ai_hologram_change, \
 		/mob/living/silicon/ai/proc/toggle_camera_light)
 
-
 	if(!safety)//Only used by AIize() to successfully spawn an AI.
 		if (!B)//If there is no player/brain inside.
 			new/obj/structure/AIcore/deactivated(loc)//New empty terminal.
@@ -149,7 +148,7 @@ var/list/ai_list = list()
 		//if(icon_state == initial(icon_state))
 	var/icontype = ""
 	if (custom_sprite == 1) icontype = ("Custom")//automagically selects custom sprite if one is available
-	else icontype = input("Select an icon!", "AI", null, null) in list("Monochrome", "Blue", "Inverted", "Text", "Smiley", "Angry", "Dorf", "Matrix", "Bliss", "Firewall", "Green", "Red", "Static", "Triumvirate", "Triumvirate Static")
+	else icontype = input("Select an icon!", "AI", null, null) in list("Monochrome", "Blue", "Inverted", "Text", "Smiley", "Angry", "Dorf", "Matrix", "Bliss", "Firewall", "Green", "Red", "Static", "Triumvirate", "Triumvirate Static", "Whale", "RED OCTOBER","House","Yuki","Helios","President AI","Xeno")
 	switch(icontype)
 		if("Custom") icon_state = "[src.ckey]-ai"
 		if("Clown") icon_state = "ai-clown2"
@@ -167,7 +166,15 @@ var/list/ai_list = list()
 		if("Bliss") icon_state = "ai-bliss"
 		if("Triumvirate") icon_state = "ai-triumvirate"
 		if("Triumvirate Static") icon_state = "ai-triumvirate-malf"
+		if("Whale") icon_state = "ai-whale"
+		if("RED OCTOBER") icon_state = "ai-redoctober"
+		if("House") icon_state = "ai-rhouse"//Robert House from FONV
+		if("Yuki") icon_state = "ai-yuki" //Am I kawaii~ RD-sempai?
+		if("Helios") icon_state = "ai-helios"
+		if("President AI") icon_state = "ai-president"//President AI from FO3
+		if("Xeno") icon_state = "ai-xeno"
 		else icon_state = "ai"
+
 	//else
 			//usr <<"You can only change your display once!"
 			//return
@@ -339,12 +346,9 @@ var/list/ai_list = list()
 //		src << text ("Switching Law [L]'s report status to []", lawcheck[L+1])
 		checklaws()
 
-	//Uncomment this line of code if you are enabling the AI Vocal (VOX) announcements.
-/*
 	if(href_list["say_word"])
 		play_vox_word(href_list["say_word"], null, src)
 		return
-*/
 
 	if (href_list["lawi"]) // Toggling whether or not a law gets stated by the State Laws verb --NeoFite
 		var/L = text2num(href_list["lawi"])
@@ -432,6 +436,16 @@ var/list/ai_list = list()
 					if ((O.client && !( O.blinded )))
 						O.show_message(text("\red <B>[] took a swipe at []!</B>", M, src), 1)
 	return
+
+/mob/living/silicon/ai/attack_hand(mob/living/carbon/M as mob)
+	if(ishuman(M))//Checks to see if they are ninja
+		if(istype(M:gloves, /obj/item/clothing/gloves/space_ninja)&&M:gloves:candrain&&!M:gloves:draining)
+			if(M:wear_suit:s_control)
+				M:wear_suit:transfer_ai("AICORE", "NINJASUIT", src, M)
+			else
+				M << "\red <b>ERROR</b>: \black Remote access channel disabled."
+	return
+
 
 /mob/living/silicon/ai/attack_animal(mob/living/simple_animal/M as mob)
 	if(M.melee_damage_upper == 0)
@@ -635,7 +649,9 @@ var/list/ai_list = list()
 	else
 		var/icon_list[] = list(
 		"default",
-		"floating face"
+		"floating face",
+		"alien queen",
+		"space carp"
 		)
 		input = input("Please select a hologram:") as null|anything in icon_list
 		if(input)
@@ -645,6 +661,11 @@ var/list/ai_list = list()
 					holo_icon = getHologramIcon(icon('icons/mob/AI.dmi',"holo1"))
 				if("floating face")
 					holo_icon = getHologramIcon(icon('icons/mob/AI.dmi',"holo2"))
+				if("alien queen")
+					holo_icon = getHologramIcon(icon('icons/mob/AI.dmi',"holo3"))
+				if("space carp")
+					holo_icon = getHologramIcon(icon('icons/mob/AI.dmi',"holo4"))
+
 	return
 
 /*/mob/living/silicon/ai/proc/corereturn()
@@ -666,11 +687,10 @@ var/list/ai_list = list()
 	camera_light_on = !camera_light_on
 	src << "Camera lights [camera_light_on ? "activated" : "deactivated"]."
 	if(!camera_light_on)
-		if(current)
-			current.SetLuminosity(0)
-			current = null
+		if(src.current)
+			src.current.SetLuminosity(0)
 	else
-		lightNearbyCamera()
+		src.lightNearbyCamera()
 
 
 

@@ -3,21 +3,11 @@
 	desc = "A slab of meat"
 	icon_state = "meat"
 	health = 180
-	filling_color = "#FF1C1C"
 	New()
 		..()
 		reagents.add_reagent("nutriment", 3)
 		src.bitesize = 3
 
-/obj/item/weapon/reagent_containers/food/snacks/meat/attackby(obj/item/weapon/W as obj, mob/user as mob)
-	if(istype(W,/obj/item/weapon/kitchenknife))
-		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
-		new /obj/item/weapon/reagent_containers/food/snacks/rawcutlet(src)
-		user << "You cut the meat in thin strips."
-		del(src)
-	else
-		..()
 
 /obj/item/weapon/reagent_containers/food/snacks/meat/syntiflesh
 	name = "synthetic meat"
@@ -35,3 +25,50 @@
 /obj/item/weapon/reagent_containers/food/snacks/meat/corgi
 	name = "Corgi meat"
 	desc = "Tastes like... well you know..."
+
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/pug
+	name = "Pug meat"
+	desc = "Tastes like... well you know..."
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/innards
+	name = "innards"
+	desc = "Sone innards"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "innards"
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/innards/heart
+	name = "heart"
+	desc = "A heart"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "heart-off"
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/innards/lung
+	name = "lung"
+	desc = "A lung"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "lungr"
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/innards/kidney
+	name = "kidney"
+	desc = "A kidney"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "kidneyl"
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/innards/pancreas
+	name = "pancreas"
+	desc = "A pancreas"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "pancreas"
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/innards/tongue
+	name = "tongue"
+	desc = "A tongue"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "tongue"
+
+/obj/item/weapon/reagent_containers/food/snacks/meat/innards/eyeball
+	name = "eyeball"
+	desc = "An eyeball"
+	icon = 'icons/obj/surgery.dmi'
+	icon_state = "eyeball"

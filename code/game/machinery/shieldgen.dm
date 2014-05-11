@@ -384,7 +384,14 @@
 		user.visible_message("[user] turned the shield generator off.", \
 			"You turn off the shield generator.", \
 			"You hear heavy droning fade out.")
-		for(var/dir in list(1,2,4,8)) src.cleanup(dir)
+		spawn(1)
+			src.cleanup(1)
+		spawn(1)
+			src.cleanup(2)
+		spawn(1)
+			src.cleanup(4)
+		spawn(1)
+			src.cleanup(8)
 	else
 		src.active = 1
 		icon_state = "Shield_Gen +a"
@@ -424,7 +431,14 @@
 				"You hear heavy droning fade out")
 			icon_state = "Shield_Gen"
 			src.active = 0
-			for(var/dir in list(1,2,4,8)) src.cleanup(dir)
+			spawn(1)
+				src.cleanup(1)
+			spawn(1)
+				src.cleanup(2)
+			spawn(1)
+				src.cleanup(4)
+			spawn(1)
+				src.cleanup(8)
 
 /obj/machinery/shieldwallgen/proc/setup_field(var/NSEW = 0)
 	var/turf/T = src.loc

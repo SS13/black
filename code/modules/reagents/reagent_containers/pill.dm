@@ -7,6 +7,7 @@
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = null
 	item_state = "pill"
+	slot_flags = SLOT_EARS
 	possible_transfer_amounts = null
 	volume = 50
 
@@ -19,6 +20,11 @@
 		return
 	attack(mob/M as mob, mob/user as mob, def_zone)
 		if(M == user)
+
+			if(istype(M.wear_mask, /obj/item/clothing/mask) && !(M.wear_mask.can_eat))
+				user << "\red [M.wear_mask] prevents you form swallowing a [src]"
+				return 0
+
 			M << "\blue You swallow [src]."
 			M.drop_from_inventory(src) //icon update
 			if(reagents.total_volume)
@@ -31,6 +37,10 @@
 			return 1
 
 		else if(istype(M, /mob/living/carbon/human) )
+
+			if(istype(M.wear_mask, /obj/item/clothing/mask) && !(M.wear_mask.can_eat))
+				user << "\red [M.wear_mask] prevents you form force [M.name] to take a [src]"
+				return 0
 
 			for(var/mob/O in viewers(world.view, user))
 				O.show_message("\red [user] attempts to force [M] to swallow [src].", 1)
@@ -57,8 +67,7 @@
 
 		return 0
 
-	afterattack(obj/target, mob/user, proximity)
-		if(!proximity) return
+	afterattack(obj/target, mob/user , flag)
 
 		if(target.is_open_container() != 0 && target.reagents)
 			if(!target.reagents.total_volume)
@@ -99,6 +108,22 @@
 		..()
 		reagents.add_reagent("toxin", 50)
 
+/obj/item/weapon/reagent_containers/pill/hyronalin
+	name = "Hyronalin pill."
+	desc = "Hyronalin is a medicinal drug used to counter the effect of radiation poisoning.."
+	icon_state = "pill17"
+	New()
+		..()
+		reagents.add_reagent("hyronalin", 10)
+
+/obj/item/weapon/reagent_containers/pill/arithrazine
+	name = "Arithrazine pill."
+	desc = "Arithrazine is an unstable medication used for the most extreme cases of radiation poisoning."
+	icon_state = "pill8"
+	New()
+		..()
+		reagents.add_reagent("hyronalin", 10)
+
 /obj/item/weapon/reagent_containers/pill/cyanide
 	name = "Cyanide pill"
 	desc = "Don't swallow this."
@@ -130,14 +155,6 @@
 	New()
 		..()
 		reagents.add_reagent("kelotane", 15)
-
-/obj/item/weapon/reagent_containers/pill/paracetamol
-	name = "Paracetamol pill"
-	desc = "Tylenol! A painkiller for the ages. Chewables!"
-	icon_state = "pill8"
-	New()
-		..()
-		reagents.add_reagent("paracetamol", 15)
 
 /obj/item/weapon/reagent_containers/pill/tramadol
 	name = "Tramadol pill"

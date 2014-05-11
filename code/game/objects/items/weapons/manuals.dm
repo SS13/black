@@ -69,93 +69,42 @@
 				</html>"}
 
 
-/obj/item/weapon/book/manual/supermatter_engine
-	name = "Supermatter Engine User's Guide"
-	icon_state = "bookParticleAccelerator"   //TEMP FIXME
-	author = "Waleed Asad"
-	title = "Supermatter Engine User's Guide"
+/obj/item/weapon/book/manual/telescience
+	name = "Teleportation Science - Bluespace for dummies!"
+	icon_state = "book7"
+	author = "University of Bluespace"
+	title = "Teleportation Science - Bluespace for dummies!"
 
-	dat = {"Engineering notes on single-stage Supermatter engine,</br>
-			-Waleed Asad</br>
-	
-			Station,</br>
-			Exodus</br>
+	dat = {"
+	<html><head>
+	</head>
 
-			A word of caution, do not enter the engine room, for any reason, without radiation protection and mesons on. The status of the engine may be unpredictable even when you believe it is .off.. This is an important level of personal protection.</br></br>
+	<body>
+	<iframe width='100%' height='97%' src="http://wiki.nanotrasen.com/index.php?title=Telescience&printable=yes&remove_links=1" frameborder="0" id="main_frame"></iframe>
+	</body>
 
-			The engine has two basic modes of functionality. He has observed that it is capable of both a safe level of operation and a modified, high output mode.</br></br>
-
-			<center><b>Notes on starting the basic function mode, dubbed .Heat-Primary Mode..</b></center></br></br>
-
-			1. Prepare collector arrays. This is done standard to any text on their function by wrenching them down, filling six plasma tanks with a plasma canister, and inserting the tank into the collectors one by one. Finally, initialize each collector.</br></br>
-
-			2. Prepare gas system. Before introducing any gas to the Supermatter engine room, it is important to remember the small but vital steps to preparing this section. First, set the input gas pump and output gas flow pump to 4500, or maximum flow. Second, switch the digital switching valve into the .up. position, in order to circulate the gas back toward the coolers and collectors.</br></br>
-
-			3. Apply N2 gas. Retrieve the two N2 canisters from storage and bring them to the engine room. Attach one of them to the input section of the engine gas system located next to the collectors. Keep it attached until the N2 pressure is low enough to turn the canister light red. Replace it with the second canister to keep N2 pressure at optimal levels.</br></br>
-
-			4. Open Supermatter shielding. This button is located on the far right of the engine room. At this point, the Supermatter chamber is mostly a gas mix of N2 and is producing no radiation. It is considered .safe. up until this point. Do not forget radiation shielding and mesons.</br></br>
-
-			5. Begin primary emitter burst series. This means firing a single emitter for its first four shots. It is important to move to this step quickly. The onboard SMES units may not have enough power to run the emitters if left alone too long on-station. This engine can produce enough power on its own to run the entire station, ignoring the SMES units completely, and is wired to do so.</br></br>
-
-			6. Switch SMES units to primary settings. Maximize input and set the devices to automatically charge, additionally turn their outputs on if they are off unless power is to be saved (Which can be useful in case of later failures.)</br></br>
-
-			7. Begin secondary emitter burst series. Before firing the emitter again, check the power in the line with a multimeter (Do not forget electrical gloves.) The engine is running at high efficiency when the value exceeds 200,000 power units.</br></br>
-
-			8. Maintain engine power. When power in the lines gets low, add an additional emitter burst series to bring power to normal levels.</br></br></br>
+	</html>
+	"}
 
 
+/obj/item/weapon/book/manual/NTSL
+	name = "Dive into NTSL"
+	icon_state = "telecom"
+	author = "Giacom ltd."
+	title = "Dive into NTSL - 'Will code NTSL for food!'"
 
-			<center>The second mode for running the engine uses a gas mix to produce a reaction within the Supermatter. This mode requires CE or Atmospheric help to setup. <b>This has been dubbed the .O2-Reaction Mode..</b></center></br></br>
+	dat = {"
+	<html><head>
+	</head>
 
-			<b><u>THIS MODE CAN CAUSE A RUNAWAY REACTION, LEADING TO CATASTROPHIC FAILURE IF NOT MAINTAINED. NEVER FORGET ABOUT THE ENGINE IN THIS MODE.</u></b></br></br>
+	<body>
+	<iframe width='100%' height='97%' src="http://wiki.ss13.eu/index.php/NTSL_Scripts&printable=yes&remove_links=1" frameborder="0" id="main_frame"></iframe>
+	</body>
 
-			Additionally, this mode can be used for what is called a .Cold Start.. If the station has no power in the SMES to run the emitters, using this mode will allow enough power output to run them, and quickly reach an acceptable level of power output.</br></br>
-
-			1. Prepare collector arrays. This is done standard to any text on their function by wrenching them down, filling six plasma tanks with a plasma canister, and inserting the tank into the collectors one by one. Finally, initialize each collector.</br></br>
-
-			2. Prepare gas system. Before introducing any gas to the Supermatter engine room, it is important to remember the small but vital steps to preparing this section. First, set the input gas pump and output gas flow pump to 4500, or maximum flow. Second, switch the digital switching valve into the .up. position, in order to circulate the gas back toward the coolers and collectors.</br></br>
-
-			3. Modify the engine room filters. Unlike the Heat-Primary Mode, it is important to change the filters attached to the gas system to stop filtering O2, and start filtering Carbon Molecules. O2-Reaction Mode produces far more plasma than Heat-Primary, therefor filtering it off is essential.</br></br>
-
-			4. Switch SMES units to primary settings. Maximize input and set the devices to automatically charge, additionally turn their outputs on if they are off unless power is to be saved (Which can be useful in case of later failures.) If you check the power in the system lines at this point you will find that it is constantly going up. Indeed, with just the addition of O2 to the Supermatter, it will begin outputting power.</br></br>
-
-			5. Begin primary emitter burst series. Fire a single emitter for a series of four pulses, or a single series, and turn it off. Do not over power the Supermatter. The reaction is self sustaining and propagating. As long as O2 is in the chamber, it will continue outputting MORE power.</br></br>
-
-			6. Maintain follow up operations. Remember to check the temp of the core gas and switch to the Heat-Primary function, or vent the core room when problems begin if required.</br></br>
-
-			Notes on Supermatter Reaction Function and Drawbacks-</br></br>
-
-			After several hours of observation an interesting phenomenon was witnessed. The Supermatter undergoes a constant self-sustaining reaction when given an extremely high O2 concentration. Anything about 80% or higher typically will cause this reaction. The Supermatter will continue to react whenever this gas mix is in the same room as the Supermatter.</br></br>
-
-			To understand why O2-Reaction mode is dangerous, the core principle of the Supermatter must be understood. The Supermatter emits three things when .not safe,. that is any time it is giving off power. These things are:</br></br>
-
-			*Radiation (which is converted into power by the collectors,)</br>
-			*Heat (which is removed via the gas exchange system and coolers,)</br>
-			*External gas (in the form of plasma and O2.)</br>
-
-			When in Heat-Primary mode, far more heat and plasma are produced than radiation. In O2-Reaction mode, very little heat and only moderate amounts of plasma are produced, however HUGE amounts of energy leaving the Supermatter is in the form of radiation.</br></br>
-
-			The O2-Reaction engine mode has a single drawback which has been eluded to more than once so far and that is very simple. The engine room will continue to grow hotter as the constant reaction continues. Eventually, there will be what he calls the .critical gas mix.. This is the point at which the constant adding of plasma to the mix of air around the Supermatter changes the gas concentration to below the tolerance. When this happens, two things occur. First, the Supermatter switches to its primary mode of operation where in huge amounts of heat are produced by the engine rather than low amounts with high power output. Second, an uncontrollable increase in heat within the Supermatter chamber will occur. This will lead to a spark-up, igniting the plasma in the Supermatter chamber, wildly increasing both pressure and temperature.</br></br>
-
-			While the O2-Reaction mode is dangerous, it does produce heavy amounts of energy. Consider using this mode only in short amounts to fill the SMES, and switch back later in the shift to keep things flowing normally.</br></br>
+	</html>
+	"}
 
 
-			Notes on Supermatter Containment and Emergency Procedures-</br></br>
-
-			While a constant vigil on the Supermatter is not required, regular checkups are important. Verify the temp of gas leaving the Supermatter chamber for unsafe levels, and ensure that the plasma in the chamber is at a safe concentration. Of course, also make sure the chamber is not on fire. A fire in the core chamber is very difficult to put out. As any Toxin scientist can tell you, even low amounts of plasma can burn at very high temperatures. This burning creates a huge increase in pressure and more importantly, temperature of the crystal itself.</br></br>
-
-			The Supermatter is strong, but not invincible. When the Supermatter is heated too much, its crystal structure will attempt to liquify. The change in atomic structure of the Supermatter leads to a single reaction, a massive explosion. The computer chip attached to the Supermatter core will warn the station when stability is threatened. It will then offer a second warning, when things have become dangerously close to total destruction of the core.</br></br>
-
-			Located both within the CE office and engine room is the vent control button. This button allows the Core Vent Controls to be accessed, venting the room to space. Remember however, that this process takes time. If a fire is raging, and the pressure is higher than fathomable, it will take a great deal of time to vent the room. Also located in the CE.s office is the emergency core eject button. A new core can be ordered from cargo. It is often not worth the lives of the crew to hold on to it, not to mention the structural damage. However, if by some mistake the Supermatter is pushed off or removed from the mass ejector it sits on, manual reposition will be required. Which is very dangerous and often leads to death.</br></br>
-
-			The Supermatter is extremely dangerous. More dangerous than people give it credit for. It can destroy you in an instant, without hesitation, reducing you to a pile of dust. When working closely with Supermatter it is.. suggested to get a genetic backup and do not wear any items of value to you. The Supermatter core can be pulled if grabbed properly by the base, but <b>pushing is not possible.</b></br></br></br>
-
-
-			In Closing-</br></br>
-
-			Remember that the Supermatter is dangerous, and the core is dangerous still. Venting the core room is always an option if you are even remotely worried, utilizing Atmospherics to properly ready the room once more for core function. It is always a good idea to check up regularly on the temperature of gas leaving the chamber, as well as the power in the system lines. Lastly, once again remember, never touch the Supermatter with anything. Ever.</br></br>
-
-			-Waleed Asad, Senior Engine Technician."}
 
 /obj/item/weapon/book/manual/engineering_hacking
 	name = "Hacking"
@@ -210,8 +159,7 @@
 				<b>Step eight:</b> Put in the new, <b>full power cell</b> - if you don't have one, continue with step 15.<br>
 				<b>Step nine:</b> Quickly put on a <b>Radiation suit.</b><br>
 				<b>Step ten:</b> Check if the <b>singularity field generators</b> withstood the down-time - if they didn't, continue with step 15.<br>
-				<b>Step eleven:</b> Since disaster was averted you now have to ensure it doesn't repeat. If it was a powersink which caused it and if the engineering apc is wired to the same powernet,
-				which the powersink is on, you have to remove the piece of wire which links the apc to the powernet. If it wasn't a powersink which caused it, then skip to step 14.<br>
+				<b>Step eleven:</b> Since disaster was averted you now have to ensure it doesn't repeat. If it was a powersink which caused it and if the engineering apc is wired to the same powernet, which the powersink is on, you have to remove the piece of wire which links the apc to the powernet. If it wasn't a powersink which caused it, then skip to step 14.<br>
 				<b>Step twelve:</b> Grab your crowbar and pry away the tile closest to the APC.<br>
 				<b>Step thirteen:</b> Use the wirecutters to cut the wire which is conecting the grid to the terminal. <br>
 				<b>Step fourteen:</b> Go to the bar and tell the guys how you saved them all. Stop reading this guide here.<br>
@@ -278,9 +226,7 @@
 				<body>
 
 				<H3>How to Clone People</H3>
-				So there’s 50 dead people lying on the floor, chairs are spinning like no tomorrow and you haven’t the foggiest idea of what to do? Not to worry!
-				This guide is intended to teach you how to clone people and how to do it right, in a simple step-by-step process! If at any point of the guide you have a mental meltdown,
-				genetics probably isn’t for you and you should get a job-change as soon as possible before you’re sued for malpractice.
+				So thereï¿½s 50 dead people lying on the floor, chairs are spinning like no tomorrow and you havenï¿½t the foggiest idea of what to do? Not to worry! This guide is intended to teach you how to clone people and how to do it right, in a simple step-by-step process! If at any point of the guide you have a mental meltdown, genetics probably isnï¿½t for you and you should get a job-change as soon as possible before youï¿½re sued for malpractice.
 
 				<ol>
 					<li><a href='#1'>Acquire body</a></li>
@@ -300,50 +246,36 @@
 				This is pretty much vital for the process because without a body, you cannot clone it. Usually, bodies will be brought to you, so you do not need to worry so much about this step. If you already have a body, great! Move on to the next step.
 
 				<a name='2'><H4>Step 2: Strip body</H4>
-				The cloning machine does not like abiotic items. What this means is you can’t clone anyone if they’re wearing clothes, so take all of it off. If it’s just one person, it’s courteous to put their possessions in the closet.
-				If you have about seven people awaiting cloning, just leave the piles where they are, but don’t mix them around and for God’s sake don’t let people in to steal them.
+				The cloning machine does not like abiotic items. What this means is you canï¿½t clone anyone if theyï¿½re wearing clothes, so take all of it off. If itï¿½s just one person, itï¿½s courteous to put their possessions in the closet. If you have about seven people awaiting cloning, just leave the piles where they are, but donï¿½t mix them around and for Godï¿½s sake donï¿½t let people in to steal them.
 
 				<a name='3'><H4>Step 3: Put body in cloning machine</H4>
 				Grab the body and then put it inside the DNA modifier. If you cannot do this, then you messed up at Step 2. Go back and check you took EVERYTHING off - a commonly missed item is their headset.
 
 				<a name='4'><H4>Step 4: Scan body</H4>
-				Go onto the computer and scan the body by pressing ‘Scan - <Subject Name Here>’. If you’re successful, they will be added to the records (note that this can be done at any time, even with living people,
-				so that they can be cloned without a body in the event that they are lying dead on port solars and didn‘t turn on their suit sensors)!
-				If not, and it says “Error: Mental interface failure.”, then they have left their bodily confines and are one with the spirits. If this happens, just shout at them to get back in their body,
-				click ‘Refresh‘ and try scanning them again. If there’s no success, threaten them with gibbing.
-				Still no success? Skip over to Step 7 and don‘t continue after it, as you have an unresponsive body and it cannot be cloned.
-				If you got “Error: Unable to locate valid genetic data.“, you are trying to clone a monkey - start over.
+				Go onto the computer and scan the body by pressing ï¿½Scan - <Subject Name Here>ï¿½. If youï¿½re successful, they will be added to the records (note that this can be done at any time, even with living people, so that they can be cloned without a body in the event that they are lying dead on port solars and didnï¿½t turn on their suit sensors)! If not, and it says ï¿½Error: Mental interface failure.ï¿½, then they have left their bodily confines and are one with the spirits. If this happens, just shout at them to get back in their body, click ï¿½Refreshï¿½ and try scanning them again. If thereï¿½s no success, threaten them with gibbing. Still no success? Skip over to Step 7 and donï¿½t continue after it, as you have an unresponsive body and it cannot be cloned. If you got ï¿½Error: Unable to locate valid genetic data.ï¿½, you are trying to clone a monkey - start over.
 
 				<a name='5'><H4>Step 5: Clone body</H4>
-				Now that the body has a record, click ’View Records’, click the subject’s name, and then click ‘Clone’ to start the cloning process. Congratulations! You’re halfway there.
-				Remember not to ‘Eject’ the cloning pod as this will kill the developing clone and you’ll have to start the process again.
+				Now that the body has a record, click ï¿½View Recordsï¿½, click the subjectï¿½s name, and then click ï¿½Cloneï¿½ to start the cloning process. Congratulations! Youï¿½re halfway there. Remember not to ï¿½Ejectï¿½ the cloning pod as this will kill the developing clone and youï¿½ll have to start the process again.
 
 				<a name='6'><H4>Step 6: Get clean SEs for body</H4>
-				Cloning is a finicky and unreliable process. Whilst it will most certainly bring someone back from the dead, they can have any number of nasty disabilities given to them during the cloning process!
-				For this reason, you need to prepare a clean, defect-free Structural Enzyme (SE) injection for when they’re done. If you’re a competent Geneticist, you will already have one ready on your working computer.
-				If, for any reason, you do not, then eject the body from the DNA modifier (NOT THE CLONING POD) and take it next door to the Genetics research room. Put the body in one of those DNA modifiers and then go onto the console.
-				Go into View/Edit/Transfer Buffer, find an open slot and click “SE“ to save it. Then click ‘Injector’ to get the SEs in syringe form. Put this in your pocket or something for when the body is done.
+				Cloning is a finicky and unreliable process. Whilst it will most certainly bring someone back from the dead, they can have any number of nasty disabilities given to them during the cloning process! For this reason, you need to prepare a clean, defect-free Structural Enzyme (SE) injection for when theyï¿½re done. If youï¿½re a competent Geneticist, you will already have one ready on your working computer. If, for any reason, you do not, then eject the body from the DNA modifier (NOT THE CLONING POD) and take it next door to the Genetics research room. Put the body in one of those DNA modifiers and then go onto the console. Go into View/Edit/Transfer Buffer, find an open slot and click ï¿½SEï¿½ to save it. Then click ï¿½Injectorï¿½ to get the SEs in syringe form. Put this in your pocket or something for when the body is done.
 
 				<a name='7'><H4>Step 7: Put body in morgue</H4>
-				Now that the cloning process has been initiated and you have some clean Structural Enzymes, you no longer need the body! Drag it to the morgue and tell the Chef over the radio that they have some fresh meat waiting for them in there.
-				To put a body in a morgue bed, simply open the tray, grab the body, put it on the open tray, then close the tray again. Use one of the nearby pens to label the bed “CHEF MEAT” in order to avoid confusion.
+				Now that the cloning process has been initiated and you have some clean Structural Enzymes, you no longer need the body! Drag it to the morgue and tell the Chef over the radio that they have some fresh meat waiting for them in there. To put a body in a morgue bed, simply open the tray, grab the body, put it on the open tray, then close the tray again. Use one of the nearby pens to label the bed ï¿½CHEF MEATï¿½ in order to avoid confusion.
 
 				<a name='8'><H4>Step 8: Await cloned body</H4>
-				Now go back to the lab and wait for your patient to be cloned. It won’t be long now, I promise.
+				Now go back to the lab and wait for your patient to be cloned. It wonï¿½t be long now, I promise.
 
 				<a name='9'><H4>Step 9: Cyo and clean clean SE injector on person</H4>
-				Has your body been cloned yet? Great! As soon as the guy pops out, grab them and stick them in cryo. Clonexadone and Cryoxadone help rebuild their genetic material. Then grab your cleanr SE injector and jab it in them. Once you’ve injected them,
-				they now have clean Structural Enzymes and their defects, if any, will disappear in a short while.
+				Has your body been cloned yet? Great! As soon as the guy pops out, grab them and stick them in cryo. Clonexadone and Cryoxadone help rebuild their genetic material. Then grab your cleanr SE injector and jab it in them. Once youï¿½ve injected them, they now have clean Structural Enzymes and their defects, if any, will disappear in a short while.
 
 				<a name='10'><H4>Step 10: Give person clothes back</H4>
-				Obviously the person will be naked after they have been cloned. Provided you weren’t an irresponsible little shit, you should have protected their possessions from thieves and should be able to give them back to the patient.
-				No matter how cruel you are, it’s simply against protocol to force your patients to walk outside naked.
+				Obviously the person will be naked after they have been cloned. Provided you werenï¿½t an irresponsible little shit, you should have protected their possessions from thieves and should be able to give them back to the patient. No matter how cruel you are, itï¿½s simply against protocol to force your patients to walk outside naked.
 
 				<a name='11'><H4>Step 11: Send person on their way</H4>
-				Give the patient one last check-over - make sure they don’t still have any defects and that they have all their possessions. Ask them how they died, if they know, so that you can report any foul play over the radio.
-				Once you’re done, your patient is ready to go back to work! Chances are they do not have Medbay access, so you should let them out of Genetics and the Medbay main entrance.
+				Give the patient one last check-over - make sure they donï¿½t still have any defects and that they have all their possessions. Ask them how they died, if they know, so that you can report any foul play over the radio. Once youï¿½re done, your patient is ready to go back to work! Chances are they do not have Medbay access, so you should let them out of Genetics and the Medbay main entrance.
 
-				<p>If you’ve gotten this far, congratulations! You have mastered the art of cloning. Now, the real problem is how to resurrect yourself after that traitor had his way with you for cloning his target.
+				<p>If youï¿½ve gotten this far, congratulations! You have mastered the art of cloning. Now, the real problem is how to resurrect yourself after that traitor had his way with you for cloning his target.
 
 				</body>
 				</html>
@@ -353,7 +285,7 @@
 /obj/item/weapon/book/manual/ripley_build_and_repair
 	name = "APLU \"Ripley\" Construction and Operation Manual"
 	icon_state ="book"
-	author = "Randall Varn, Einstein Engines Senior Mechanic"		 // Who wrote the thing, can be changed by pen or PC. It is not automatically assigned
+	author = "Weyland-Yutani Corp"		 // Who wrote the thing, can be changed by pen or PC. It is not automatically assigned
 	title = "APLU \"Ripley\" Construction and Operation Manual"
 
 	dat = {"<html>
@@ -452,38 +384,23 @@
 				Those are the basic steps to furthing science. What do you do science with, however? Well, you have four major tools: R&D Console, the Destructive Analyzer, the Protolathe, and the Circuit Imprinter.
 
 				<h2>The R&D Console</h2>
-				The R&D console is the cornerstone of any research lab. It is the central system from which the Destructive Analyzer, Protolathe, and Circuit Imprinter (your R&D systems) are controled. More on those systems in their own sections.
-				On its own, the R&D console acts as a database for all your technological gains and new devices you discover. So long as the R&D console remains intact, you'll retain all that SCIENCE you've discovered. Protect it though,
-				because if it gets damaged, you'll lose your data!
-				In addition to this important purpose, the R&D console has a disk menu that lets you transfer data from the database onto disk or from the disk into the database.
-				It also has a settings menu that lets you re-sync with nearby R&D devices (if they've become disconnected), lock the console from the unworthy,
-				upload the data to all other R&D consoles in the network (all R&D consoles are networked by default), connect/disconnect from the network, and purge all data from the database.
+				The R&D console is the cornerstone of any research lab. It is the central system from which the Destructive Analyzer, Protolathe, and Circuit Imprinter (your R&D systems) are controled. More on those systems in their own sections. On its own, the R&D console acts as a database for all your technological gains and new devices you discover. So long as the R&D console remains intact, you'll retain all that SCIENCE you've discovered. Protect it though, because if it gets damaged, you'll lose your data! In addition to this important purpose, the R&D console has a disk menu that lets you transfer data from the database onto disk or from the disk into the database. It also has a settings menu that lets you re-sync with nearby R&D devices (if they've become disconnected), lock the console from the unworthy, upload the data to all other R&D consoles in the network (all R&D consoles are networked by default), connect/disconnect from the network, and purge all data from the database.
 				<b>NOTE:</b> The technology list screen, circuit imprinter, and protolathe menus are accessible by non-scientists. This is intended to allow 'public' systems for the plebians to utilize some new devices.
 
 				<h2>Destructive Analyzer</h2>
-				This is the source of all technology. Whenever you put a handheld object in it, it analyzes it and determines what sort of technological advancements you can discover from it. If the technology of the object is equal or higher then your current knowledge,
-				you can destroy the object to further those sciences.
-				Some devices (notably, some devices made from the protolathe and circuit imprinter) aren't 100% reliable when you first discover them. If these devices break down, you can put them into the Destructive Analyzer and improve their reliability rather then futher science.
-				If their reliability is high enough ,it'll also advance their related technologies.
+				This is the source of all technology. Whenever you put a handheld object in it, it analyzes it and determines what sort of technological advancements you can discover from it. If the technology of the object is equal or higher then your current knowledge, you can destroy the object to further those sciences. Some devices (notably, some devices made from the protolathe and circuit imprinter) aren't 100% reliable when you first discover them. If these devices break down, you can put them into the Destructive Analyzer and improve their reliability rather then futher science. If their reliability is high enough ,it'll also advance their related technologies.
 
 				<h2>Circuit Imprinter</h2>
 				This machine, along with the Protolathe, is used to actually produce new devices. The Circuit Imprinter takes glass and various chemicals (depends on the design) to produce new circuit boards to build new machines or computers. It can even be used to print AI modules.
 
 				<h2>Protolathe</h2>
-				This machine is an advanced form of the Autolathe that produce non-circuit designs. Unlike the Autolathe, it can use processed metal, glass, solid plasma, silver, gold, and diamonds along with a variety of chemicals to produce devices.
-				The downside is that, again, not all devices you make are 100% reliable when you first discover them.
+				This machine is an advanced form of the Autolathe that produce non-circuit designs. Unlike the Autolathe, it can use processed metal, glass, solid plasma, silver, gold, and diamonds along with a variety of chemicals to produce devices. The downside is that, again, not all devices you make are 100% reliable when you first discover them.
 
 				<h1>Reliability and You</h1>
-				As it has been stated, many devices when they're first discovered do not have a 100% reliablity when you first discover them. Instead,
-				the reliablity of the device is dependent upon a base reliability value, whatever improvements to the design you've discovered through the Destructive Analyzer,
-				and any advancements you've made with the device's source technologies. To be able to improve the reliability of a device, you have to use the device until it breaks beyond repair. Once that happens, you can analyze it in a Destructive Analyzer.
-				Once the device reachs a certain minimum reliability, you'll gain tech advancements from it.
+				As it has been stated, many devices when they're first discovered do not have a 100% reliablity when you first discover them. Instead, the reliablity of the device is dependent upon a base reliability value, whatever improvements to the design you've discovered through the Destructive Analyzer, and any advancements you've made with the device's source technologies. To be able to improve the reliability of a device, you have to use the device until it breaks beyond repair. Once that happens, you can analyze it in a Destructive Analyzer. Once the device reachs a certain minimum reliability, you'll gain tech advancements from it.
 
 				<h1>Building a Better Machine</h1>
-				Many machines produces from circuit boards and inserted into a machine frame require a variety of parts to construct. These are parts like capacitors, batteries, matter bins, and so forth. As your knowledge of science improves, more advanced versions are unlocked.
-				If you use these parts when constructing something, its attributes may be improved.
-				For example, if you use an advanced matter bin when constructing an autolathe (rather then a regular one), it'll hold more materials. Experiment around with stock parts of various qualities to see how they affect the end results! Be warned, however:
-				Tier 3 and higher stock parts don't have 100% reliability and their low reliability may affect the reliability of the end machine.
+				Many machines produces from circuit boards and inserted into a machine frame require a variety of parts to construct. These are parts like capacitors, batteries, matter bins, and so forth. As your knowledge of science improves, more advanced versions are unlocked. If you use these parts when constructing something, its attributes may be improved. For example, if you use an advanced matter bin when constructing an autolathe (rather then a regular one), it'll hold more materials. Experiment around with stock parts of various qualities to see how they affect the end results! Be warned, however: Tier 3 and higher stock parts don't have 100% reliability and their low reliability may affect the reliability of the end machine.
 				</body>
 				</html>
 			"}
@@ -702,11 +619,13 @@
 
 	dat = {"
 
-		<html><head>
+		<html>
+		<head>
 		</head>
 
 		<body>
-		<iframe width='100%' height='97%' src="http://baystation12.net/wiki/index.php?title=Space_law&printable=yes&remove_links=1" frameborder="0" id="main_frame"></iframe>		</body>
+		  <iframe width='100%' height='97%' src="http://wiki.ss13.ru/index.php?title=Space_Law/Black&printable=yes" frameborder="0" id="main_frame"></iframe>
+		</body>
 
 		</html>
 
@@ -807,6 +726,9 @@
 				<h1>Drinks for dummies</h1>
 				Heres a guide for some basic drinks.
 
+				<h2>Old Fashioned:</h2>
+				Put two parts of sugar in a glass, add two parts of bourbon, then splash with water. Don`t shake!
+
 				<h2>Manly Dorf:</h2>
 				Mix ale and beer into a glass.
 
@@ -834,6 +756,23 @@
 				<h2>Classic Martini:</h2>
 				Mix vermouth and gin into a glass.
 
+				<h2>Lynchburg Lemonade:</h2>
+				Mix bourbon, lemonade and Space Up into a glass.
+
+				<h2>Rhose Island Iced Coffee:</h2>
+				Mix kahlua, vodka, cognac and milk into a glass.
+
+				<h2>Milkshake:</h2>
+				Mix cream, milk and ice. Shake vigorously. Add juice or coffee for flavour.
+
+				<h2>Sidecar:</h2>
+				Mix cognac and lemon juice into a glass with salt rim. Don`t forget to shake vigorously!
+
+				<h2>B-52:</h2>
+				Mix cognac, irish cream and kahlua into a shot glass. Substitute cognac for absinth to make a B-53.
+
+				<h2>Blue Lagoon:</h2>
+				Mix vodka, lime juice and lemonade. Shake intensively. Add blue curacao liqueur.
 
 				</body>
 				</html>
@@ -917,6 +856,7 @@
 			Intelligence Analysts believe that normal Nanotrasen procedure is for the Captain to secure the nuclear authorisation disk.<br>
 			Good luck!
 			</html>"}
+
 
 /obj/item/weapon/book/manual/atmospipes
 	name = "Pipes and You: Getting To Know Your Scary Tools"

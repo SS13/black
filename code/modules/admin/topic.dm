@@ -158,7 +158,7 @@
 				if ((!( ticker ) || emergency_shuttle.location))
 					return
 				emergency_shuttle.incall()
-				captain_announce("Вызван эвакуационный шаттл. Он прибудет на станцию через [round(emergency_shuttle.timeleft()/60)] минут.")
+				captain_announce("The emergency shuttle has been called. It will arrive in [round(emergency_shuttle.timeleft()/60)] minutes.")
 				log_admin("[key_name(usr)] called the Emergency Shuttle")
 				message_admins("\blue [key_name_admin(usr)] called the Emergency Shuttle to the station", 1)
 
@@ -168,7 +168,7 @@
 				switch(emergency_shuttle.direction)
 					if(-1)
 						emergency_shuttle.incall()
-						captain_announce("Вызван эвакуационный шаттл. Он прибудет на станцию через [round(emergency_shuttle.timeleft()/60)] минут.")
+						captain_announce("The emergency shuttle has been called. It will arrive in [round(emergency_shuttle.timeleft()/60)] minutes.")
 						log_admin("[key_name(usr)] called the Emergency Shuttle")
 						message_admins("\blue [key_name_admin(usr)] called the Emergency Shuttle to the station", 1)
 					if(1)
@@ -183,7 +183,7 @@
 
 		emergency_shuttle.settimeleft( input("Enter new shuttle duration (seconds):","Edit Shuttle Timeleft", emergency_shuttle.timeleft() ) as num )
 		log_admin("[key_name(usr)] edited the Emergency Shuttle's timeleft to [emergency_shuttle.timeleft()]")
-		captain_announce("Вызван эвакуационный шаттл. Он прибудет на станцию через [round(emergency_shuttle.timeleft()/60)] минут.")
+		captain_announce("The emergency shuttle has been called. It will arrive in [round(emergency_shuttle.timeleft()/60)] minutes.")
 		message_admins("\blue [key_name_admin(usr)] edited the Emergency Shuttle's timeleft to [emergency_shuttle.timeleft()]", 1)
 		href_list["secretsadmin"] = "check_antagonist"
 
@@ -235,6 +235,7 @@
 			if("constructbuilder")	M.change_mob_type( /mob/living/simple_animal/construct/builder , null, null, delmob )
 			if("constructwraith")	M.change_mob_type( /mob/living/simple_animal/construct/wraith , null, null, delmob )
 			if("shade")				M.change_mob_type( /mob/living/simple_animal/shade , null, null, delmob )
+			if("meme")				M.change_mob_type( /mob/living/parasite/meme , null, null, delmob )
 
 
 	/////////////////////////////////////new ban stuff
@@ -455,11 +456,6 @@
 			if(counter >= 5) //So things dont get squiiiiished!
 				jobs += "</tr><tr align='center'>"
 				counter = 0
-
-		if(jobban_isbanned(M, "Internal Affairs Agent"))
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=Internal Affairs Agent;jobban4=\ref[M]'><font color=red>Internal Affairs Agent</font></a></td>"
-		else
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=Internal Affairs Agent;jobban4=\ref[M]'>Internal Affairs Agent</a></td>"
 		jobs += "</tr></table>"
 
 	//Non-Human (Green)
@@ -487,10 +483,7 @@
 			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=pAI;jobban4=\ref[M]'><font color=red>pAI</font></a></td>"
 		else
 			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=pAI;jobban4=\ref[M]'>pAI</a></td>"
-		if(jobban_isbanned(M, "AntagHUD"))
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=AntagHUD;jobban4=\ref[M]'><font color=red>AntagHUD</font></a></td>"
-		else
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=AntagHUD;jobban4=\ref[M]'>AntagHUD</a></td>"
+
 		jobs += "</tr></table>"
 
 	//Antagonist (Orange)
@@ -536,11 +529,11 @@
 		else
 			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=wizard;jobban4=\ref[M]'>[replacetext("Wizard", " ", "&nbsp")]</a></td>"
 
-		//ERT
-		if(jobban_isbanned(M, "Emergency Response Team") || isbanned_dept)
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=Emergency Response Team;jobban4=\ref[M]'><font color=red>Emergency Response Team</font></a></td>"
+		//Meme
+		if(jobban_isbanned(M, "meme") || isbanned_dept)
+			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=meme;jobban4=\ref[M]'><font color=red>[replacetext("Meme", " ", "&nbsp")]</font></a></td>"
 		else
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=Emergency Response Team;jobban4=\ref[M]'>Emergency Response Team</a></td>"
+			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=meme;jobban4=\ref[M]'>[replacetext("Meme", " ", "&nbsp")]</a></td>"
 
 		//Vox
 		if(jobban_isbanned(M, "vox") || isbanned_dept)
@@ -569,19 +562,9 @@
 */
 		jobs += "</tr></table>"
 
-		//Other races  (BLUE, because I have no idea what other color to make this)
-		jobs += "<table cellpadding='1' cellspacing='0' width='100%'>"
-		jobs += "<tr bgcolor='ccccff'><th colspan='1'>Other Races</th></tr><tr align='center'>"
-
-		if(jobban_isbanned(M, "Dionaea"))
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=Dionaea;jobban4=\ref[M]'><font color=red>Dionaea</font></a></td>"
-		else
-			jobs += "<td width='20%'><a href='?src=\ref[src];jobban3=Dionaea;jobban4=\ref[M]'>Dionaea</a></td>"
-
-		jobs += "</tr></table>"
 		body = "<body>[jobs]</body>"
 		dat = "<tt>[header][body]</tt>"
-		usr << browse(dat, "window=jobban2;size=800x490")
+		usr << browse(dat, "window=jobban2;size=800x450")
 		return
 
 	//JOBBAN'S INNARDS
@@ -664,7 +647,7 @@
 					var/mins = input(usr,"How long (in minutes)?","Ban time",1440) as num|null
 					if(!mins)
 						return
-					var/reason = sanitize(input(usr,"Reason?","Please State Reason","") as text|null)
+					var/reason = input(usr,"Reason?","Please State Reason","") as text|null
 					if(!reason)
 						return
 
@@ -688,7 +671,7 @@
 					href_list["jobban2"] = 1 // lets it fall through and refresh
 					return 1
 				if("No")
-					var/reason = sanitize(input(usr,"Reason?","Please State Reason","") as text|null)
+					var/reason = input(usr,"Reason?","Please State Reason","") as text|null
 					if(reason)
 						var/msg
 						for(var/job in notbannedlist)
@@ -741,11 +724,7 @@
 		if (ismob(M))
 			if(!check_if_greater_rights_than(M.client))
 				return
-			var/reason = input("Please enter reason")
-			if(!reason)
-				M << "\red You have been kicked from the server"
-			else
-				M << "\red You have been kicked from the server: [reason]"
+			M << "\red You have been kicked from the server"
 			log_admin("[key_name(usr)] booted [key_name(M)].")
 			message_admins("\blue [key_name_admin(usr)] booted [key_name_admin(M)].", 1)
 			//M.client = null
@@ -763,7 +742,7 @@
 			if("show")
 				show_player_info(ckey)
 			if("list")
-				PlayerNotesPage(href_list["index"])
+				PlayerNotesPage(text2num(href_list["index"]))
 		return
 
 	else if(href_list["removejobban"])
@@ -795,7 +774,7 @@
 				if(!mins)
 					return
 				if(mins >= 525600) mins = 525599
-				var/reason = sanitize(input(usr,"Reason?","reason","Griefer") as text|null)
+				var/reason = input(usr,"Reason?","reason","Griefer") as text|null
 				if(!reason)
 					return
 				AddBan(M.ckey, M.computer_id, reason, usr.ckey, 1, mins)
@@ -815,7 +794,7 @@
 				del(M.client)
 				//del(M)	// See no reason why to delete mob. Important stuff can be lost. And ban can be lifted before round ends.
 			if("No")
-				var/reason = sanitize(input(usr,"Reason?","reason","Griefer") as text|null)
+				var/reason = input(usr,"Reason?","reason","Griefer") as text|null
 				if(!reason)
 					return
 				switch(alert(usr,"IP ban?",,"Yes","No","Cancel"))
@@ -866,17 +845,6 @@
 		if(!isnum(mute_type))	return
 
 		cmd_admin_mute(M, mute_type)
-
-	else if(href_list["showlaws"])
-		if(!check_rights(R_ADMIN))	return
-
-		var/mob/living/silicon/M = locate(href_list["showlaws"])
-		if(!ismob(M))	return
-		//if(!M.client)	return
-
-		if (M.laws)
-			usr << "<B>[M.name] laws:</B>"
-			M.laws.show_laws(usr)
 
 	else if(href_list["c_mode"])
 		if(!check_rights(R_ADMIN))	return
@@ -1194,18 +1162,6 @@
 
 		usr.client.cmd_admin_animalize(M)
 
-	else if(href_list["togmutate"])
-		if(!check_rights(R_SPAWN))	return
-
-		var/mob/living/carbon/human/H = locate(href_list["togmutate"])
-		if(!istype(H))
-			usr << "This can only be used on instances of type /mob/living/carbon/human"
-			return
-		var/block=text2num(href_list["block"])
-		//testing("togmutate([href_list["block"]] -> [block])")
-		usr.client.cmd_admin_toggle_block(H,block)
-		show_player_panel(H)
-		//H.regenerate_icons()
 /***************** BEFORE**************
 
 	if (href_list["l_players"])
@@ -1424,7 +1380,7 @@
 
 		src.owner << "You sent [input] to [H] via a secure channel."
 		log_admin("[src.owner] replied to [key_name(H)]'s Syndicate message with the message [input].")
-		H << "You hear something crackle in your headset for a moment before a voice speaks.  \"Please stand by for a message from your benefactor.  Message as follows, agent. <b>\"[input]\"</b>  Message ends.\""
+		H << "You hear something crackle in your headset for a moment before a voice speaks.  \"Please stand by for a message from your benefactor.  Message as follows, agent. [input].  Message ends.\""
 
 	else if(href_list["CentcommFaxView"])
 		var/info = locate(href_list["CentcommFaxView"])
@@ -1575,7 +1531,7 @@
 			alert("Select fewer object types, (max 5)")
 			return
 		else if(length(removed_paths))
-			alert("Removed:\n" + list2text(removed_paths, "\n"))
+			alert("Removed:\n" + dd_list2text(removed_paths, "\n"))
 
 		var/list/offset = text2list(href_list["offset"],",")
 		var/number = dd_range(1, 100, text2num(href_list["object_count"]))
@@ -1746,12 +1702,7 @@
 				log_admin("[key_name(usr)] spawned an alien infestation", 1)
 				message_admins("\blue [key_name_admin(usr)] attempted an alien infestation", 1)
 				new /datum/event/alien_infestation
-			if("borers")
-				feedback_inc("admin_secrets_fun_used",1)
-				feedback_add_details("admin_secrets_fun_used","Borers")
-				log_admin("[key_name(usr)] spawned a cortical borer infestation.", 1)
-				message_admins("\blue [key_name_admin(usr)] spawned a cortical borer infestation.", 1)
-				new /datum/event/borer_infestation
+
 
 			if("power")
 				feedback_inc("admin_secrets_fun_used",1)
@@ -1898,6 +1849,12 @@
 				move_alien_ship()
 				message_admins("\blue [key_name_admin(usr)] moved the alien dinghy", 1)
 				log_admin("[key_name(usr)] moved the alien dinghy")
+			if("movesmugglersship")
+				feedback_inc("admin_secrets_fun_used",1)
+				feedback_add_details("admin_secrets_fun_used","ShSm")
+				move_smugglers_shuttle()
+				message_admins("\blue [key_name_admin(usr)] moved the smugglers ship", 1)
+				log_admin("[key_name(usr)] moved the smugglers ship")
 			if("togglebombcap")
 				feedback_inc("admin_secrets_fun_used",1)
 				feedback_add_details("admin_secrets_fun_used","BC")
@@ -2590,35 +2547,3 @@
 			if("list")
 				PlayerNotesPage(text2num(href_list["index"]))
 		return
-/*
-	if(href_list["job_lock"])
-		if(href_list["select"])
-			var/datum/job/J = locate(href_list["select"])
-			J.locked = !J.locked
-			job_lock()
-		if (href_list["lock"])
-			for(var/datum/job/J in job_master.occupations)
-				if(!J)	continue
-				J.locked = 1
-				job_lock()
-		if (href_list["unlock"])
-			for(var/datum/job/J in job_master.occupations)
-				if(!J)	continue
-				J.locked = 0
-				job_lock()
-		if (href_list["refresh"])
-			job_lock()
-
-	if(href_list["unbuckle_mob"])
-		var/mob/living/M = locate(href_list["unbuckle_mob"])
-		if (M)
-			M.unbuckle()
-*/
-	if(href_list["show_mob_attacklog"])
-		var/mob/M = locate(href_list["show_mob_attacklog"])
-		var/text = "No attack log"
-		if (M.attack_log)
-			text = ""
-			for(var/row in M.attack_log)
-				text += row + "<BR>"
-		usr << browse(text, "window=mob_attacklog;size=650x620")

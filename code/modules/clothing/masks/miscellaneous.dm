@@ -7,6 +7,12 @@
 	w_class = 2
 	gas_transfer_coefficient = 0.90
 
+/obj/item/clothing/mask/muzzle/ballgag
+	name = "ballgag"
+	desc = "For when Master wants silence."
+	icon_state = "ballgag"
+	item_state = "ballgag"
+
 //Monkeys can not take the muzzle off of themself! Call PETA!
 /obj/item/clothing/mask/muzzle/attack_paw(mob/user as mob)
 	if (src == user.wear_mask)
@@ -26,18 +32,12 @@
 	gas_transfer_coefficient = 0.90
 	permeability_coefficient = 0.01
 	armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 25, rad = 0)
+	can_eat = 0
 
 /obj/item/clothing/mask/fakemoustache
 	name = "fake moustache"
 	desc = "Warning: moustache is fake."
 	icon_state = "fake-moustache"
-	flags = FPRINT|TABLEPASS
-	flags_inv = HIDEFACE
-
-/obj/item/clothing/mask/snorkel
-	name = "Snorkel"
-	desc = "For the Swimming Savant."
-	icon_state = "snorkel"
 	flags = FPRINT|TABLEPASS
 	flags_inv = HIDEFACE
 
@@ -99,4 +99,13 @@
 	flags_inv = HIDEFACE
 	w_class = 2
 	var/voicechange = 0
+	siemens_coefficient = 0.9
+
+/obj/item/clothing/mask/vampire
+	name = "vampire fangs"
+	desc = "Space Dracula fangs"
+	icon_state = "vampire"
+	item_state = "vampire"
+	flags = FPRINT|TABLEPASS
+	w_class = 2
 	siemens_coefficient = 0.9
